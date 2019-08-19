@@ -3,7 +3,7 @@ const Knex = require('knex')
 const config = require('./server/config')
 
 const migrations = {
-  directory: path.join(__dirname, 'migrations')
+  directory: path.join(__dirname, 'server/migrations')
 }
 
 const genericConnection = {
