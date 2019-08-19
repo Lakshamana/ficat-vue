@@ -1,3 +1,5 @@
+const config = require('./server/config')
+
 module.exports = {
   mode: 'spa',
   /*
@@ -49,6 +51,11 @@ module.exports = {
    ** See https://axios.nuxtjs.org/options
    */
   axios: {},
+
+  env: {
+    config
+  },
+
   /*
    ** Build configuration
    */
