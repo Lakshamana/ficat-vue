@@ -1,5 +1,5 @@
 const { Nuxt, Builder } = require('nuxt')
-const config = require('../config')
+const config = require('../../nuxt.config')
 
 config.dev = process.env.NODE_ENV !== 'production'
 
@@ -7,7 +7,7 @@ config.dev = process.env.NODE_ENV !== 'production'
 const nuxt = new Nuxt(config)
 
 // Build in development
-const build = config.dev ? new Builder(config).build() : nuxt.ready()
+const build = config.dev ? new Builder(nuxt).build() : nuxt.ready()
 
 async function render(ctx) {
   await build
