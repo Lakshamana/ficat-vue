@@ -20,3 +20,5 @@ api.use('/*', ctx => {
 router.get('*', frontend.render())
 
 router.use(api.routes())
+
+module.exports = router

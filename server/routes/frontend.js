@@ -1,14 +1,16 @@
 const { Nuxt, Builder } = require('nuxt')
-const config = require('../../config')
+const config = require('../config')
 
 config.dev = process.env.NODE_ENV !== 'production'
 
-async function render () {
-  // Instantiate nuxt.js
-  const nuxt = new Nuxt(config)
+// Instantiate nuxt.js
+const nuxt = new Nuxt(config)
 
-  // Build in development
-  await config.dev ? new Builder(config).build() : nuxt.ready()
+// Build in development
+const build = config.dev ? new Builder(config).build() : nuxt.ready()
+
+async function render(ctx) {
+  await build
 
   ctx.status = 200
   ctx.respond = false // Bypass Koa's built-in response handling

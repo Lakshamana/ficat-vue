@@ -8,6 +8,8 @@ const router = require('./router')
 const config = require('../nuxt.config.js')
 config.dev = app.env !== 'production'
 
+app.use(router.routes())
+
 app.listen(port, host)
 consola.ready({
   message: `Server listening on ${host}:${port}`,
