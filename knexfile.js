@@ -1,9 +1,12 @@
 const path = require('path')
-const Knex = require('knex')
 const config = require('./server/config')
 
 const migrations = {
-  directory: path.join(__dirname, 'server/migrations')
+  directory: './migrations'
+}
+
+const seeds = {
+  directory: './seeds'
 }
 
 const genericConnection = {
@@ -18,27 +21,28 @@ const sqliteConnection = {
   filename: path.join(__dirname, config.DATABASE_FILE)
 }
 
-const connectionSetup =
-  process.env.NODE_ENV === 'development' ? sqliteConnection : genericConnection
 const useNullAsDefault = true
+
+const connection =
+  process.env.NODE_ENV === 'development' ? sqliteConnection : genericConnection
 
 const envs = {
   development: {
-    ...connectionSetup,
+    connection,
     migrations,
+    seeds,
     useNullAsDefault
   },
 
   production: {
-    ...connectionSetup,
+    connection,
     migrations,
+    seeds,
     useNullAsDefault
   }
 }
 
-const knex = Knex({
-  client: config.DATABASE_NAME,
+module.exports = {
+  client: config.DATABASE_TYPE,
   ...envs[process.env.NODE_ENV]
-})
-
-module.exports = knex
+}

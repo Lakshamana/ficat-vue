@@ -1,8 +1,8 @@
 const Bookshelf = require('bookshelf')
 const bookshelfSecurePasswd = require('bookshelf-secure-password')
-const knex = require('../knexfile')
+const knexConfig = require('../knexfile')
 
-const bookshelf = Bookshelf(knex)
+const bookshelf = Bookshelf(knexConfig)
 bookshelf.plugin('registry')
 bookshelf.plugin('pagination')
 bookshelf.plugin('visibility')
