@@ -20,6 +20,7 @@ module.exports = {
   // add your custom rules here
   rules: {
     'nuxt/no-cjs-in-config': 'off',
-    'arrow-parens': ["error", "always"]
+    'arrow-parens': "off",
+    'no-console': !process.env.NODE_ENV === 'production' ? 'off' : 'error'
   }
 }
