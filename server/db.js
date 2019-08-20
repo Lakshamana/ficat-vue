@@ -1,7 +1,11 @@
 const Bookshelf = require('bookshelf')
 const Knex = require('knex')
 const bookshelfSecurePasswd = require('bookshelf-secure-password')
-const knexConfig = require('../knexfile')
+
+const env = process.env.NODE_ENV || 'development'
+const knexConfig = require('../knexfile')[env]
+
+console.log(env)
 
 const knex = Knex(knexConfig)
 const bookshelf = Bookshelf(knex)
@@ -11,4 +15,4 @@ bookshelf.plugin('pagination')
 bookshelf.plugin('visibility')
 bookshelf.plugin(bookshelfSecurePasswd)
 
-module.exports = bookshelf
+module.exports = { bookshelf, knex }

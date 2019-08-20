@@ -23,26 +23,28 @@ const sqliteConnection = {
 
 const useNullAsDefault = true
 
-const connection =
-  process.env.NODE_ENV === 'development' ? sqliteConnection : genericConnection
+const envConnection =
+  config.DATABASE_TYPE === 'sqlite3' ? sqliteConnection : genericConnection
 
-const envs = {
+const connection = {
+  client: config.DATABASE_TYPE,
+  connection: envConnection
+}
+
+const obj = {
   development: {
-    connection,
+    ...connection,
     migrations,
     seeds,
     useNullAsDefault
   },
 
   production: {
-    connection,
+    ...connection,
     migrations,
     seeds,
     useNullAsDefault
   }
 }
 
-module.exports = {
-  client: config.DATABASE_TYPE,
-  ...envs[process.env.NODE_ENV]
-}
+module.exports = obj
