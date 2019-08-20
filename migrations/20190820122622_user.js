@@ -5,7 +5,7 @@ exports.up = function(knex) {
       .string('name', 50)
       .notNullable()
       .defaultTo('')
-    table.string('passwordDigest').notNullable()
+    table.string('password_digest').notNullable()
   })
 }
 
