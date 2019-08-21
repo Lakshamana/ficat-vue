@@ -5,6 +5,10 @@ exports.up = function(knex) {
       .string('name', 50)
       .notNullable()
       .defaultTo('')
+    table
+      .boolean('active')
+      .notNullable()
+      .defaultTo(false)
     table.string('password_digest').notNullable()
   })
 }
