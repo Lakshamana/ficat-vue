@@ -24,9 +24,9 @@ api.use('/*', ctx => {
   ctx.body = messageCodes.error.errNotFound
 })
 
+router.use(api.routes())
+
 // frontend rendering
 router.get('*', frontend.render)
-
-router.use(api.routes())
 
 module.exports = router
