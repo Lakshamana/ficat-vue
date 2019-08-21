@@ -5,8 +5,6 @@ const bookshelfSecurePasswd = require('bookshelf-secure-password')
 const env = process.env.NODE_ENV || 'development'
 const knexConfig = require('../knexfile')[env]
 
-console.log(env)
-
 const knex = Knex(knexConfig)
 const bookshelf = Bookshelf(knex)
 
