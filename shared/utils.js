@@ -52,14 +52,22 @@ function select(data, attrList, defaults = {}) {
 function validatePayload(data, validFields = []) {
   const result = { valid: false }
   if (data && typeof data === 'object') {
+    // data precisa ter alguns campos
+    for (const f of validFields) {
+      if (!data[f]) {
+        if (!result.missingFields) result.missingFields = []
+        result.missingFields.push(f)
+      }
+    }
+    // data não deve ter alguns campos
     for (const d in data) {
       // hasOwnProperty - herança é ignorada
       if (!data.hasOwnProperty(d) || !validFields.includes(d)) {
-        if (!result.fields) result.fields = []
-        result.fields.push(d)
+        if (!result.invalidFields) result.invalidFields = []
+        result.invalidFields.push(d)
       }
     }
-    if (!result.fields) result.valid = true
+    if (!result.invalidFields && !result.missingFields) result.valid = true
     return result
   }
   return undefined
