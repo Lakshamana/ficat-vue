@@ -1,7 +1,7 @@
 {
   "vetur.format.defaultFormatter.js": "vscode-typescript",
   "vetur.format.defaultFormatter.html": "js-beautify-html",
-  "javascript.format.insertSpaceBeforeFunctionParenthesis": true,
+  "javascript.format.insertSpaceBeforeFunctionParenthesis": false,
   "eslint.autoFixOnSave": true,
   "eslint.validate": [
     {
