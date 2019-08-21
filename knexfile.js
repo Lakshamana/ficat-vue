@@ -23,17 +23,17 @@ const sqliteConnection = {
 
 const useNullAsDefault = true
 
-const envConnection =
+const connection =
   config.DATABASE_TYPE === 'sqlite3' ? sqliteConnection : genericConnection
 
-const connection = {
+const db = {
   client: config.DATABASE_TYPE,
-  connection: envConnection
+  connection
 }
 
 const obj = {
   development: {
-    ...connection,
+    ...db,
     migrations,
     seeds,
     useNullAsDefault
