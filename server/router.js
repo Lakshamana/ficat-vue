@@ -5,11 +5,14 @@ const messageCodes = require('../shared/messageCodes')
 const frontend = require('./routes/frontend')
 const HttpCodes = require('./httpCodes')
 const userRoutes = require('./routes/users')
+const eventRegistry = require('./event/eventRegistry')
 
 const router = new Router()
 const api = new Router({ prefix: '/api' })
 
 router.use(bodyParser())
+
+router.use(eventRegistry)
 
 // api middlewares
 
@@ -21,7 +24,7 @@ api.post('/users', userRoutes.create)
 api.get('/users', userRoutes.list)
 
 // toggle active
-api.get('/users/:id', userRoutes.update)
+api.post('/users/:id', userRoutes.update)
 
 // api not found
 api.use('/*', ctx => {
