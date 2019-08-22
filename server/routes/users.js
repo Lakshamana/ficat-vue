@@ -3,15 +3,8 @@ const HttpCodes = require('../httpCodes')
 
 function create(ctx) {
   const validFields = ['username', 'active', 'password']
-  ctx.app.emit(
-    'incomingPayload',
-    (validFields,
-    async body => {
-      ctx.status = HttpCodes.OK
-      const newUser = await User.forge(body).save()
-      ctx.set('Location', `/users/${newUser.id}`)
-      ctx.body = newUser
-    })
+  ctx.app.emit('incomingPayload', validFields, async payload =>
+    User.forge(payload).save()
   )
 }
 

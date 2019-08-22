@@ -2,12 +2,15 @@ const { validatePayload } = require('../../shared/utils')
 const HttpCodes = require('../httpCodes')
 const MessageCodes = require('../../shared/messageCodes')
 
-const eventRegistry = ctx => {
-  ctx.app.on('incomingPayload', (validFields, callback) => {
-    const body = ctx.request.body
-    const validation = validatePayload(body, validFields)
+function eventRegistry(ctx, next) {
+  ctx.app.on('incomingPayload', async (validFields, callback) => {
+    const payload = ctx.request.body
+    const validation = validatePayload(payload, validFields)
     if (validation && validation.valid) {
-      callback(body)
+      ctx.status = HttpCodes.OK
+      const newUser = await callback(payload)
+      ctx.set('Location', `/users/${newUser.id}`)
+      ctx.body = newUser
     } else {
       ctx.status = HttpCodes.BAD_REQUEST
       const errorMessages = []
@@ -21,6 +24,7 @@ const eventRegistry = ctx => {
       ctx.body = errorMessages
     }
   })
+  return next()
 }
 
 module.exports = eventRegistry

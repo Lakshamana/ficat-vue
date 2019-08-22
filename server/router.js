@@ -10,18 +10,14 @@ const eventRegistry = require('./event/eventRegistry')
 const router = new Router()
 const api = new Router({ prefix: '/api' })
 
-router.use(bodyParser())
-
-router.use(eventRegistry)
-
 // api middlewares
 
 // Users
 // create
-api.post('/users', userRoutes.create)
+api.post('/users/', bodyParser(), eventRegistry, userRoutes.create)
 
 // list
-api.get('/users', userRoutes.list)
+api.get('/users/', userRoutes.list)
 
 // toggle active
 api.post('/users/:id', userRoutes.update)
