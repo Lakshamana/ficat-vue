@@ -54,7 +54,7 @@ function validatePayload(data, validFields = []) {
   if (data && typeof data === 'object') {
     // data precisa ter alguns campos
     for (const f of validFields) {
-      if (!data[f]) {
+      if (!Object.keys(data).includes(f)) {
         if (!result.missingFields) result.missingFields = []
         result.missingFields.push(f)
       }

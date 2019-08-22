@@ -1,20 +1,22 @@
 const Router = require('koa-router')
-const bodyParser = require('koa-body')
+const BodyParser = require('koa-body')
 
 const messageCodes = require('../shared/messageCodes')
 const frontend = require('./routes/frontend')
 const HttpCodes = require('./httpCodes')
 const userRoutes = require('./routes/users')
-const eventRegistry = require('./event/eventRegistry')
+
+// const { createEntity } = require('./event/eventRegistry')
 
 const router = new Router()
 const api = new Router({ prefix: '/api' })
+const bodyParser = BodyParser()
 
 // api middlewares
 
 // Users
 // create
-api.post('/users/', bodyParser(), eventRegistry, userRoutes.create)
+api.post('/users/', bodyParser, userRoutes.create)
 
 // list
 api.get('/users/', userRoutes.list)

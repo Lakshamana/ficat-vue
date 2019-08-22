@@ -2,15 +2,15 @@ const { validatePayload } = require('../../shared/utils')
 const HttpCodes = require('../httpCodes')
 const MessageCodes = require('../../shared/messageCodes')
 
-function eventRegistry(ctx, next) {
-  ctx.app.on('incomingPayload', async (validFields, callback) => {
+async function createEntity(ctx, next) {
+  ctx.app.on('createEntity', async (validFields, Entity) => {
     const payload = ctx.request.body
     const validation = validatePayload(payload, validFields)
     if (validation && validation.valid) {
       ctx.status = HttpCodes.OK
-      const newUser = await callback(payload)
-      ctx.set('Location', `/users/${newUser.id}`)
-      ctx.body = newUser
+      const newEntity = await Entity.forge(payload).save()
+      ctx.set('location', `/api/users/${newEntity.id}`)
+      ctx.body = newEntity
     } else {
       ctx.status = HttpCodes.BAD_REQUEST
       const errorMessages = []
@@ -24,7 +24,7 @@ function eventRegistry(ctx, next) {
       ctx.body = errorMessages
     }
   })
-  return next()
+  await next()
 }
 
-module.exports = eventRegistry
+module.exports = { createEntity }
