@@ -3,7 +3,6 @@ const HttpCodes = require('../httpCodes')
 const MessageCodes = require('../../shared/messageCodes')
 
 async function create(ctx) {
-  ctx.status = HttpCodes.OK.code
   const payload = ctx.state
   const username = payload.username
   const existingUser = await User.where({ username }).fetch()
@@ -13,8 +12,9 @@ async function create(ctx) {
     })
     return
   }
+  ctx.status = HttpCodes.OK.code
   const newUser = await User.forge(payload).save()
-  ctx.set('location', `/api/users/${newUser.username}`)
+  ctx.set('Location', `/api/users/${newUser.username}`)
   ctx.body = newUser
 }
 
@@ -29,6 +29,7 @@ async function update(ctx) {
   if (user) {
     try {
       const newUser = await user.save(payload)
+      ctx.status = HttpCodes.OK.code
       ctx.body = newUser
     } catch (e) {
       ctx.throw(HttpCodes.INT_SRV_ERROR.code, HttpCodes.INT_SRV_ERROR.message, {
