@@ -3,7 +3,7 @@ const HttpCodes = require('../httpCodes')
 const MessageCodes = require('../../shared/messageCodes')
 
 async function create(ctx) {
-  ctx.status = HttpCodes.OK
+  ctx.status = HttpCodes.OK.code
   const payload = ctx.state
   const newUser = await User.forge(payload).save()
   ctx.set('location', `/api/users/${newUser.id}`)

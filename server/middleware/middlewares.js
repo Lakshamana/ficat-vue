@@ -38,6 +38,7 @@ function createEntity(entityName, operation) {
 
 function errorHandler(ctx, next) {
   return next().catch(err => {
+    ctx.status = err.status
     ctx.body = err
   })
 }
