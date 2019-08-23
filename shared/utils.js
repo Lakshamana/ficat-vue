@@ -37,8 +37,6 @@ function select(data, attrList, defaults = {}) {
  * Valida atributos de um dado objeto de entrada,
  * com base em uma lista dos atributos do mesmo.
  *
- * OBS: ignorando hasOwnProperty em função de compatiilidade
- *
  * @param {Object} data: carga útil de entrada (payload)
  *
  * @param {Array} validFields: lista de atributos do objeto
@@ -51,19 +49,22 @@ function select(data, attrList, defaults = {}) {
  *
  * @see utils.spec.js (/test/shared/ para casos de teste)
  */
-function validatePayload(data, validFields = []) {
+function validatePayload(data, validFields = [], optional = false) {
   const result = { valid: false }
   if (data && typeof data === 'object') {
     // data precisa ter alguns campos
-    for (const f of validFields) {
-      if (!Object.keys(data).includes(f)) {
-        if (!result.missingFields) result.missingFields = []
-        result.missingFields.push(f)
+    if (!optional) {
+      for (const f of validFields) {
+        if (!Object.keys(data).includes(f)) {
+          if (!result.missingFields) result.missingFields = []
+          result.missingFields.push(f)
+        }
       }
     }
     // data não deve ter alguns campos
     for (const d in data) {
-      if (!validFields.includes(d)) {
+      // hasOwnProperty - não deve haver herança de objetos
+      if (!data.hasOwnProperty(d) || !validFields.includes(d)) {
         if (!result.invalidFields) result.invalidFields = []
         result.invalidFields.push(d)
       }
