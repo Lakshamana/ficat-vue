@@ -1,7 +1,6 @@
 const KnowledgeArea = require('../models/KnowledgeArea')
 const HttpCodes = require('../httpCodes')
 const MessageCodes = require('../../shared/messageCodes')
-const { validatePayload } = require('../../shared/utils')
 
 async function create(ctx) {
   const payload = ctx.request.body
@@ -21,29 +20,18 @@ async function create(ctx) {
 }
 
 async function list(ctx) {
-  const query = Object.assign({}, ctx.query)
-  if (Object.keys(query).length) {
-    const validation = validatePayload(query, ['page', 'size'], true)
-    const { page = 1, size = process.env.API_PAGE_SIZE } = query
-    if (validation.valid) {
-      ctx.body = await KnowledgeArea.fetchPage({
-        pageSize: size,
-        page
-      })
-    } else {
-      ctx.status = HttpCodes.BAD_REQUEST.code
-      const errorMessages = []
-      for (const i in validation) {
-        if (i === 'valid') continue
-        errorMessages.push({
-          errCode: MessageCodes.error[i],
-          fields: `${validation[i].join(', ')}`
-        })
-      }
-      ctx.throw(HttpCodes.BAD_REQUEST.code, HttpCodes.BAD_REQUEST.message, {
-        errors: errorMessages
-      })
-    }
+  const pagination = ctx.state.pagination
+  if (pagination) {
+    const { page, size } = pagination
+    const result = await KnowledgeArea.fetchPage({
+      pageSize: size,
+      page
+    })
+    ctx.set('Pagination-Row-Count', result.pagination.rowCount)
+    ctx.set('Pagination-Page-Count', result.pagination.pageCount)
+    ctx.set('Pagination-Page', result.pagination.page)
+    ctx.set('Pagination-Page-Size', result.pagination.pageSize)
+    ctx.body = result
   } else ctx.body = await KnowledgeArea.fetchAll()
 }
 
