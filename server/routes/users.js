@@ -1,5 +1,6 @@
 const User = require('../models/User')
 const HttpCodes = require('../httpCodes')
+const MessageCodes = require('../../shared/messageCodes')
 
 async function create(ctx) {
   ctx.status = HttpCodes.OK
@@ -13,16 +14,25 @@ async function list(ctx) {
   ctx.body = await User.fetchAll()
 }
 
-function update(ctx) {
-  const validFields = ['active']
-  ctx.app.emit('incomingPayload', validFields, async payload => {
-    ctx.status = HttpCodes.OK
-    const id = +ctx.params.id
-    const user = await User.where({ id }).fetch()
-    if (user) {
-      await user.save(payload)
+async function update(ctx) {
+  const id = +ctx.params.id
+  const payload = ctx.state
+  const user = await User.where({ id }).fetch()
+  if (user) {
+    try {
+      const newUser = await user.save(payload)
+      ctx.body = newUser
+    } catch (e) {
+      ctx.throw(HttpCodes.INT_SRV_ERROR.code, HttpCodes.INT_SRV_ERROR.message, {
+        code: MessageCodes.error.errorOnDbSave,
+        rawErrorMessage: e
+      })
     }
-  })
+  } else {
+    ctx.throw(HttpCodes.BAD_REQUEST.code, HttpCodes.BAD_REQUEST.message, {
+      code: MessageCodes.error.errorOnDbSave
+    })
+  }
 }
 
 module.exports = { create, list, update }

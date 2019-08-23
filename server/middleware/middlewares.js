@@ -2,30 +2,44 @@ const { validatePayload } = require('../../shared/utils')
 const HttpCodes = require('../httpCodes')
 const MessageCodes = require('../../shared/messageCodes')
 
-const entityValidFields = {
+const createEntityValidFields = {
   users: ['username', 'password', 'active']
 }
 
-function createEntity(entityName) {
+const updateEntityValidFields = {
+  users: ['active']
+}
+
+function createEntity(entityName, operation) {
+  const useOperation =
+    operation === 'create' ? createEntityValidFields : updateEntityValidFields
   return (ctx, next) => {
     const payload = ctx.request.body
-    const validation = validatePayload(payload, entityValidFields[entityName])
+    const validation = validatePayload(payload, useOperation[entityName])
     if (validation && validation.valid) {
       ctx.state = payload
       return next()
     } else {
-      ctx.status = HttpCodes.BAD_REQUEST
+      ctx.status = HttpCodes.BAD_REQUEST.code
       const errorMessages = []
       for (const i in validation) {
         if (i === 'valid') continue
         errorMessages.push({
-          message: MessageCodes.error[i],
+          code: MessageCodes.error[i],
           fields: `${validation[i].join(', ')}`
         })
       }
-      ctx.body = errorMessages
+      ctx.throw(HttpCodes.BAD_REQUEST.code, HttpCodes.BAD_REQUEST.message, {
+        errors: errorMessages
+      })
     }
   }
 }
 
-module.exports = { createEntity }
+function errorHandler(ctx, next) {
+  return next().catch(err => {
+    ctx.body = err
+  })
+}
+
+module.exports = { createEntity, errorHandler }

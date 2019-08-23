@@ -15,17 +15,27 @@ const bodyParser = BodyParser()
 
 // Users
 // create
-api.post('/users/', bodyParser, createEntity('users'), userRoutes.create)
+api.post(
+  '/users/',
+  bodyParser,
+  createEntity('users', 'create'),
+  userRoutes.create
+)
 
 // list
 api.get('/users/', userRoutes.list)
 
 // toggle active
-api.post('/users/:id', userRoutes.update)
+api.post(
+  '/users/:id',
+  bodyParser,
+  createEntity('users', 'update'),
+  userRoutes.update
+)
 
 // api not found
 api.use('/*', ctx => {
-  ctx.status = HttpCodes.NOT_FOUND
+  ctx.status = HttpCodes.NOT_FOUND.code
   ctx.body = messageCodes.error.errNotFound
 })
 
