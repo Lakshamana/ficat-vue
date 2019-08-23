@@ -2,7 +2,7 @@ const Router = require('koa-router')
 const BodyParser = require('koa-body')
 
 const messageCodes = require('../shared/messageCodes')
-const { createEntity } = require('./middleware/middlewares')
+const { createOrUpdateEntity } = require('./middleware/middlewares')
 const frontend = require('./routes/frontend')
 const HttpCodes = require('./httpCodes')
 
@@ -23,7 +23,7 @@ const bodyParser = BodyParser()
 api.post(
   '/users/',
   bodyParser,
-  createEntity('users', 'create'),
+  createOrUpdateEntity('users', 'create'),
   userRoutes.create
 )
 
@@ -34,7 +34,7 @@ api.get('/users/', userRoutes.list)
 api.post(
   '/users/:username',
   bodyParser,
-  createEntity('users', 'update'),
+  createOrUpdateEntity('users', 'update'),
   userRoutes.update
 )
 
@@ -46,7 +46,7 @@ api.post(
 api.post(
   '/knowledgeAreas/',
   bodyParser,
-  createEntity('knowledgeAreas', 'create'),
+  createOrUpdateEntity('knowledgeAreas', 'create'),
   kaRoutes.create
 )
 
@@ -57,7 +57,7 @@ api.get('/knowledgeAreas/', kaRoutes.list)
 api.post(
   '/knowledgeAreas/:id',
   bodyParser,
-  createEntity('knowledgeAreas', 'update'),
+  createOrUpdateEntity('knowledgeAreas', 'update'),
   kaRoutes.update
 )
 

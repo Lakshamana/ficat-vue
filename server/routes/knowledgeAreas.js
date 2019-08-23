@@ -1,6 +1,7 @@
 const KnowledgeArea = require('../models/KnowledgeArea')
 const HttpCodes = require('../httpCodes')
 const MessageCodes = require('../../shared/messageCodes')
+const { validatePayload } = require('../../shared/utils')
 
 async function create(ctx) {
   const payload = ctx.request.body
@@ -19,10 +20,31 @@ async function create(ctx) {
   ctx.body = newKnowledgeArea
 }
 
-// TODO: add querystring for pagination support
-// requires: query validator algorithm
 async function list(ctx) {
-  ctx.body = await KnowledgeArea.fetchAll()
+  const query = Object.assign({}, ctx.query)
+  if (Object.keys(query).length) {
+    const validation = validatePayload(query, ['page', 'size'], true)
+    const { page = 1, size = process.env.API_PAGE_SIZE } = query
+    if (validation.valid) {
+      ctx.body = await KnowledgeArea.fetchPage({
+        pageSize: size,
+        page
+      })
+    } else {
+      ctx.status = HttpCodes.BAD_REQUEST.code
+      const errorMessages = []
+      for (const i in validation) {
+        if (i === 'valid') continue
+        errorMessages.push({
+          errCode: MessageCodes.error[i],
+          fields: `${validation[i].join(', ')}`
+        })
+      }
+      ctx.throw(HttpCodes.BAD_REQUEST.code, HttpCodes.BAD_REQUEST.message, {
+        errors: errorMessages
+      })
+    }
+  } else ctx.body = await KnowledgeArea.fetchAll()
 }
 
 async function update(ctx) {
@@ -56,7 +78,6 @@ async function update(ctx) {
 // needs to test
 async function del(ctx) {
   const id = +ctx.params.id
-  const payload = ctx.request.body
   const existingKa = await KnowledgeArea.where({ id }).fetch()
   if (!existingKa) {
     ctx.throw(HttpCodes.BAD_REQUEST.code, HttpCodes.BAD_REQUEST.message, {

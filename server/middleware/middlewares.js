@@ -12,7 +12,7 @@ const updateEntityValidFields = {
   knowledgeAreas: ['description']
 }
 
-function createEntity(entityName, operation) {
+function createOrUpdateEntity(entityName, operation) {
   const useOperation =
     operation === 'create' ? createEntityValidFields : updateEntityValidFields
   return (ctx, next) => {
@@ -45,4 +45,4 @@ function errorHandler(ctx, next) {
   })
 }
 
-module.exports = { createEntity, errorHandler }
+module.exports = { createOrUpdateEntity, errorHandler }
