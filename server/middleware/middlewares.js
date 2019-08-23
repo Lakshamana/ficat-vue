@@ -2,15 +2,17 @@ const { validatePayload } = require('../../shared/utils')
 const HttpCodes = require('../httpCodes')
 const MessageCodes = require('../../shared/messageCodes')
 
-async function createEntity(ctx, next) {
-  ctx.app.on('createEntity', async (validFields, Entity) => {
+const entityValidFields = {
+  users: ['username', 'password', 'active']
+}
+
+function createEntity(entityName) {
+  return (ctx, next) => {
     const payload = ctx.request.body
-    const validation = validatePayload(payload, validFields)
+    const validation = validatePayload(payload, entityValidFields[entityName])
     if (validation && validation.valid) {
-      ctx.status = HttpCodes.OK
-      const newEntity = await Entity.forge(payload).save()
-      ctx.set('location', `/api/users/${newEntity.id}`)
-      ctx.body = newEntity
+      ctx.state = payload
+      return next()
     } else {
       ctx.status = HttpCodes.BAD_REQUEST
       const errorMessages = []
@@ -23,8 +25,7 @@ async function createEntity(ctx, next) {
       }
       ctx.body = errorMessages
     }
-  })
-  await next()
+  }
 }
 
 module.exports = { createEntity }

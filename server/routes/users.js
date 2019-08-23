@@ -1,29 +1,12 @@
 const User = require('../models/User')
-const { validatePayload } = require('../../shared/utils')
 const HttpCodes = require('../httpCodes')
-const MessageCodes = require('../../shared/messageCodes')
 
-async function create(ctx, next) {
-  const validFields = ['username', 'active', 'password']
-  const payload = ctx.request.body
-  const validation = validatePayload(payload, validFields)
-  if (validation && validation.valid) {
-    ctx.status = HttpCodes.OK
-    const newEntity = await User.forge(payload).save()
-    ctx.set('location', `/api/users/${newEntity.id}`)
-    ctx.body = newEntity
-  } else {
-    ctx.status = HttpCodes.BAD_REQUEST
-    const errorMessages = []
-    for (const i in validation) {
-      if (i === 'valid') continue
-      errorMessages.push({
-        message: MessageCodes.error[i],
-        fields: `${validation[i].join(', ')}`
-      })
-    }
-    ctx.body = errorMessages
-  }
+async function create(ctx) {
+  ctx.status = HttpCodes.OK
+  const payload = ctx.state
+  const newUser = await User.forge(payload).save()
+  ctx.set('location', `/api/users/${newUser.id}`)
+  ctx.body = newUser
 }
 
 async function list(ctx) {
