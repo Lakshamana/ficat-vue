@@ -3,7 +3,7 @@ const HttpCodes = require('../httpCodes')
 const MessageCodes = require('../../shared/messageCodes')
 
 async function create(ctx) {
-  const payload = ctx.state
+  const payload = ctx.request.body
   const username = payload.username
   const existingUser = await User.where({ username }).fetch()
   if (existingUser) {
@@ -23,23 +23,29 @@ async function list(ctx) {
 }
 
 async function update(ctx) {
-  const username = +ctx.params.username
-  const payload = ctx.state
+  const username = ctx.params.username
+  const payload = ctx.request.body
   const user = await User.where({ username }).fetch()
   if (user) {
     try {
-      const newUser = await user.save(payload)
+      await User.where({ username }).save(payload, {
+        patch: true
+      })
       ctx.status = HttpCodes.OK.code
-      ctx.body = newUser
+      ctx.body = user
     } catch (e) {
       ctx.throw(HttpCodes.INT_SRV_ERROR.code, HttpCodes.INT_SRV_ERROR.message, {
-        code: MessageCodes.error.errorOnDbSave,
-        rawErrorMessage: e
+        error: {
+          code: MessageCodes.error.errorOnDbSave,
+          rawErrorMessage: e
+        }
       })
     }
   } else {
     ctx.throw(HttpCodes.BAD_REQUEST.code, HttpCodes.BAD_REQUEST.message, {
-      code: MessageCodes.error.errorOnDbSave
+      error: {
+        code: MessageCodes.error.userDoesNotExist
+      }
     })
   }
 }
