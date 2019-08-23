@@ -27,7 +27,7 @@ api.get('/users/', userRoutes.list)
 
 // toggle active
 api.post(
-  '/users/:id',
+  '/users/:username',
   bodyParser,
   createEntity('users', 'update'),
   userRoutes.update
