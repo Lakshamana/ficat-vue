@@ -9,7 +9,7 @@ const createEntityValidFields = {
 
 const updateEntityValidFields = {
   users: ['active'],
-  knowledgeAreas: ['code', 'description']
+  knowledgeAreas: ['description']
 }
 
 function createEntity(entityName, operation) {
