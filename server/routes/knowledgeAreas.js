@@ -19,6 +19,8 @@ async function create(ctx) {
   ctx.body = newKnowledgeArea
 }
 
+// TODO: add querystring for pagination support
+// requires: query validator algorithm
 async function list(ctx) {
   ctx.body = await KnowledgeArea.fetchAll()
 }
@@ -51,9 +53,10 @@ async function update(ctx) {
   }
 }
 
+// needs to test
 async function del(ctx) {
+  const id = +ctx.params.id
   const payload = ctx.request.body
-  const id = payload.id
   const existingKa = await KnowledgeArea.where({ id }).fetch()
   if (!existingKa) {
     ctx.throw(HttpCodes.BAD_REQUEST.code, HttpCodes.BAD_REQUEST.message, {
@@ -61,10 +64,14 @@ async function del(ctx) {
     })
     return
   }
-  ctx.status = HttpCodes.OK.code
-  const newKnowledgeArea = await KnowledgeArea.forge(payload).save()
-  ctx.set('Location', `/api/knowledgeAreas/${id}`)
-  ctx.body = newKnowledgeArea
+  try {
+    await KnowledgeArea.where({ id }).destroy()
+    ctx.status = HttpCodes.OK.code
+  } catch (e) {
+    ctx.throw(HttpCodes.BAD_REQUEST.code, HttpCodes.BAD_REQUEST.message, {
+      errCode: MessageCodes.error.errOnDbSave
+    })
+  }
 }
 
 module.exports = { create, list, update, del }
