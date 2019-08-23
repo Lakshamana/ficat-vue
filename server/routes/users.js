@@ -14,7 +14,7 @@ async function create(ctx) {
   }
   ctx.status = HttpCodes.OK.code
   const newUser = await User.forge(payload).save()
-  ctx.set('Location', `/api/users/${newUser.username}`)
+  ctx.set('Location', `/api/users/${username}`)
   ctx.body = newUser
 }
 
