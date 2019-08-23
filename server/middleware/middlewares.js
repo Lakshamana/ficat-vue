@@ -37,6 +37,32 @@ function createOrUpdateEntity(entityName, operation) {
   }
 }
 
+function paginatedEntity(ctx, next) {
+  const query = Object.assign({}, ctx.query) // Evitar problemas com hasOwnProperty
+  // Se existe uma query
+  if (Object.keys(query).length) {
+    const validation = validatePayload(query, ['page', 'size'], true)
+    const { page = 1, size = process.env.API_PAGE_SIZE } = query
+    if (validation.valid) {
+      ctx.state.pagination = { size, page }
+    } else {
+      ctx.status = HttpCodes.BAD_REQUEST.code
+      const errorMessages = []
+      for (const i in validation) {
+        if (i === 'valid') continue
+        errorMessages.push({
+          errCode: MessageCodes.error[i],
+          fields: `${validation[i].join(', ')}`
+        })
+      }
+      ctx.throw(HttpCodes.BAD_REQUEST.code, HttpCodes.BAD_REQUEST.message, {
+        errors: errorMessages
+      })
+    }
+  } else ctx.state.pagination = false
+  return next()
+}
+
 function errorHandler(ctx, next) {
   return next().catch(err => {
     console.error(err) // eslint-disable-line no-console
@@ -45,4 +71,4 @@ function errorHandler(ctx, next) {
   })
 }
 
-module.exports = { createOrUpdateEntity, errorHandler }
+module.exports = { createOrUpdateEntity, errorHandler, paginatedEntity }

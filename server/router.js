@@ -2,7 +2,10 @@ const Router = require('koa-router')
 const BodyParser = require('koa-body')
 
 const messageCodes = require('../shared/messageCodes')
-const { createOrUpdateEntity } = require('./middleware/middlewares')
+const {
+  createOrUpdateEntity,
+  paginatedEntity
+} = require('./middleware/middlewares')
 const frontend = require('./routes/frontend')
 const HttpCodes = require('./httpCodes')
 
@@ -51,7 +54,7 @@ api.post(
 )
 
 // list
-api.get('/knowledgeAreas/', kaRoutes.list)
+api.get('/knowledgeAreas/', paginatedEntity, kaRoutes.list)
 
 // update
 api.post(
