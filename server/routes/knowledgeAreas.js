@@ -51,4 +51,20 @@ async function update(ctx) {
   }
 }
 
-module.exports = { create, list, update }
+async function del(ctx) {
+  const payload = ctx.request.body
+  const id = payload.id
+  const existingKa = await KnowledgeArea.where({ id }).fetch()
+  if (!existingKa) {
+    ctx.throw(HttpCodes.BAD_REQUEST.code, HttpCodes.BAD_REQUEST.message, {
+      errCode: MessageCodes.error.errEntityDoesNotExist('knowledgeArea')
+    })
+    return
+  }
+  ctx.status = HttpCodes.OK.code
+  const newKnowledgeArea = await KnowledgeArea.forge(payload).save()
+  ctx.set('Location', `/api/knowledgeAreas/${id}`)
+  ctx.body = newKnowledgeArea
+}
+
+module.exports = { create, list, update, del }

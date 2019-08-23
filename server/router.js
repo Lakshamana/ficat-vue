@@ -15,7 +15,10 @@ const bodyParser = BodyParser()
 
 // api middlewares
 
-// Users
+/**
+ * Users
+ */
+
 // create
 api.post(
   '/users/',
@@ -35,7 +38,10 @@ api.post(
   userRoutes.update
 )
 
-// KnowledgeAreas
+/**
+ * KnowledgeAreas
+ */
+
 // create
 api.post(
   '/knowledgeAreas/',
@@ -47,13 +53,16 @@ api.post(
 // list
 api.get('/knowledgeAreas/', kaRoutes.list)
 
-// toggle active
+// update
 api.post(
   '/knowledgeAreas/:id',
   bodyParser,
   createEntity('knowledgeAreas', 'update'),
   kaRoutes.update
 )
+
+// delete
+api.del('/knowledgeAreas/:id', kaRoutes.del)
 
 // api not found
 api.use('/*', ctx => {
