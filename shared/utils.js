@@ -37,6 +37,8 @@ function select(data, attrList, defaults = {}) {
  * Valida atributos de um dado objeto de entrada,
  * com base em uma lista dos atributos do mesmo.
  *
+ * OBS: ignorando hasOwnProperty em função de compatiilidade
+ *
  * @param {Object} data: carga útil de entrada (payload)
  *
  * @param {Array} validFields: lista de atributos do objeto
@@ -61,8 +63,7 @@ function validatePayload(data, validFields = []) {
     }
     // data não deve ter alguns campos
     for (const d in data) {
-      // hasOwnProperty - herança é ignorada
-      if (!data.hasOwnProperty(d) || !validFields.includes(d)) {
+      if (!validFields.includes(d)) {
         if (!result.invalidFields) result.invalidFields = []
         result.invalidFields.push(d)
       }
