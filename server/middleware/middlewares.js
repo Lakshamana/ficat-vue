@@ -39,7 +39,7 @@ function createEntity(entityName, operation) {
 
 function errorHandler(ctx, next) {
   return next().catch(err => {
-    ctx.status = err.status
+    ctx.status = err.status || HttpCodes.INT_SRV_ERROR.code
     ctx.body = err
   })
 }

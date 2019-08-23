@@ -13,7 +13,7 @@ const build = config.dev ? new Builder(nuxt).build() : nuxt.ready()
 async function render(ctx) {
   await build
 
-  ctx.status = HttpCodes.OK
+  ctx.status = HttpCodes.OK.code
   ctx.respond = false // Bypass Koa's built-in response handling
   ctx.req.ctx = ctx // This might be useful later on, e.g. in nuxtServerInit or with nuxt-stash
   nuxt.render(ctx.req, ctx.res)
