@@ -9,6 +9,7 @@ exports.up = function(knex) {
       .string('description', 50)
       .notNullable()
       .defaultTo('')
+    table.unique('code')
   })
 }
 
