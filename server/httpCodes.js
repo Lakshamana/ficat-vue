@@ -17,6 +17,6 @@ module.exports = {
   },
   INT_SRV_ERROR: {
     code: 500,
-    message: 'INT_SRV_ERROR'
+    message: 'INTERNAL_SERVER_ERROR'
   }
 }
