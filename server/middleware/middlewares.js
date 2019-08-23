@@ -3,11 +3,13 @@ const HttpCodes = require('../httpCodes')
 const MessageCodes = require('../../shared/messageCodes')
 
 const createEntityValidFields = {
-  users: ['username', 'password', 'active']
+  users: ['username', 'password', 'active'],
+  knowledgeAreas: ['code', 'description']
 }
 
 const updateEntityValidFields = {
-  users: ['active']
+  users: ['active'],
+  knowledgeAreas: ['code', 'description']
 }
 
 function createEntity(entityName, operation) {
@@ -17,7 +19,6 @@ function createEntity(entityName, operation) {
     const payload = ctx.request.body
     const validation = validatePayload(payload, useOperation[entityName])
     if (validation && validation.valid) {
-      ctx.state = payload
       return next()
     } else {
       ctx.status = HttpCodes.BAD_REQUEST.code
@@ -25,7 +26,7 @@ function createEntity(entityName, operation) {
       for (const i in validation) {
         if (i === 'valid') continue
         errorMessages.push({
-          code: MessageCodes.error[i],
+          errCode: MessageCodes.error[i],
           fields: `${validation[i].join(', ')}`
         })
       }

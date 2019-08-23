@@ -5,7 +5,9 @@ const messageCodes = require('../shared/messageCodes')
 const { createEntity } = require('./middleware/middlewares')
 const frontend = require('./routes/frontend')
 const HttpCodes = require('./httpCodes')
+
 const userRoutes = require('./routes/users')
+const kaRoutes = require('./routes/knowledgeAreas')
 
 const router = new Router()
 const api = new Router({ prefix: '/api' })
@@ -31,6 +33,26 @@ api.post(
   bodyParser,
   createEntity('users', 'update'),
   userRoutes.update
+)
+
+// KnowledgeAreas
+// create
+api.post(
+  '/knowledgeAreas/',
+  bodyParser,
+  createEntity('knowledgeAreas', 'create'),
+  kaRoutes.create
+)
+
+// list
+api.get('/knowledgeAreas/', kaRoutes.list)
+
+// toggle active
+api.post(
+  '/knowledgeAreas/:id',
+  bodyParser,
+  createEntity('knowledgeAreas', 'update'),
+  kaRoutes.update
 )
 
 // api not found

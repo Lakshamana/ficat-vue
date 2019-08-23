@@ -1,42 +1,43 @@
-const User = require('../models/User')
+const KnowledgeArea = require('../models/KnowledgeArea')
 const HttpCodes = require('../httpCodes')
 const MessageCodes = require('../../shared/messageCodes')
 
 async function create(ctx) {
   const payload = ctx.request.body
-  const username = payload.username
-  const existingUser = await User.where({ username }).fetch()
-  if (existingUser) {
+  const code = payload.code
+  const existingKa = await KnowledgeArea.where({ code }).fetch()
+  if (existingKa) {
     ctx.throw(HttpCodes.BAD_REQUEST.code, HttpCodes.BAD_REQUEST.message, {
-      errCode: MessageCodes.error.errEntityAlreadyExist('user')
+      errCode: MessageCodes.error.errEntityAlreadyExist('knowledgeArea')
     })
     return
   }
   ctx.status = HttpCodes.OK.code
-  const newUser = await User.forge(payload).save()
-  ctx.set('Location', `/api/users/${username}`)
-  ctx.body = newUser
+  const newKnowledgeArea = await KnowledgeArea.forge(payload).save()
+  const id = newKnowledgeArea.id
+  ctx.set('Location', `/api/knowledgeAreas/${id}`)
+  ctx.body = newKnowledgeArea
 }
 
 async function list(ctx) {
-  ctx.body = await User.fetchAll()
+  ctx.body = await KnowledgeArea.fetchAll()
 }
 
 async function update(ctx) {
-  const username = ctx.params.username
+  const id = +ctx.params.id
   const payload = ctx.request.body
-  const user = await User.where({ username }).fetch()
-  if (user) {
+  const ka = await KnowledgeArea.where({ id }).fetch()
+  if (ka) {
     try {
-      await User.where({ username }).save(payload, {
+      await KnowledgeArea.where({ id }).save(payload, {
         patch: true
       })
+      ctx.body = ka
       ctx.status = HttpCodes.OK.code
-      ctx.body = user
     } catch (e) {
       ctx.throw(HttpCodes.INT_SRV_ERROR.code, HttpCodes.INT_SRV_ERROR.message, {
         error: {
-          errCode: MessageCodes.error.errorOnDbSave,
+          errCode: MessageCodes.error.errOnDbSave,
           rawErrorMessage: e
         }
       })
@@ -44,7 +45,7 @@ async function update(ctx) {
   } else {
     ctx.throw(HttpCodes.BAD_REQUEST.code, HttpCodes.BAD_REQUEST.message, {
       error: {
-        errCode: MessageCodes.error.errEntityDoesNotExist('user')
+        errCode: MessageCodes.error.errEntityDoesNotExist('knowledgeArea')
       }
     })
   }

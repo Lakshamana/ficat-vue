@@ -2,8 +2,13 @@ const messages = {
   info: {},
   message: {},
   error: {
-    userAlreadyExists: 'userAlreadyExists',
-    errorOnDbSave: 'errorOnDbSave',
+    errEntityAlreadyExist(entityName) {
+      return `${entityName}AlreadyExist`
+    },
+    errEntityDoesNotExist(entityName) {
+      return `${entityName}DoesNotExist`
+    },
+    errOnDbSave: 'errOnDbSave',
     invalidFields: 'invalidFields',
     missingFields: 'missingFields',
     errNotFound: 'errNotFound'
