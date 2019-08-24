@@ -1,4 +1,6 @@
 const { knex } = require('../server/db')
+// const User = require('../server/models/User')
+// const KnowledgeArea = require('../server/models/KnowledgeArea')
 
 const models = {
   users: require('../server/models/User'),
@@ -14,13 +16,13 @@ const seeds = {
  * Cria seeds com base em nome de uma entidade
  * @param {String} entityName === tableName
  */
-async function createSeeds(entityName) {
+function createSeeds(entityName) {
   const model = models[entityName]
   const data = seeds[entityName]
-  await knex.transaction(trx => {
+  return knex.transaction(trx => {
     return Promise.all(
       data.map(payload =>
-        model.forge(payload).save({
+        model.forge({}).save(payload, {
           transacting: trx
         })
       )
@@ -32,8 +34,9 @@ async function createSeeds(entityName) {
  * Limpa uma tabela da base de dados
  * @param {String} tableName
  */
-async function wipeTable(tableName) {
-  await models[tableName].destroy()
+function wipeTable(tableName) {
+  const model = models[tableName]
+  return model.where('id', '!=', '0').destroy()
 }
 
 module.exports = { createSeeds, wipeTable }

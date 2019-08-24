@@ -18,7 +18,6 @@ function createOrUpdateEntity(entityName, operation) {
   return (ctx, next) => {
     const payload = ctx.request.body
     const validation = validatePayload(payload, useOperation[entityName])
-    console.log(validation)
     if (validation && validation.valid) {
       return next()
     } else {
