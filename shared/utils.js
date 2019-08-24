@@ -41,6 +41,10 @@ function select(data, attrList, defaults = {}) {
  *
  * @param {Array} validFields: lista de atributos do objeto
  * válidos e pode conter mais campos que data. Invalida o payload caso vazio.
+ * (default: [])
+ *
+ * @param {Array} optional: indica quais campos válidos são opcionais
+ * (default: [])
  *
  * @returns {Object}
  *  { valid: `true` -> `data` válido | `false` caso contrário,
@@ -49,22 +53,21 @@ function select(data, attrList, defaults = {}) {
  *
  * @see utils.spec.js (/test/shared/ para casos de teste)
  */
-function validatePayload(data, validFields = [], optional = false) {
+function validatePayload(data, validFields = [], optional = []) {
   const result = { valid: false }
-  if (data && typeof data === 'object') {
+  const dataObj = Object.assign({}, data) // Evitar problemas com hasOwnProperty
+  if (dataObj && typeof dataObj === 'object') {
     // data precisa ter alguns campos
-    if (!optional) {
-      for (const f of validFields) {
-        if (!Object.keys(data).includes(f)) {
-          if (!result.missingFields) result.missingFields = []
-          result.missingFields.push(f)
-        }
+    for (const f of validFields) {
+      if (!Object.keys(dataObj).includes(f) && !optional.includes(f)) {
+        if (!result.missingFields) result.missingFields = []
+        result.missingFields.push(f)
       }
     }
-    // data não deve ter alguns campos
-    for (const d in data) {
+    // dataObj não deve ter alguns campos
+    for (const d in dataObj) {
       // hasOwnProperty - não deve haver herança de objetos
-      if (!data.hasOwnProperty(d) || !validFields.includes(d)) {
+      if (!dataObj.hasOwnProperty(d) || !validFields.includes(d)) {
         if (!result.invalidFields) result.invalidFields = []
         result.invalidFields.push(d)
       }

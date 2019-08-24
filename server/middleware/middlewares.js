@@ -38,10 +38,11 @@ function createOrUpdateEntity(entityName, operation) {
 }
 
 function paginatedEntity(ctx, next) {
-  const query = Object.assign({}, ctx.query) // Evitar problemas com hasOwnProperty
+  const query = ctx.query
   // Se existe uma query
   if (Object.keys(query).length) {
-    const validation = validatePayload(query, ['page', 'size'], true)
+    const fields = ['page', 'size'] // atributos opcionais
+    const validation = validatePayload(query, fields, fields)
     const { page = 1, size = process.env.API_PAGE_SIZE } = query
     if (validation.valid) {
       ctx.state.pagination = { size, page }
