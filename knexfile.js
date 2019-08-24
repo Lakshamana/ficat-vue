@@ -39,6 +39,14 @@ const obj = {
     useNullAsDefault
   },
 
+  test: {
+    ...db,
+    migrations,
+    seeds,
+    useNullAsDefault,
+    ...(db === sqliteConnection && { connection: ':memory:' })
+  },
+
   production: {
     ...connection,
     migrations,
