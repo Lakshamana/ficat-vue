@@ -48,16 +48,8 @@ function paginatedEntity(ctx, next) {
       ctx.state.pagination = { size, page }
     } else {
       ctx.status = HttpCodes.BAD_REQUEST.code
-      const errorMessages = []
-      for (const i in validation) {
-        if (i === 'valid') continue
-        errorMessages.push({
-          errCode: MessageCodes.error[i],
-          fields: `${validation[i].join(', ')}`
-        })
-      }
       ctx.throw(HttpCodes.BAD_REQUEST.code, HttpCodes.BAD_REQUEST.message, {
-        errors: errorMessages
+        errors: validation.invalidFields
       })
     }
   } else ctx.state.pagination = false
