@@ -91,5 +91,5 @@ sw.*
 *.swp
 
 # db
-dev.sqlite3
-test.sqlite3
+*.sqlite3
+*.sqlite3-journal
