@@ -8,7 +8,7 @@ exports.up = function(knex) {
     table
       .boolean('active')
       .notNullable()
-      .defaultTo(false)
+      .defaultTo(true)
     table.string('password_digest').notNullable()
   })
 }
