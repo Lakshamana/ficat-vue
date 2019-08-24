@@ -28,7 +28,7 @@ describe('prefix /api/users', () => {
     await wipeTable('users')
   }, 100000)
 
-  test('GET /', async done => {
+  test('List all users', async done => {
     const response = await chai.request(server.listen()).get('/api/users')
     expect(response.status).toBe(HttpCodes.OK.code)
     expect(response.type).toBe('application/json')
@@ -36,11 +36,131 @@ describe('prefix /api/users', () => {
     done()
   })
 
-  test('GET /', async done => {
-    const response = await chai.request(server.listen()).get('/api/users')
+  test('Create new user', async done => {
+    const payload = {
+      username: 'person',
+      password: 'person',
+      active: true
+    }
+    const response = await chai
+      .request(server.listen())
+      .post('/api/users')
+      .send(payload)
     expect(response.status).toBe(HttpCodes.OK.code)
     expect(response.type).toBe('application/json')
     expect(response.body).toBeDefined()
+    expect(response.body.id).toBeDefined()
+    expect(response.body.username).toBe(payload.username)
+    expect(response.body.active).toBe(payload.active)
+    expect(response.body.password).toBe(undefined)
+    done()
+  })
+
+  test('Create new user fields written wrong', async done => {
+    const payload = {
+      username: 'person',
+      passwd: 'fancy-password', // Should be password
+      active: false
+    }
+    const response = await chai
+      .request(server.listen())
+      .post('/api/users')
+      .send(payload)
+    expect(response.status).toBe(HttpCodes.BAD_REQUEST.code)
+    expect(response.type).toBe('application/json')
+    expect(response.body).toBe({
+      message: 'BAD_REQUEST',
+      errors: [
+        {
+          errCode: 'missingFields',
+          fields: 'password'
+        },
+        {
+          errCode: 'invalidFields',
+          fields: 'passwd'
+        }
+      ]
+    })
+    done()
+  })
+
+  test('Create new user missing fields', async done => {
+    // Should have `username` property
+    const payload = {
+      active: true,
+      password: 'fancy-password'
+    }
+    const response = await chai
+      .request(server.listen())
+      .post('/api/users')
+      .send(payload)
+    expect(response.status).toBe(HttpCodes.BAD_REQUEST.code)
+    expect(response.type).toBe('application/json')
+    expect(response.body).toBe({
+      message: 'BAD_REQUEST',
+      errors: [
+        {
+          errCode: 'missingFields',
+          fields: 'username'
+        }
+      ]
+    })
+    done()
+  })
+
+  test('Create new user invalid fields', async done => {
+    const payload = {
+      username: 'Guilherme',
+      active: true,
+      password: 'fancy-password',
+      invalidField: 'invalidValue'
+    }
+    const response = await chai
+      .request(server.listen())
+      .post('/api/users')
+      .send(payload)
+    expect(response.status).toBe(HttpCodes.BAD_REQUEST.code)
+    expect(response.type).toBe('application/json')
+    expect(response.body).toBe({
+      message: 'BAD_REQUEST',
+      errors: [
+        {
+          errCode: 'missingFields',
+          fields: 'invalidField'
+        }
+      ]
+    })
+    done()
+  })
+
+  test('Try to create existing user', async done => {
+    const firstUser = {
+      username: 'Guilherme',
+      active: true,
+      password: 'fancy-password'
+    }
+    const userCreationToFail = {
+      username: 'Guilherme',
+      active: true,
+      password: 'another-password'
+    }
+
+    // Creating first user
+    await chai
+      .request(server.listen())
+      .post('/api/users')
+      .send(firstUser)
+
+    const response = await chai
+      .request(server.listen())
+      .post('/api/users')
+      .send(userCreationToFail)
+    expect(response.status).toBe(HttpCodes.BAD_REQUEST.code)
+    expect(response.type).toBe('application/json')
+    expect(response.body).toBe({
+      message: 'BAD_REQUEST',
+      errCode: 'userAlreadyExist'
+    })
     done()
   })
 })

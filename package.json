@@ -18,7 +18,7 @@
     "makedb": "npm run migrate && npm run seed",
     "remakedb": "if test -f dev.sqlite3; then rm dev.sqlite3; fi; npm run migrate && npm run seed",
     "lint": "eslint --ext .js,.vue --ignore-path .gitignore .",
-    "test": "jest --maxWorkers=4"
+    "test": "jest --maxWorkers=4 --force-exit"
   },
   "dependencies": {
     "@nuxtjs/axios": "^5.3.6",
