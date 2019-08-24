@@ -3,7 +3,10 @@ const HttpCodes = require('../httpCodes')
 const MessageCodes = require('../../shared/messageCodes')
 
 const createEntityValidFields = {
-  users: ['username', 'password', 'active'],
+  users: {
+    mandatory: ['username', 'password', 'active'],
+    optional: []
+  },
   knowledgeAreas: ['code', 'description']
 }
 
