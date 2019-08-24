@@ -68,7 +68,7 @@ describe('prefix /api/users', () => {
       .send(payload)
     expect(response.status).toBe(HttpCodes.BAD_REQUEST.code)
     expect(response.type).toBe('application/json')
-    expect(response.body).toBe({
+    expect(response.body).toStrictEqual({
       message: 'BAD_REQUEST',
       errors: [
         {
@@ -96,7 +96,7 @@ describe('prefix /api/users', () => {
       .send(payload)
     expect(response.status).toBe(HttpCodes.BAD_REQUEST.code)
     expect(response.type).toBe('application/json')
-    expect(response.body).toBe({
+    expect(response.body).toStrictEqual({
       message: 'BAD_REQUEST',
       errors: [
         {
@@ -121,11 +121,11 @@ describe('prefix /api/users', () => {
       .send(payload)
     expect(response.status).toBe(HttpCodes.BAD_REQUEST.code)
     expect(response.type).toBe('application/json')
-    expect(response.body).toBe({
+    expect(response.body).toStrictEqual({
       message: 'BAD_REQUEST',
       errors: [
         {
-          errCode: 'missingFields',
+          errCode: 'invalidFields',
           fields: 'invalidField'
         }
       ]
@@ -139,6 +139,7 @@ describe('prefix /api/users', () => {
       active: true,
       password: 'fancy-password'
     }
+
     const userCreationToFail = {
       username: 'Guilherme',
       active: true,
@@ -157,7 +158,7 @@ describe('prefix /api/users', () => {
       .send(userCreationToFail)
     expect(response.status).toBe(HttpCodes.BAD_REQUEST.code)
     expect(response.type).toBe('application/json')
-    expect(response.body).toBe({
+    expect(response.body).toStrictEqual({
       message: 'BAD_REQUEST',
       errCode: 'userAlreadyExist'
     })
