@@ -63,7 +63,6 @@ async function update(ctx) {
   }
 }
 
-// needs to test
 async function del(ctx) {
   const id = +ctx.params.id
   const existingKa = await KnowledgeArea.where({ id }).fetch()
