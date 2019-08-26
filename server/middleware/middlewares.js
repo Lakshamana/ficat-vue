@@ -4,15 +4,26 @@ const MessageCodes = require('../../shared/messageCodes')
 
 const createEntityValidFields = {
   users: {
-    mandatory: ['username', 'password', 'active'],
-    optional: []
+    mandatory: ['username', 'password', 'active']
   },
-  knowledgeAreas: ['code', 'description']
+  knowledgeAreas: {
+    mandatory: ['code', 'description']
+  },
+  courses: {
+    mandatory: ['name', 'type', 'unity_id']
+  }
 }
 
 const updateEntityValidFields = {
-  users: ['active'],
-  knowledgeAreas: ['description']
+  users: {
+    mandatory: ['active']
+  },
+  knowledgeAreas: {
+    mandatory: ['description']
+  },
+  courses: {
+    mandatory: ['name', 'type', 'unity_id']
+  }
 }
 
 function createOrUpdateEntity(entityName, operation) {
