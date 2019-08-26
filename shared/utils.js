@@ -40,7 +40,8 @@ function select(data, attrList, defaults = {}) {
  * @param {Object} data: carga útil de entrada (payload)
  *
  * @param {Array} validFields: lista de atributos do objeto
- * válidos e pode conter mais campos que data. Invalida o payload caso vazio.
+ * válidos e deve conter todos os dados possíveis para o payload,
+ * obrigatórios ou opcionais. Invalida o payload caso vazio.
  * (default: [])
  *
  * @param {Array} optional: indica quais campos válidos são opcionais
