@@ -38,10 +38,10 @@ async function list(ctx) {
 async function update(ctx) {
   const id = +ctx.params.id
   const payload = ctx.request.body
-  const ka = await KnowledgeArea.where({ id }).fetch()
+  let ka = await KnowledgeArea.where({ id }).fetch()
   if (ka) {
     try {
-      await KnowledgeArea.where({ id }).save(payload, {
+      ka = await KnowledgeArea.where({ id }).save(payload, {
         patch: true
       })
       ctx.body = ka
