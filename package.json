@@ -15,8 +15,8 @@
     "seed": "knex seed:run",
     "migrate:make": "knex migrate:make",
     "migrate": "knex migrate:latest",
-    "remakedb": "if test -f dev.sqlite3; then rm dev.sqlite3; fi; npm run migrate && npm run seed",
-    "remakedb:test": "if test -f test.sqlite3; then rm test.sqlite3; fi; npm run migrate && npm run seed",
+    "makedb": "if test -f dev.sqlite3; then rm dev.sqlite3; fi; npm run migrate && npm run seed",
+    "makedb:test": "if test -f test.sqlite3; then rm test.sqlite3; fi; npm run migrate && npm run seed",
     "lint": "eslint --ext .js,.vue --ignore-path .gitignore .",
     "test": "jest --maxWorkers=4 --force-exit",
     "ci": "npm test && npm run lint"
