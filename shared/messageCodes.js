@@ -12,7 +12,7 @@ const messages = {
     invalidFields: 'invalidFields',
     missingFields: 'missingFields',
     errNotFound: 'errNotFound',
-    errEntityValidation: 'errEntityValidation'
+    errOnEntityValidation: 'errOnEntityValidation'
   },
   layout: {}
 }

@@ -69,7 +69,7 @@ describe('prefix /api/users', () => {
     expect(response.status).toBe(HttpCodes.BAD_REQUEST.code)
     expect(response.type).toBe('application/json')
     expect(response.body).toStrictEqual({
-      message: 'BAD_REQUEST',
+      message: 'errOnEntityValidation',
       errors: [
         {
           errCode: 'missingFields',
@@ -97,7 +97,7 @@ describe('prefix /api/users', () => {
     expect(response.status).toBe(HttpCodes.BAD_REQUEST.code)
     expect(response.type).toBe('application/json')
     expect(response.body).toStrictEqual({
-      message: 'BAD_REQUEST',
+      message: 'errOnEntityValidation',
       errors: [
         {
           errCode: 'missingFields',
@@ -122,7 +122,7 @@ describe('prefix /api/users', () => {
     expect(response.status).toBe(HttpCodes.BAD_REQUEST.code)
     expect(response.type).toBe('application/json')
     expect(response.body).toStrictEqual({
-      message: 'BAD_REQUEST',
+      message: 'errOnEntityValidation',
       errors: [
         {
           errCode: 'invalidFields',
@@ -159,8 +159,7 @@ describe('prefix /api/users', () => {
     expect(response.status).toBe(HttpCodes.BAD_REQUEST.code)
     expect(response.type).toBe('application/json')
     expect(response.body).toStrictEqual({
-      message: 'BAD_REQUEST',
-      errCode: 'userAlreadyExist'
+      message: 'userAlreadyExist'
     })
     done()
   })

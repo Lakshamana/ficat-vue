@@ -50,7 +50,7 @@ function createOrUpdateEntity(entityName, operation) {
       }
       ctx.throw(
         HttpCodes.BAD_REQUEST.code,
-        MessageCodes.error.errEntityValidation,
+        MessageCodes.error.errOnEntityValidation,
         {
           errors: errorMessages
         }
@@ -72,7 +72,7 @@ function paginatedEntity(ctx, next) {
       ctx.status = HttpCodes.BAD_REQUEST.code
       ctx.throw(
         HttpCodes.BAD_REQUEST.code,
-        MessageCodes.error.errEntityValidation,
+        MessageCodes.error.errOnEntityValidation,
         {
           errors: validation.invalidFields
         }
