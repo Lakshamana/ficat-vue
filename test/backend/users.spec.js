@@ -152,6 +152,7 @@ describe('prefix /api/users', () => {
       .post('/api/users')
       .send(firstUser)
 
+    // Try to create another one with same username
     const response = await chai
       .request(server.listen())
       .post('/api/users')
@@ -160,6 +161,20 @@ describe('prefix /api/users', () => {
     expect(response.type).toBe('application/json')
     expect(response.body).toStrictEqual({
       message: 'userAlreadyExist'
+    })
+    done()
+  })
+
+  test('Empty payload', async done => {
+    const payload = {}
+    const response = await chai
+      .request(server.listen())
+      .post('/api/users')
+      .send(payload)
+    expect(response.status).toBe(HttpCodes.BAD_REQUEST.code)
+    expect(response.type).toBe('application/json')
+    expect(response.body).toStrictEqual({
+      message: 'errEmptyPayload'
     })
     done()
   })

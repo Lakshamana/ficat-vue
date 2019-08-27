@@ -15,6 +15,22 @@ describe('validatePayload', () => {
     done()
   })
 
+  test('Empty payload', done => {
+    const data = {}
+    const paramList = ['name', 'password', 'active']
+    const result = validatePayload(data, paramList)
+    expect(result).toEqual(undefined)
+    done()
+  })
+
+  test('Empty payload with all optional fields', done => {
+    const data = {}
+    const paramList = ['name', 'password', 'active']
+    const result = validatePayload(data, paramList, paramList)
+    expect(result).toEqual(undefined)
+    done()
+  })
+
   test('some fields are mandatory', done => {
     const data = {
       name: 'Brian Cohen',
