@@ -36,7 +36,7 @@ api.post(
 api.get('/users/', userRoutes.list)
 
 // toggle active
-api.post(
+api.put(
   '/users/:username',
   bodyParser,
   createOrUpdateEntity('users', 'update'),
@@ -59,7 +59,7 @@ api.post(
 api.get('/knowledgeAreas/', paginatedEntity, kaRoutes.list)
 
 // update
-api.post(
+api.put(
   '/knowledgeAreas/:id',
   bodyParser,
   createOrUpdateEntity('knowledgeAreas', 'update'),
@@ -85,7 +85,7 @@ api.post(
 api.get('/courses/', courseRoutes.list)
 
 // update
-api.post(
+api.put(
   '/courses/:id',
   bodyParser,
   createOrUpdateEntity('courses', 'update'),
@@ -111,7 +111,7 @@ api.post(
 api.get('/academicUnities/', acdUnitiesRoutes.list)
 
 // update
-api.post(
+api.put(
   '/academicUnities/:id',
   bodyParser,
   createOrUpdateEntity('academicUnities', 'update'),
