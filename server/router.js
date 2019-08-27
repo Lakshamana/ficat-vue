@@ -2,10 +2,7 @@ const Router = require('koa-router')
 const BodyParser = require('koa-body')
 
 const messageCodes = require('../shared/messageCodes')
-const {
-  createOrUpdateEntity,
-  paginatedEntity
-} = require('./middleware/middlewares')
+const { validator, paginatedEntity } = require('./middleware/middlewares')
 const frontend = require('./routes/frontend')
 const HttpCodes = require('./httpCodes')
 
@@ -25,46 +22,26 @@ const bodyParser = BodyParser()
  */
 
 // create
-api.post(
-  '/users/',
-  bodyParser,
-  createOrUpdateEntity('users', 'create'),
-  userRoutes.create
-)
+api.post('/users/', bodyParser, validator, userRoutes.create)
 
 // list
 api.get('/users/', userRoutes.list)
 
 // toggle active
-api.put(
-  '/users/:username',
-  bodyParser,
-  createOrUpdateEntity('users', 'update'),
-  userRoutes.update
-)
+api.put('/users/:username', bodyParser, validator, userRoutes.update)
 
 /**
  * KnowledgeAreas
  */
 
 // create
-api.post(
-  '/knowledgeAreas/',
-  bodyParser,
-  createOrUpdateEntity('knowledgeAreas', 'create'),
-  kaRoutes.create
-)
+api.post('/knowledgeAreas/', bodyParser, validator, kaRoutes.create)
 
 // list
 api.get('/knowledgeAreas/', paginatedEntity, kaRoutes.list)
 
 // update
-api.put(
-  '/knowledgeAreas/:id',
-  bodyParser,
-  createOrUpdateEntity('knowledgeAreas', 'update'),
-  kaRoutes.update
-)
+api.put('/knowledgeAreas/:id', bodyParser, validator, kaRoutes.update)
 
 // delete
 api.del('/knowledgeAreas/:id', kaRoutes.del)
@@ -74,23 +51,13 @@ api.del('/knowledgeAreas/:id', kaRoutes.del)
  */
 
 // create
-api.post(
-  '/courses/',
-  bodyParser,
-  createOrUpdateEntity('courses', 'create'),
-  courseRoutes.create
-)
+api.post('/courses/', bodyParser, validator, courseRoutes.create)
 
 // list
 api.get('/courses/', courseRoutes.list)
 
 // update
-api.put(
-  '/courses/:id',
-  bodyParser,
-  createOrUpdateEntity('courses', 'update'),
-  courseRoutes.update
-)
+api.put('/courses/:id', bodyParser, validator, courseRoutes.update)
 
 // delete
 api.del('/courses/:id', courseRoutes.del)
@@ -100,23 +67,13 @@ api.del('/courses/:id', courseRoutes.del)
  */
 
 // create
-api.post(
-  '/academicUnities/',
-  bodyParser,
-  createOrUpdateEntity('academicUnities', 'create'),
-  acdUnitiesRoutes.create
-)
+api.post('/academicUnities/', bodyParser, validator, acdUnitiesRoutes.create)
 
 // list
 api.get('/academicUnities/', acdUnitiesRoutes.list)
 
 // update
-api.put(
-  '/academicUnities/:id',
-  bodyParser,
-  createOrUpdateEntity('academicUnities', 'update'),
-  acdUnitiesRoutes.update
-)
+api.put('/academicUnities/:id', bodyParser, validator, acdUnitiesRoutes.update)
 
 // delete
 api.del('/academicUnities/:id', acdUnitiesRoutes.del)

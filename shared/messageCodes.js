@@ -12,8 +12,9 @@ const messages = {
     invalidFields: 'invalidFields',
     missingFields: 'missingFields',
     errNotFound: 'errNotFound',
-    errOnEntityValidation: 'errOnEntityValidation',
-    errEmptyPayload: 'errEmptyPayload'
+    errOnPayloadValidation: 'errOnPayloadValidation',
+    errEmptyPayload: 'errEmptyPayload',
+    errOnAuth: 'errOnAuth'
   },
   layout: {}
 }

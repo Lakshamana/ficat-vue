@@ -1,77 +1,39 @@
 const { validatePayload } = require('../../shared/utils')
 const HttpCodes = require('../httpCodes')
 const MessageCodes = require('../../shared/messageCodes')
+const fields = require('../routeFieldsValidation')
 
-const createEntityValidFields = {
-  users: {
-    mandatory: ['username', 'password', 'active']
-  },
-  knowledgeAreas: {
-    mandatory: ['code', 'description']
-  },
-  courses: {
-    mandatory: ['name', 'program', 'type', 'unity_id'],
-    optional: ['program']
-  },
-  academicUnities: {
-    mandatory: ['name', 'acronym']
-  }
-}
-
-const updateEntityValidFields = {
-  users: {
-    mandatory: ['active']
-  },
-  knowledgeAreas: {
-    mandatory: ['description']
-  },
-  courses: {
-    mandatory: ['name', 'program', 'type', 'unity_id'],
-    optional: ['name', 'program', 'type', 'unity_id']
-  },
-  academicUnities: {
-    mandatory: ['name', 'acronym'],
-    optional: ['name', 'acronym']
-  }
-}
-
-function createOrUpdateEntity(entityName, operation) {
-  const useOperation =
-    operation === 'create' ? createEntityValidFields : updateEntityValidFields
-  return (ctx, next) => {
-    const payload = ctx.request.body
-    const validation = validatePayload(
-      payload,
-      useOperation[entityName].mandatory,
-      useOperation[entityName].optional
-    )
-    if (validation && validation.valid) {
-      return next()
-    } else {
-      // Validação vazia (undefined)
-      if (!validation) {
-        ctx.throw(
-          HttpCodes.BAD_REQUEST.code,
-          MessageCodes.error.errEmptyPayload
-        )
-      }
-      ctx.status = HttpCodes.BAD_REQUEST.code
-      const errorMessages = []
-      for (const i in validation) {
-        if (i === 'valid') continue
-        errorMessages.push({
-          errCode: MessageCodes.error[i],
-          fields: `${validation[i].join(', ')}`
-        })
-      }
-      ctx.throw(
-        HttpCodes.BAD_REQUEST.code,
-        MessageCodes.error.errOnEntityValidation,
-        {
-          errors: errorMessages
-        }
-      )
+function validator(ctx, next) {
+  const entityName = ctx.path.split('/')[2]
+  const method = ctx.method.toLowerCase()
+  const mandatory = fields[entityName][method].mandatory
+  const optional = fields[entityName][method].optional
+  const validation = validatePayload(ctx.request.body, mandatory, optional)
+  if (!validation && validation.valid) {
+    // Validação vazia (undefined)
+    if (!validation) {
+      ctx.throw(HttpCodes.BAD_REQUEST.code, MessageCodes.error.errEmptyPayload)
     }
+  } else if (validation.valid) {
+    return next()
+  } else {
+    // Validação não-vazia com erros
+    ctx.status = HttpCodes.BAD_REQUEST.code
+    const errorMessages = []
+    for (const i in validation) {
+      if (i === 'valid') continue
+      errorMessages.push({
+        errCode: MessageCodes.error[i],
+        fields: `${validation[i].join(', ')}`
+      })
+    }
+    ctx.throw(
+      HttpCodes.BAD_REQUEST.code,
+      MessageCodes.error.errOnEntityValidation,
+      {
+        errors: errorMessages
+      }
+    )
   }
 }
 
@@ -88,7 +50,7 @@ function paginatedEntity(ctx, next) {
       ctx.status = HttpCodes.BAD_REQUEST.code
       ctx.throw(
         HttpCodes.BAD_REQUEST.code,
-        MessageCodes.error.errOnEntityValidation,
+        MessageCodes.error.errOnPayloadValidation,
         {
           errors: validation.invalidFields
         }
@@ -106,4 +68,8 @@ function errorHandler(ctx, next) {
   })
 }
 
-module.exports = { createOrUpdateEntity, errorHandler, paginatedEntity }
+function auth(ctx, next) {
+  // const { username, payload } = ctx.request.body
+}
+
+module.exports = { errorHandler, paginatedEntity, auth, validator }
