@@ -7,9 +7,10 @@ async function create(ctx) {
   const code = payload.code
   const existingKa = await KnowledgeArea.where({ code }).fetch()
   if (existingKa) {
-    ctx.throw(HttpCodes.BAD_REQUEST.code, HttpCodes.BAD_REQUEST.message, {
-      errCode: MessageCodes.error.errEntityAlreadyExist('knowledgeArea')
-    })
+    ctx.throw(
+      HttpCodes.BAD_REQUEST.code,
+      MessageCodes.error.errEntityAlreadyExist('knowledgeArea')
+    )
     return
   }
   ctx.status = HttpCodes.OK.code
@@ -47,19 +48,13 @@ async function update(ctx) {
       ctx.body = ka
       ctx.status = HttpCodes.OK.code
     } catch (e) {
-      ctx.throw(HttpCodes.INT_SRV_ERROR.code, HttpCodes.INT_SRV_ERROR.message, {
-        error: {
-          errCode: MessageCodes.error.errOnDbSave,
-          rawErrorMessage: e
-        }
-      })
+      ctx.throw(HttpCodes.INT_SRV_ERROR.code, MessageCodes.error.errOnDbSave)
     }
   } else {
-    ctx.throw(HttpCodes.BAD_REQUEST.code, HttpCodes.BAD_REQUEST.message, {
-      error: {
-        errCode: MessageCodes.error.errEntityDoesNotExist('knowledgeArea')
-      }
-    })
+    ctx.throw(
+      HttpCodes.BAD_REQUEST.code,
+      MessageCodes.error.errEntityDoesNotExist('knowledgeArea')
+    )
   }
 }
 
@@ -67,18 +62,17 @@ async function del(ctx) {
   const id = +ctx.params.id
   const existingKa = await KnowledgeArea.where({ id }).fetch()
   if (!existingKa) {
-    ctx.throw(HttpCodes.BAD_REQUEST.code, HttpCodes.BAD_REQUEST.message, {
-      errCode: MessageCodes.error.errEntityDoesNotExist('knowledgeArea')
-    })
+    ctx.throw(
+      HttpCodes.BAD_REQUEST.code,
+      MessageCodes.error.errEntityDoesNotExist('knowledgeArea')
+    )
     return
   }
   try {
     await KnowledgeArea.where({ id }).destroy()
     ctx.status = HttpCodes.OK.code
   } catch (e) {
-    ctx.throw(HttpCodes.BAD_REQUEST.code, HttpCodes.BAD_REQUEST.message, {
-      errCode: MessageCodes.error.errOnDbSave
-    })
+    ctx.throw(HttpCodes.BAD_REQUEST.code, MessageCodes.error.errOnDbSave)
   }
 }
 

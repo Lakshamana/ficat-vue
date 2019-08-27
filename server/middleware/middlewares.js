@@ -48,9 +48,13 @@ function createOrUpdateEntity(entityName, operation) {
           fields: `${validation[i].join(', ')}`
         })
       }
-      ctx.throw(HttpCodes.BAD_REQUEST.code, HttpCodes.BAD_REQUEST.message, {
-        errors: errorMessages
-      })
+      ctx.throw(
+        HttpCodes.BAD_REQUEST.code,
+        MessageCodes.error.errEntityValidation,
+        {
+          errors: errorMessages
+        }
+      )
     }
   }
 }
@@ -66,9 +70,13 @@ function paginatedEntity(ctx, next) {
       ctx.state.pagination = { size, page }
     } else {
       ctx.status = HttpCodes.BAD_REQUEST.code
-      ctx.throw(HttpCodes.BAD_REQUEST.code, HttpCodes.BAD_REQUEST.message, {
-        errors: validation.invalidFields
-      })
+      ctx.throw(
+        HttpCodes.BAD_REQUEST.code,
+        MessageCodes.error.errEntityValidation,
+        {
+          errors: validation.invalidFields
+        }
+      )
     }
   } else ctx.state.pagination = false
   return next()

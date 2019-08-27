@@ -11,7 +11,8 @@ const messages = {
     errOnDbSave: 'errOnDbSave',
     invalidFields: 'invalidFields',
     missingFields: 'missingFields',
-    errNotFound: 'errNotFound'
+    errNotFound: 'errNotFound',
+    errEntityValidation: 'errEntityValidation'
   },
   layout: {}
 }

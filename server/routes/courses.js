@@ -12,9 +12,8 @@ async function create(ctx) {
     const id = newCourse.id
     ctx.set('Location', `/api/courses/${id}`)
   } catch (e) {
-    ctx.throw(HttpCodes.BAD_REQUEST.code, HttpCodes.BAD_REQUEST.message, {
+    ctx.throw(HttpCodes.BAD_REQUEST.code, MessageCodes.error.errOnDbSave, {
       error: {
-        errCode: MessageCodes.error.errOnDbSave,
         rawErrorMessage: e
       }
     })
@@ -37,19 +36,17 @@ async function update(ctx) {
       ctx.body = course
       ctx.status = HttpCodes.OK.code
     } catch (e) {
-      ctx.throw(HttpCodes.INT_SRV_ERROR.code, HttpCodes.INT_SRV_ERROR.message, {
+      ctx.throw(HttpCodes.INT_SRV_ERROR.code, MessageCodes.error.errOnDbSave, {
         error: {
-          errCode: MessageCodes.error.errOnDbSave,
           rawErrorMessage: e
         }
       })
     }
   } else {
-    ctx.throw(HttpCodes.BAD_REQUEST.code, HttpCodes.BAD_REQUEST.message, {
-      error: {
-        errCode: MessageCodes.error.errEntityDoesNotExist('Course')
-      }
-    })
+    ctx.throw(
+      HttpCodes.BAD_REQUEST.code,
+      MessageCodes.error.errEntityDoesNotExist('Course')
+    )
   }
 }
 
@@ -57,18 +54,17 @@ async function del(ctx) {
   const id = +ctx.params.id
   const existingCourse = await Course.where({ id }).fetch()
   if (!existingCourse) {
-    ctx.throw(HttpCodes.BAD_REQUEST.code, HttpCodes.BAD_REQUEST.message, {
-      errCode: MessageCodes.error.errEntityDoesNotExist('Course')
-    })
+    ctx.throw(
+      HttpCodes.BAD_REQUEST.code,
+      MessageCodes.error.errEntityDoesNotExist('Course')
+    )
     return
   }
   try {
     await Course.where({ id }).destroy()
     ctx.status = HttpCodes.OK.code
   } catch (e) {
-    ctx.throw(HttpCodes.BAD_REQUEST.code, HttpCodes.BAD_REQUEST.message, {
-      errCode: MessageCodes.error.errOnDbSave
-    })
+    ctx.throw(HttpCodes.BAD_REQUEST.code, MessageCodes.error.errOnDbSave)
   }
 }
 

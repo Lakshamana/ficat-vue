@@ -7,9 +7,10 @@ async function create(ctx) {
   const username = payload.username
   const existingUser = await User.where({ username }).fetch()
   if (existingUser) {
-    ctx.throw(HttpCodes.BAD_REQUEST.code, HttpCodes.BAD_REQUEST.message, {
-      errCode: MessageCodes.error.errEntityAlreadyExist('user')
-    })
+    ctx.throw(
+      HttpCodes.BAD_REQUEST.code,
+      MessageCodes.error.errEntityAlreadyExist('user')
+    )
     return
   }
   ctx.status = HttpCodes.OK.code
@@ -34,19 +35,17 @@ async function update(ctx) {
       ctx.status = HttpCodes.OK.code
       ctx.body = user
     } catch (e) {
-      ctx.throw(HttpCodes.INT_SRV_ERROR.code, HttpCodes.INT_SRV_ERROR.message, {
+      ctx.throw(HttpCodes.INT_SRV_ERROR.code, MessageCodes.error.errOnDbSave, {
         error: {
-          errCode: MessageCodes.error.errorOnDbSave,
           rawErrorMessage: e
         }
       })
     }
   } else {
-    ctx.throw(HttpCodes.BAD_REQUEST.code, HttpCodes.BAD_REQUEST.message, {
-      error: {
-        errCode: MessageCodes.error.errEntityDoesNotExist('user')
-      }
-    })
+    ctx.throw(
+      HttpCodes.BAD_REQUEST.code,
+      MessageCodes.error.errEntityDoesNotExist('user')
+    )
   }
 }
 
