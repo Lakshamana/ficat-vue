@@ -11,6 +11,7 @@ exports.up = function(knex) {
       .notNullable()
       .defaultTo('graduation')
     table.integer('unity_id').unsigned()
+    table.foreign('unity_id').references('academicUnities.id')
   })
 }
 

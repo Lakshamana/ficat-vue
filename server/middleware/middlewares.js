@@ -10,7 +10,11 @@ const createEntityValidFields = {
     mandatory: ['code', 'description']
   },
   courses: {
-    mandatory: ['name', 'type', 'unity_id']
+    mandatory: ['name', 'program', 'type', 'unity_id'],
+    optional: ['program']
+  },
+  academicUnities: {
+    mandatory: ['name', 'acronym']
   }
 }
 
@@ -22,7 +26,11 @@ const updateEntityValidFields = {
     mandatory: ['description']
   },
   courses: {
-    mandatory: ['name', 'type', 'unity_id']
+    mandatory: ['name', 'program', 'type', 'unity_id'],
+    optional: ['name', 'program', 'type', 'unity_id']
+  },
+  academicUnities: {
+    mandatory: ['name']
   }
 }
 
