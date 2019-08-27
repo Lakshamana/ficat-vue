@@ -37,7 +37,10 @@ function select(data, attrList, defaults = {}) {
  * Valida atributos de um dado objeto de entrada,
  * com base em uma lista dos atributos do mesmo.
  *
- * @param {Object} data: carga útil de entrada (payload)
+ * @param {Object} data: carga útil de entrada (payload).
+ * Valores de objeto vazio, não-objeto ou undefined, fazem
+ * com que a função retorne undefined. Isto pode ser utilizado
+ * para invalidar o payload.
  *
  * @param {Array} validFields: lista de atributos do objeto
  * válidos e deve conter todos os dados possíveis para o payload,
@@ -57,7 +60,7 @@ function select(data, attrList, defaults = {}) {
 function validatePayload(data, validFields = [], optional = []) {
   const result = { valid: false }
   const dataObj = Object.assign({}, data) // Evitar problemas com hasOwnProperty
-  if (dataObj && typeof dataObj === 'object') {
+  if (dataObj && typeof dataObj === 'object' && Object.keys(dataObj).length) {
     // data precisa ter alguns campos
     for (const f of validFields) {
       if (!Object.keys(dataObj).includes(f) && !optional.includes(f)) {
