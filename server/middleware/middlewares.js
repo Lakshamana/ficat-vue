@@ -30,7 +30,8 @@ const updateEntityValidFields = {
     optional: ['name', 'program', 'type', 'unity_id']
   },
   academicUnities: {
-    mandatory: ['name']
+    mandatory: ['name', 'acronym'],
+    optional: ['name', 'acronym']
   }
 }
 
@@ -47,6 +48,13 @@ function createOrUpdateEntity(entityName, operation) {
     if (validation && validation.valid) {
       return next()
     } else {
+      // Validação vazia (undefined)
+      if (!validation) {
+        ctx.throw(
+          HttpCodes.BAD_REQUEST.code,
+          MessageCodes.error.errEmptyPayload
+        )
+      }
       ctx.status = HttpCodes.BAD_REQUEST.code
       const errorMessages = []
       for (const i in validation) {
