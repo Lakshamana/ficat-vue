@@ -12,6 +12,7 @@ const HttpCodes = require('./httpCodes')
 const userRoutes = require('./routes/users')
 const kaRoutes = require('./routes/knowledgeAreas')
 const courseRoutes = require('./routes/courses')
+const acdUnitiesRoutes = require('./routes/academicUnities')
 
 const router = new Router()
 const api = new Router({ prefix: '/api' })
@@ -93,6 +94,32 @@ api.post(
 
 // delete
 api.del('/courses/:id', courseRoutes.del)
+
+/**
+ * AcademicUnities
+ */
+
+// create
+api.post(
+  '/academicUnities/',
+  bodyParser,
+  createOrUpdateEntity('academicUnities', 'create'),
+  acdUnitiesRoutes.create
+)
+
+// list
+api.get('/academicUnities/', acdUnitiesRoutes.list)
+
+// update
+api.post(
+  '/academicUnities/:id',
+  bodyParser,
+  createOrUpdateEntity('academicUnities', 'update'),
+  acdUnitiesRoutes.update
+)
+
+// delete
+api.del('/academicUnities/:id', acdUnitiesRoutes.del)
 
 // api not found
 api.use('/*', ctx => {
