@@ -21,7 +21,15 @@ async function create(ctx) {
 }
 
 async function list(ctx) {
-  ctx.body = await AcademicUnity.fetchAll()
+  try {
+    ctx.body = await AcademicUnity.fetchAll()
+  } catch (e) {
+    ctx.throw(HttpCodes.BAD_REQUEST.code, 'DbError', {
+      error: {
+        rawErrorMessage: e
+      }
+    })
+  }
 }
 
 async function update(ctx) {

@@ -22,18 +22,26 @@ async function create(ctx) {
 
 async function list(ctx) {
   const pagination = ctx.state.pagination
-  if (pagination) {
-    const { page, size } = pagination
-    const result = await KnowledgeArea.fetchPage({
-      pageSize: size,
-      page
+  try {
+    if (pagination) {
+      const { page, size } = pagination
+      const result = await KnowledgeArea.fetchPage({
+        pageSize: size,
+        page
+      })
+      ctx.set('Pagination-Row-Count', result.pagination.rowCount)
+      ctx.set('Pagination-Page-Count', result.pagination.pageCount)
+      ctx.set('Pagination-Page', result.pagination.page)
+      ctx.set('Pagination-Page-Size', result.pagination.pageSize)
+      ctx.body = result
+    } else ctx.body = await KnowledgeArea.fetchAll()
+  } catch (e) {
+    ctx.throw(HttpCodes.BAD_REQUEST.code, 'DbError', {
+      error: {
+        rawErrorMessage: e
+      }
     })
-    ctx.set('Pagination-Row-Count', result.pagination.rowCount)
-    ctx.set('Pagination-Page-Count', result.pagination.pageCount)
-    ctx.set('Pagination-Page', result.pagination.page)
-    ctx.set('Pagination-Page-Size', result.pagination.pageSize)
-    ctx.body = result
-  } else ctx.body = await KnowledgeArea.fetchAll()
+  }
 }
 
 async function update(ctx) {
