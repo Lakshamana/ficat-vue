@@ -8,12 +8,12 @@ async function create(ctx) {
   const existingKa = await KnowledgeArea.where({ code }).fetch()
   if (existingKa) {
     ctx.throw(
-      HttpCodes.BAD_REQUEST.code,
+      HttpCodes.BAD_REQUEST,
       MessageCodes.error.errEntityAlreadyExist('knowledgeArea')
     )
     return
   }
-  ctx.status = HttpCodes.OK.code
+  ctx.status = HttpCodes.OK
   const newKnowledgeArea = await KnowledgeArea.forge(payload).save()
   const id = newKnowledgeArea.id
   ctx.set('Location', `/api/knowledgeAreas/${id}`)
@@ -36,7 +36,7 @@ async function list(ctx) {
       ctx.body = result
     } else ctx.body = await KnowledgeArea.fetchAll()
   } catch (e) {
-    ctx.throw(HttpCodes.BAD_REQUEST.code, 'DbError', {
+    ctx.throw(HttpCodes.BAD_REQUEST, 'DbError', {
       error: {
         rawErrorMessage: e
       }
@@ -54,13 +54,13 @@ async function update(ctx) {
         patch: true
       })
       ctx.body = ka
-      ctx.status = HttpCodes.OK.code
+      ctx.status = HttpCodes.OK
     } catch (e) {
-      ctx.throw(HttpCodes.INT_SRV_ERROR.code, MessageCodes.error.errOnDbSave)
+      ctx.throw(HttpCodes.INT_SRV_ERROR, MessageCodes.error.errOnDbSave)
     }
   } else {
     ctx.throw(
-      HttpCodes.BAD_REQUEST.code,
+      HttpCodes.BAD_REQUEST,
       MessageCodes.error.errEntityDoesNotExist('knowledgeArea')
     )
   }
@@ -71,16 +71,16 @@ async function del(ctx) {
   const existingKa = await KnowledgeArea.where({ id }).fetch()
   if (!existingKa) {
     ctx.throw(
-      HttpCodes.BAD_REQUEST.code,
+      HttpCodes.BAD_REQUEST,
       MessageCodes.error.errEntityDoesNotExist('knowledgeArea')
     )
     return
   }
   try {
     await KnowledgeArea.where({ id }).destroy()
-    ctx.status = HttpCodes.OK.code
+    ctx.status = HttpCodes.OK
   } catch (e) {
-    ctx.throw(HttpCodes.BAD_REQUEST.code, MessageCodes.error.errOnDbSave)
+    ctx.throw(HttpCodes.BAD_REQUEST, MessageCodes.error.errOnDbSave)
   }
 }
 

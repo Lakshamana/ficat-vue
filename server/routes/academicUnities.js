@@ -4,15 +4,15 @@ const MessageCodes = require('../../shared/messageCodes')
 
 async function create(ctx) {
   const payload = ctx.request.body
-  ctx.status = HttpCodes.OK.code
+  ctx.status = HttpCodes.OK
   try {
     const newAcademicUnity = await AcademicUnity.forge(payload).save()
     ctx.body = newAcademicUnity
-    ctx.status = HttpCodes.OK.code
+    ctx.status = HttpCodes.OK
     const id = newAcademicUnity.id
     ctx.set('Location', `/api/academicUnities/${id}`)
   } catch (e) {
-    ctx.throw(HttpCodes.BAD_REQUEST.code, MessageCodes.error.errOnDbSave, {
+    ctx.throw(HttpCodes.BAD_REQUEST, MessageCodes.error.errOnDbSave, {
       error: {
         rawErrorMessage: e
       }
@@ -24,7 +24,7 @@ async function list(ctx) {
   try {
     ctx.body = await AcademicUnity.fetchAll()
   } catch (e) {
-    ctx.throw(HttpCodes.BAD_REQUEST.code, 'DbError', {
+    ctx.throw(HttpCodes.BAD_REQUEST, 'DbError', {
       error: {
         rawErrorMessage: e
       }
@@ -42,9 +42,9 @@ async function update(ctx) {
         patch: true
       })
       ctx.body = academicUnity
-      ctx.status = HttpCodes.OK.code
+      ctx.status = HttpCodes.OK
     } catch (e) {
-      ctx.throw(HttpCodes.INT_SRV_ERROR.code, MessageCodes.error.errOnDbSave, {
+      ctx.throw(HttpCodes.INT_SRV_ERROR, MessageCodes.error.errOnDbSave, {
         error: {
           rawErrorMessage: e
         }
@@ -52,7 +52,7 @@ async function update(ctx) {
     }
   } else {
     ctx.throw(
-      HttpCodes.BAD_REQUEST.code,
+      HttpCodes.BAD_REQUEST,
       MessageCodes.error.errEntityDoesNotExist('AcademicUnity')
     )
   }
@@ -63,16 +63,16 @@ async function del(ctx) {
   const existingAcademicUnity = await AcademicUnity.where({ id }).fetch()
   if (!existingAcademicUnity) {
     ctx.throw(
-      HttpCodes.BAD_REQUEST.code,
+      HttpCodes.BAD_REQUEST,
       MessageCodes.error.errEntityDoesNotExist('AcademicUnity')
     )
     return
   }
   try {
     await AcademicUnity.where({ id }).destroy()
-    ctx.status = HttpCodes.OK.code
+    ctx.status = HttpCodes.OK
   } catch (e) {
-    ctx.throw(HttpCodes.BAD_REQUEST.code, MessageCodes.error.errOnDbSave)
+    ctx.throw(HttpCodes.BAD_REQUEST, MessageCodes.error.errOnDbSave)
   }
 }
 

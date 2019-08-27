@@ -1,22 +1,7 @@
 module.exports = {
-  OK: {
-    code: 200,
-    message: 'OK'
-  },
-  NOT_FOUND: {
-    code: 404,
-    message: 'NOT_FOUND'
-  },
-  FORBIDDEN: {
-    code: 403,
-    message: 'FORBIDDEN'
-  },
-  BAD_REQUEST: {
-    code: 400,
-    message: 'BAD_REQUEST'
-  },
-  INT_SRV_ERROR: {
-    code: 500,
-    message: 'INTERNAL_SERVER_ERROR'
-  }
+  OK: 200,
+  NOT_FOUND: 404,
+  FORBIDDEN: 403,
+  BAD_REQUEST: 400,
+  INT_SRV_ERROR: 500
 }

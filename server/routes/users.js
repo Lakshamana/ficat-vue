@@ -8,12 +8,12 @@ async function create(ctx) {
   const existingUser = await User.where({ username }).fetch()
   if (existingUser) {
     ctx.throw(
-      HttpCodes.BAD_REQUEST.code,
+      HttpCodes.BAD_REQUEST,
       MessageCodes.error.errEntityAlreadyExist('user')
     )
     return
   }
-  ctx.status = HttpCodes.OK.code
+  ctx.status = HttpCodes.OK
   const newUser = await User.forge(payload).save()
   ctx.set('Location', `/api/users/${username}`)
   ctx.body = newUser
@@ -23,7 +23,7 @@ async function list(ctx) {
   try {
     ctx.body = await User.fetchAll()
   } catch (e) {
-    ctx.throw(HttpCodes.BAD_REQUEST.code, 'DbError', {
+    ctx.throw(HttpCodes.BAD_REQUEST, 'DbError', {
       error: {
         rawErrorMessage: e
       }
@@ -40,10 +40,10 @@ async function update(ctx) {
       user = await User.where({ username }).save(payload, {
         patch: true
       })
-      ctx.status = HttpCodes.OK.code
+      ctx.status = HttpCodes.OK
       ctx.body = user
     } catch (e) {
-      ctx.throw(HttpCodes.INT_SRV_ERROR.code, MessageCodes.error.errOnDbSave, {
+      ctx.throw(HttpCodes.INT_SRV_ERROR, MessageCodes.error.errOnDbSave, {
         error: {
           rawErrorMessage: e
         }
@@ -51,7 +51,7 @@ async function update(ctx) {
     }
   } else {
     ctx.throw(
-      HttpCodes.BAD_REQUEST.code,
+      HttpCodes.BAD_REQUEST,
       MessageCodes.error.errEntityDoesNotExist('user')
     )
   }
