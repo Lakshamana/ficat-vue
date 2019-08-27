@@ -2,7 +2,7 @@ const Router = require('koa-router')
 const BodyParser = require('koa-body')
 
 const messageCodes = require('../shared/messageCodes')
-const { validator, paginatedEntity } = require('./middleware/middlewares')
+const { validator, paginatedEntity } = require('./util/middlewares')
 const frontend = require('./routes/frontend')
 const HttpCodes = require('./httpCodes')
 
@@ -22,26 +22,41 @@ const bodyParser = BodyParser()
  */
 
 // create
-api.post('/users/', bodyParser, validator, userRoutes.create)
+api.post('/users/', bodyParser, validator('users', 'create'), userRoutes.create)
 
 // list
 api.get('/users/', userRoutes.list)
 
 // toggle active
-api.put('/users/:username', bodyParser, validator, userRoutes.update)
+api.put(
+  '/users/:username',
+  bodyParser,
+  validator('users', 'update'),
+  userRoutes.update
+)
 
 /**
  * KnowledgeAreas
  */
 
 // create
-api.post('/knowledgeAreas/', bodyParser, validator, kaRoutes.create)
+api.post(
+  '/knowledgeAreas/',
+  bodyParser,
+  validator('knowledgeAreas', 'create'),
+  kaRoutes.create
+)
 
 // list
 api.get('/knowledgeAreas/', paginatedEntity, kaRoutes.list)
 
 // update
-api.put('/knowledgeAreas/:id', bodyParser, validator, kaRoutes.update)
+api.put(
+  '/knowledgeAreas/:id',
+  bodyParser,
+  validator('knowledgeAreas', 'update'),
+  kaRoutes.update
+)
 
 // delete
 api.del('/knowledgeAreas/:id', kaRoutes.del)
@@ -51,13 +66,23 @@ api.del('/knowledgeAreas/:id', kaRoutes.del)
  */
 
 // create
-api.post('/courses/', bodyParser, validator, courseRoutes.create)
+api.post(
+  '/courses/',
+  bodyParser,
+  validator('courses', 'create'),
+  courseRoutes.create
+)
 
 // list
 api.get('/courses/', courseRoutes.list)
 
 // update
-api.put('/courses/:id', bodyParser, validator, courseRoutes.update)
+api.put(
+  '/courses/:id',
+  bodyParser,
+  validator('courses', 'update'),
+  courseRoutes.update
+)
 
 // delete
 api.del('/courses/:id', courseRoutes.del)
@@ -67,20 +92,30 @@ api.del('/courses/:id', courseRoutes.del)
  */
 
 // create
-api.post('/academicUnities/', bodyParser, validator, acdUnitiesRoutes.create)
+api.post(
+  '/academicUnities/',
+  bodyParser,
+  validator('academicUnities', 'create'),
+  acdUnitiesRoutes.create
+)
 
 // list
 api.get('/academicUnities/', acdUnitiesRoutes.list)
 
 // update
-api.put('/academicUnities/:id', bodyParser, validator, acdUnitiesRoutes.update)
+api.put(
+  '/academicUnities/:id',
+  bodyParser,
+  validator('academicUnities', 'update'),
+  acdUnitiesRoutes.update
+)
 
 // delete
 api.del('/academicUnities/:id', acdUnitiesRoutes.del)
 
 // api not found
 api.use('/*', ctx => {
-  ctx.status = HttpCodes.NOT_FOUND.code
+  ctx.status = HttpCodes.NOT_FOUND
   ctx.body = messageCodes.error.errNotFound
 })
 

@@ -3,7 +3,7 @@ const Koa = require('koa')
 const consola = require('consola')
 
 const config = require('./config')
-const { errorHandler } = require('./middleware/middlewares')
+const { errorHandler } = require('./util/middlewares')
 
 const app = new Koa()
 const router = require('./router')

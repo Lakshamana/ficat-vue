@@ -30,7 +30,7 @@ describe('prefix /api/users', () => {
 
   test('List all users', async done => {
     const response = await chai.request(server.listen()).get('/api/users')
-    expect(response.status).toBe(HttpCodes.OK.code)
+    expect(response.status).toBe(HttpCodes.OK)
     expect(response.type).toBe('application/json')
     expect(response.body).toBeDefined()
     done()
@@ -46,7 +46,7 @@ describe('prefix /api/users', () => {
       .request(server.listen())
       .post('/api/users')
       .send(payload)
-    expect(response.status).toBe(HttpCodes.OK.code)
+    expect(response.status).toBe(HttpCodes.OK)
     expect(response.type).toBe('application/json')
     expect(response.body).toBeDefined()
     expect(response.body.id).toBeDefined()
@@ -66,10 +66,10 @@ describe('prefix /api/users', () => {
       .request(server.listen())
       .post('/api/users')
       .send(payload)
-    expect(response.status).toBe(HttpCodes.BAD_REQUEST.code)
+    expect(response.status).toBe(HttpCodes.BAD_REQUEST)
     expect(response.type).toBe('application/json')
     expect(response.body).toStrictEqual({
-      message: 'errOnEntityValidation',
+      message: 'errOnPayloadValidation',
       errors: [
         {
           errCode: 'missingFields',
@@ -94,10 +94,10 @@ describe('prefix /api/users', () => {
       .request(server.listen())
       .post('/api/users')
       .send(payload)
-    expect(response.status).toBe(HttpCodes.BAD_REQUEST.code)
+    expect(response.status).toBe(HttpCodes.BAD_REQUEST)
     expect(response.type).toBe('application/json')
     expect(response.body).toStrictEqual({
-      message: 'errOnEntityValidation',
+      message: 'errOnPayloadValidation',
       errors: [
         {
           errCode: 'missingFields',
@@ -119,10 +119,10 @@ describe('prefix /api/users', () => {
       .request(server.listen())
       .post('/api/users')
       .send(payload)
-    expect(response.status).toBe(HttpCodes.BAD_REQUEST.code)
+    expect(response.status).toBe(HttpCodes.BAD_REQUEST)
     expect(response.type).toBe('application/json')
     expect(response.body).toStrictEqual({
-      message: 'errOnEntityValidation',
+      message: 'errOnPayloadValidation',
       errors: [
         {
           errCode: 'invalidFields',
@@ -157,7 +157,7 @@ describe('prefix /api/users', () => {
       .request(server.listen())
       .post('/api/users')
       .send(userCreationToFail)
-    expect(response.status).toBe(HttpCodes.BAD_REQUEST.code)
+    expect(response.status).toBe(HttpCodes.BAD_REQUEST)
     expect(response.type).toBe('application/json')
     expect(response.body).toStrictEqual({
       message: 'userAlreadyExist'
@@ -171,7 +171,7 @@ describe('prefix /api/users', () => {
       .request(server.listen())
       .post('/api/users')
       .send(payload)
-    expect(response.status).toBe(HttpCodes.BAD_REQUEST.code)
+    expect(response.status).toBe(HttpCodes.BAD_REQUEST)
     expect(response.type).toBe('application/json')
     expect(response.body).toStrictEqual({
       message: 'errEmptyPayload'

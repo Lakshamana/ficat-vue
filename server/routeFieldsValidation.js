@@ -1,40 +1,40 @@
 module.exports = {
   users: {
-    post: {
+    create: {
       mandatory: ['username', 'password', 'active']
     },
-    put: {
+    update: {
       mandatory: ['active']
     }
   },
   knowledgeAreas: {
-    post: {
+    create: {
       mandatory: ['code', 'description']
     },
-    put: {
+    update: {
       mandatory: ['description']
     }
   },
   courses: {
-    post: {
+    create: {
       mandatory: ['name', 'program', 'type', 'unity_id'],
       optional: ['program']
     },
-    put: {
+    update: {
       mandatory: ['description']
     }
   },
   academicUnities: {
-    post: {
+    create: {
       mandatory: ['name', 'acronym']
     },
-    put: {
+    update: {
       mandatory: ['name', 'acronym'],
       optional: ['name', 'acronym']
     }
   },
   auth: {
-    post: {
+    create: {
       mandatory: ['username', 'password']
     }
   }
