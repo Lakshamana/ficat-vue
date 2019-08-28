@@ -6,16 +6,26 @@ const { validator, paginatedEntity } = require('./util/middlewares')
 const frontend = require('./routes/frontend')
 const HttpCodes = require('./httpCodes')
 
+// Entities routes
 const userRoutes = require('./routes/users')
 const kaRoutes = require('./routes/knowledgeAreas')
 const courseRoutes = require('./routes/courses')
 const acdUnitiesRoutes = require('./routes/academicUnities')
+
+// Auth* routes
+const authRoutes = require('./routes/auth')
 
 const router = new Router()
 const api = new Router({ prefix: '/api' })
 const bodyParser = BodyParser()
 
 // api middlewares
+
+/**
+ * Authentication
+ */
+
+api.post('/auth', bodyParser, validator('auth'), authRoutes.auth)
 
 /**
  * Users

@@ -34,8 +34,9 @@ module.exports = {
     }
   },
   auth: {
-    create: {
-      mandatory: ['username', 'password']
-    }
+    mandatory: ['username', 'password']
+  },
+  authz: {
+    mandatory: ['accessToken']
   }
 }

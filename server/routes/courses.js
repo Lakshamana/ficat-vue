@@ -24,7 +24,7 @@ async function list(ctx) {
   try {
     ctx.body = await Course.fetchAll()
   } catch (e) {
-    ctx.throw(HttpCodes.BAD_REQUEST, 'DbError', {
+    ctx.throw(HttpCodes.BAD_REQUEST, MessageCodes.error.errOnDbFetch, {
       error: {
         rawErrorMessage: e
       }

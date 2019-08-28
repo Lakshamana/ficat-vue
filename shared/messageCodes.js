@@ -9,12 +9,14 @@ const messages = {
       return `${entityName}DoesNotExist`
     },
     errOnDbSave: 'errOnDbSave',
+    errOnDbFetch: 'errOnDbFetch',
     invalidFields: 'invalidFields',
     missingFields: 'missingFields',
     errNotFound: 'errNotFound',
     errOnPayloadValidation: 'errOnPayloadValidation',
     errEmptyPayload: 'errEmptyPayload',
-    errOnAuth: 'errOnAuth'
+    errOnAuth: 'errOnAuth',
+    errPasswordMismatch: 'errPasswordMismatch'
   },
   layout: {}
 }
