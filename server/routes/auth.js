@@ -7,7 +7,7 @@ async function auth(ctx) {
   const { username, password } = ctx.request.body
   let user
   try {
-    user = User.where({ username }).fetch()
+    user = await User.where({ username }).fetch()
   } catch (e) {
     ctx.throw(HttpCodes.BAD_REQUEST, MessageCodes.error.errOnDbFetch, {
       error: {
@@ -18,15 +18,18 @@ async function auth(ctx) {
 
   if (user) {
     try {
-      user = await User.authenticate(password)
-      ctx.status = HttpCodes.OK
+      await user.authenticate(password)
       const token = jwtSign(user.toJSON())
+      ctx.status = HttpCodes.OK
       ctx.body = { user, token }
     } catch (e) {
       ctx.throw(HttpCodes.BAD_REQUEST, MessageCodes.error.errPasswordMismatch)
     }
   } else {
-    ctx.throw(HttpCodes.BAD_REQUEST, MessageCodes.error.errPasswordMismatch)
+    ctx.throw(
+      HttpCodes.BAD_REQUEST,
+      MessageCodes.error.errEntityDoesNotExist('users')
+    )
   }
 }
 
