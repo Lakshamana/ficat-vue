@@ -22,7 +22,7 @@ async function auth(ctx) {
       await user.authenticate(password)
       const token = jwtSign(user.toJSON(), rememberMe)
       ctx.status = HttpCodes.OK
-      ctx.body = { user, token }
+      ctx.body = { user, ...token }
     } catch (e) {
       ctx.throw(HttpCodes.BAD_REQUEST, MessageCodes.error.errPasswordMismatch)
     }
@@ -35,11 +35,15 @@ async function auth(ctx) {
 }
 
 // Autorização - Obter acesso a recursos da API
-function authz(ctx) {
-  const token = ctx.headers.authorization.split(' ')[1]
+function authz(ctx, next) {
+  const authorization = ctx.headers.authorization
+  if (!authorization) {
+    ctx.throw(HttpCodes.BAD_REQUEST, MessageCodes.error.errNotAuthorized)
+  }
+  const token = authorization.split(' ')[1]
   try {
-    const decoded = jwtVerify(token).user
-    console
+    jwtVerify(token)
+    return next()
   } catch (e) {
     ctx.throw(HttpCodes.BAD_REQUEST, MessageCodes.error.errOnAuthz)
   }

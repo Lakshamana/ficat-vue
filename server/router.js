@@ -41,7 +41,7 @@ api.post(
 )
 
 // list
-api.get('/users/', userRoutes.list)
+api.get('/users/', authRoutes.authz, userRoutes.list)
 
 // toggle active
 api.put(

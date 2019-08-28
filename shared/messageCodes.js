@@ -17,7 +17,7 @@ const messages = {
     errEmptyPayload: 'errEmptyPayload',
     errOnAuth: 'errOnAuth',
     errPasswordMismatch: 'errPasswordMismatch',
-    errOnNotAllowedAuthz: 'errOnNotAllowedAuthz',
+    errNotAuthorized: 'errNotAuthorized',
     errOnAuthz: 'errOnAuthz'
   },
   layout: {}
