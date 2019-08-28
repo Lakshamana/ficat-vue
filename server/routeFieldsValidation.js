@@ -34,7 +34,8 @@ module.exports = {
     }
   },
   auth: {
-    mandatory: ['username', 'password']
+    mandatory: ['username', 'password', 'rememberMe'],
+    optional: ['rememberMe']
   },
   authz: {
     mandatory: ['accessToken']

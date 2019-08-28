@@ -1,9 +1,17 @@
-const { sign } = require('jsonwebtoken')
+const { sign, verify, decode } = require('jsonwebtoken')
 
-const DEFAULT_EXP = Math.floor(Date.now() / 1000) + 60 * 60 * 24
+// Default exp = 1h
+const TIMEOUT = 60 * 60
+const NOW = Math.floor(Date.now() / 1000)
 
-function jwtSign(user, exp = DEFAULT_EXP) {
-  return sign({ user, exp }, process.env.JWT_SECRET)
+function jwtSign(user, rememberMe, expiresIn = NOW + TIMEOUT) {
+  return sign({ user, rmb: rememberMe }, process.env.JWT_SECRET, { expiresIn })
+}
+
+function jwtVerify(token) {
+  const tokenPayload = decode(token, { json: true })
+  const maxAge = tokenPayload.rmb ? NOW + TIMEOUT * 24 : NOW + TIMEOUT
+  return verify(token, process.env.JWT_SECRET, { maxAge })
 }
 
 function paginateCtx(ctx, pagination) {
@@ -13,4 +21,4 @@ function paginateCtx(ctx, pagination) {
   ctx.set('Pagination-Page-Size', pagination.pageSize)
 }
 
-module.exports = { jwtSign, paginateCtx }
+module.exports = { paginateCtx, jwtSign, jwtVerify }

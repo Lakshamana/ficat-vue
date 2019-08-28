@@ -32,7 +32,13 @@ api.post('/auth', bodyParser, validator('auth'), authRoutes.auth)
  */
 
 // create
-api.post('/users/', bodyParser, validator('users', 'create'), userRoutes.create)
+api.post(
+  '/users/',
+  bodyParser,
+  authRoutes.authz,
+  validator('users', 'create'),
+  userRoutes.create
+)
 
 // list
 api.get('/users/', userRoutes.list)
