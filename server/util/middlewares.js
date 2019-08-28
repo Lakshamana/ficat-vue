@@ -5,9 +5,11 @@ const fields = require('../routeFieldsValidation')
 
 // Requer middleware bodyParser
 function validator(entityName, operationType) {
+  const setting =
+    (operationType && fields[entityName][operationType]) || fields[entityName]
   return (ctx, next) => {
-    const mandatory = fields[entityName][operationType].mandatory
-    const optional = fields[entityName][operationType].optional
+    const mandatory = setting.mandatory
+    const optional = setting.optional
     const validation = validatePayload(ctx.request.body, mandatory, optional)
     if (!validation) {
       // Validação vazia (undefined)
