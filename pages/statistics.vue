@@ -6,6 +6,7 @@
 
 <script>
 export default {
-  name: 'Statistics'
+  name: 'Statistics',
+  middleware: 'auth'
 }
 </script>
