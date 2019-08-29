@@ -6,7 +6,7 @@ const chai = require('chai')
 const chaiHttp = require('chai-http')
 
 const { knex } = require('../../server/db')
-const { createSeeds, wipeTable } = require('../utils')
+const { createSeeds, wipeTable, user } = require('../utils')
 const server = require('../../server')
 const HttpCodes = require('../../server/httpCodes')
 
@@ -29,7 +29,11 @@ describe('prefix /api/users', () => {
   }, 100000)
 
   test('List all users', async done => {
-    const response = await chai.request(server.listen()).get('/api/users')
+    const { token } = await user('User1')
+    const response = await chai
+      .request(server.listen())
+      .get('/api/users')
+      .set('Authorization', `Bearer ${token}`)
     expect(response.status).toBe(HttpCodes.OK)
     expect(response.type).toBe('application/json')
     expect(response.body).toBeDefined()
@@ -37,6 +41,7 @@ describe('prefix /api/users', () => {
   })
 
   test('Create new user', async done => {
+    const { token } = await user('User1')
     const payload = {
       username: 'person',
       password: 'person',
@@ -46,6 +51,7 @@ describe('prefix /api/users', () => {
       .request(server.listen())
       .post('/api/users')
       .send(payload)
+      .set('Authorization', `Bearer ${token}`)
     expect(response.status).toBe(HttpCodes.OK)
     expect(response.type).toBe('application/json')
     expect(response.body).toBeDefined()
@@ -57,6 +63,7 @@ describe('prefix /api/users', () => {
   })
 
   test('Create new user fields written wrong', async done => {
+    const { token } = await user('User1')
     const payload = {
       username: 'person',
       passwd: 'fancy-password', // Should be password
@@ -66,6 +73,7 @@ describe('prefix /api/users', () => {
       .request(server.listen())
       .post('/api/users')
       .send(payload)
+      .set('Authorization', `Bearer ${token}`)
     expect(response.status).toBe(HttpCodes.BAD_REQUEST)
     expect(response.type).toBe('application/json')
     expect(response.body).toStrictEqual({
@@ -85,6 +93,7 @@ describe('prefix /api/users', () => {
   })
 
   test('Create new user missing fields', async done => {
+    const { token } = await user('User1')
     // Should have `username` property
     const payload = {
       active: true,
@@ -94,6 +103,7 @@ describe('prefix /api/users', () => {
       .request(server.listen())
       .post('/api/users')
       .send(payload)
+      .set('Authorization', `Bearer ${token}`)
     expect(response.status).toBe(HttpCodes.BAD_REQUEST)
     expect(response.type).toBe('application/json')
     expect(response.body).toStrictEqual({
@@ -109,6 +119,7 @@ describe('prefix /api/users', () => {
   })
 
   test('Create new user invalid fields', async done => {
+    const { token } = await user('User1')
     const payload = {
       username: 'Guilherme',
       active: true,
@@ -119,6 +130,7 @@ describe('prefix /api/users', () => {
       .request(server.listen())
       .post('/api/users')
       .send(payload)
+      .set('Authorization', `Bearer ${token}`)
     expect(response.status).toBe(HttpCodes.BAD_REQUEST)
     expect(response.type).toBe('application/json')
     expect(response.body).toStrictEqual({
@@ -134,6 +146,7 @@ describe('prefix /api/users', () => {
   })
 
   test('Try to create existing user', async done => {
+    const { token } = await user('User1')
     const firstUser = {
       username: 'Guilherme',
       active: true,
@@ -151,12 +164,14 @@ describe('prefix /api/users', () => {
       .request(server.listen())
       .post('/api/users')
       .send(firstUser)
+      .set('Authorization', `Bearer ${token}`)
 
     // Try to create another one with same username
     const response = await chai
       .request(server.listen())
       .post('/api/users')
       .send(userCreationToFail)
+      .set('Authorization', `Bearer ${token}`)
     expect(response.status).toBe(HttpCodes.BAD_REQUEST)
     expect(response.type).toBe('application/json')
     expect(response.body).toStrictEqual({
@@ -166,11 +181,13 @@ describe('prefix /api/users', () => {
   })
 
   test('Empty payload', async done => {
+    const { token } = await user('User1')
     const payload = {}
     const response = await chai
       .request(server.listen())
       .post('/api/users')
       .send(payload)
+      .set('Authorization', `Bearer ${token}`)
     expect(response.status).toBe(HttpCodes.BAD_REQUEST)
     expect(response.type).toBe('application/json')
     expect(response.body).toStrictEqual({

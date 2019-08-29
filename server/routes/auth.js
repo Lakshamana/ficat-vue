@@ -1,7 +1,7 @@
 const User = require('../models/User')
 const MessageCodes = require('../../shared/messageCodes')
 const HttpCodes = require('../httpCodes')
-const { jwtSign, jwtVerify } = require('../util/utils')
+const { tokenSign, tokenVerify } = require('../util/utils')
 
 // Autenticação - Receber token
 async function auth(ctx) {
@@ -20,9 +20,9 @@ async function auth(ctx) {
   if (user) {
     try {
       await user.authenticate(password)
-      const token = jwtSign(user.toJSON(), rememberMe)
+      const token = tokenSign(user.toJSON(), rememberMe)
       ctx.status = HttpCodes.OK
-      ctx.body = { user, ...token }
+      ctx.body = { user, token }
     } catch (e) {
       ctx.throw(HttpCodes.BAD_REQUEST, MessageCodes.error.errPasswordMismatch)
     }
@@ -42,7 +42,7 @@ function authz(ctx, next) {
   }
   const token = authorization.split(' ')[1]
   try {
-    jwtVerify(token)
+    tokenVerify(token)
     return next()
   } catch (e) {
     ctx.throw(HttpCodes.BAD_REQUEST, MessageCodes.error.errOnAuthz)

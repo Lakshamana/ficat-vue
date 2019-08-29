@@ -1,6 +1,18 @@
 const { knex } = require('../server/db')
-// const User = require('../server/models/User')
-// const KnowledgeArea = require('../server/models/KnowledgeArea')
+const User = require('../server/models/User')
+const { tokenSign } = require('../server/util/utils')
+
+/**
+ * Obter um usuário de teste e seu token
+ * @param  {string} username - Nome do usuário
+ * @param  {number} exp - Tempo de expiração de token em segundos
+ * @return {object} User and token
+ */
+async function user(username, rememberMe) {
+  const user = await User.where({ username }).fetch()
+  const token = tokenSign(user, rememberMe)
+  return { user, token }
+}
 
 const models = {
   users: require('../server/models/User'),
@@ -39,4 +51,4 @@ function wipeTable(tableName) {
   return model.where('id', '!=', '0').destroy()
 }
 
-module.exports = { createSeeds, wipeTable }
+module.exports = { createSeeds, wipeTable, user }

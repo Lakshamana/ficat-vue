@@ -1,5 +1,6 @@
 const Router = require('koa-router')
 const BodyParser = require('koa-body')
+const unless = require('koa-unless')
 
 const messageCodes = require('../shared/messageCodes')
 const { validator, paginatedEntity } = require('./util/middlewares')
@@ -13,7 +14,7 @@ const courseRoutes = require('./routes/courses')
 const acdUnitiesRoutes = require('./routes/academicUnities')
 
 // Auth* routes
-const authRoutes = require('./routes/auth')
+const { auth, authz } = require('./routes/auth')
 
 const router = new Router()
 const api = new Router({ prefix: '/api' })
@@ -25,23 +26,27 @@ const bodyParser = BodyParser()
  * Authentication
  */
 
-api.post('/auth', bodyParser, validator('auth'), authRoutes.auth)
+api.post('/auth', bodyParser, validator('auth'), auth)
+
+/**
+ * Use middleware de autorização (authz) em todas as
+ * rotas, exceto autenticação e criação de registro
+ * de ficha catalográfica (usuários finais)
+ *
+ * TODO: add catalog route
+ */
+authz.unless = unless
+api.use(authz.unless({ path: ['/auth'] }))
 
 /**
  * Users
  */
 
 // create
-api.post(
-  '/users/',
-  bodyParser,
-  authRoutes.authz,
-  validator('users', 'create'),
-  userRoutes.create
-)
+api.post('/users/', bodyParser, validator('users', 'create'), userRoutes.create)
 
 // list
-api.get('/users/', authRoutes.authz, userRoutes.list)
+api.get('/users/', authz, userRoutes.list)
 
 // toggle active
 api.put(
