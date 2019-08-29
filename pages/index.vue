@@ -1,34 +1,18 @@
 <template>
   <section class="section">
-    <div class="columns is-mobile">
-      <card title="Free" icon="github-circle">
-        Open source on
-        <a href="https://github.com/buefy/buefy">
-          GitHub
-        </a>
-      </card>
-
-      <card title="Responsive" icon="cellphone-link">
-        <b class="has-text-grey">
-          Every
-        </b>
-        component is responsive
-      </card>
-
-      <card title="Modern" icon="alert-decagram">
-        Built with
-        <a href="https://vuejs.org/">
-          Vue.js
-        </a>
-        and
-        <a href="http://bulma.io/">
-          Bulma
-        </a>
-      </card>
-
-      <card title="Lightweight" icon="arrange-bring-to-front">
-        No other internal dependency
-      </card>
+    <div class="columns is-centered is-mobile">
+      <div class="column is-10">
+        <div>
+          <b-steps type="is-black">
+            <b-step-item label="Account" icon="account-key"></b-step-item>
+            <b-step-item label="Profile" icon="account"></b-step-item>
+            <b-step-item label="Social" icon="account-plus"></b-step-item>
+          </b-steps>
+        </div>
+        <card title="Passo1">
+          Cadastro de ficha: adicionar campos de cadastro de ficha
+        </card>
+      </div>
     </div>
   </section>
 </template>
@@ -37,7 +21,7 @@
 import Card from '~/components/Card'
 
 export default {
-  name: 'HomePage',
+  name: 'Home',
 
   components: {
     Card

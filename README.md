@@ -2,7 +2,7 @@
 
 > Nuxt-Vue.js Ficat version.
 
-![travis](https://travis-ci.com/Lakshamana/ficat-vue.svg?branch=master)
+[![Build Status](https://travis-ci.org/Lakshamana/ficat-vue.svg?branch=master)](https://travis-ci.org/Lakshamana/ficat-vue)
 
 ## Build Setup
 
