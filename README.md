@@ -1,6 +1,8 @@
 # ficat-vue
 
-> Nuxt-Vue.js Ficat version. [!travis](https://travis-ci.com/Lakshamana/ficat-vue.svg?branch=master)
+> Nuxt-Vue.js Ficat version.
+
+![travis](https://travis-ci.com/Lakshamana/ficat-vue.svg?branch=master)
 
 ## Build Setup
 
