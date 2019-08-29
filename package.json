@@ -27,6 +27,7 @@
     "bookshelf-secure-password": "^4.0.0",
     "cross-env": "^5.2.0",
     "dotenv": "^8.0.0",
+    "hooper": "^0.3.4",
     "jsonwebtoken": "^8.5.1",
     "knex": "^0.19.3",
     "koa": "^2.6.2",

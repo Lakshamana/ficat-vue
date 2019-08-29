@@ -18,9 +18,9 @@
       </div>
       <div class="navbar-menu has-background-white">
         <div class="navbar-start">
-          <a v-for="(item, key) of items" :key="key" class="navbar-item">
-            <nuxt-link :to="item.to" exact-active-class="is-active">
-              <b-icon :icon="item.icon" /> {{ item.title }}
+          <a class="navbar-item">
+            <nuxt-link to="/statistics" exact-active-class="is-active">
+              <b-icon icon="star" /> Estatísticas
             </nuxt-link>
           </a>
         </div>
@@ -36,20 +36,7 @@
 <script>
 export default {
   data() {
-    return {
-      items: [
-        {
-          title: 'Home',
-          icon: 'home',
-          to: { name: 'index' }
-        },
-        {
-          title: 'Inspire',
-          icon: 'lightbulb',
-          to: { name: 'inspire' }
-        }
-      ]
-    }
+    return {}
   }
 }
 </script>
