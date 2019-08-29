@@ -46,7 +46,7 @@ api.use(authz.unless({ path: ['/auth'] }))
 api.post('/users/', bodyParser, validator('users', 'create'), userRoutes.create)
 
 // list
-api.get('/users/', authz, userRoutes.list)
+api.get('/users/', userRoutes.list)
 
 // toggle active
 api.put(

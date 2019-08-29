@@ -1,52 +1,8 @@
 module.exports = [
   {
-    username: 'User1',
+    username: 'admin',
     active: true,
-    password_digest: 'password_digest1'
-  },
-  {
-    username: 'User2',
-    active: true,
-    password_digest: 'password_digest2'
-  },
-  {
-    username: 'User3',
-    active: true,
-    password_digest: 'password_digest3'
-  },
-  {
-    username: 'User4',
-    active: true,
-    password_digest: 'password_digest4'
-  },
-  {
-    username: 'User5',
-    active: true,
-    password_digest: 'password_digest5'
-  },
-  {
-    username: 'User6',
-    active: true,
-    password_digest: 'password_digest6'
-  },
-  {
-    username: 'User7',
-    active: true,
-    password_digest: 'password_digest7'
-  },
-  {
-    username: 'User8',
-    active: true,
-    password_digest: 'password_digest8'
-  },
-  {
-    username: 'User9',
-    active: true,
-    password_digest: 'password_digest9'
-  },
-  {
-    username: 'User10',
-    active: true,
-    password_digest: 'password_digest10'
+    password_digest:
+      '$2b$12$nUkTo2HeoSg3xiCFz7Y3UOuK/p1vxIqm3.8MJCDl.rHnXl2S/JWKm'
   }
 ]

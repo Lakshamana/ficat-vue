@@ -29,7 +29,7 @@ describe('prefix /api/users', () => {
   }, 100000)
 
   test('List all users', async done => {
-    const { token } = await user('User1')
+    const { token } = await user('admin')
     const response = await chai
       .request(server.listen())
       .get('/api/users')
@@ -41,7 +41,7 @@ describe('prefix /api/users', () => {
   })
 
   test('Create new user', async done => {
-    const { token } = await user('User1')
+    const { token } = await user('admin')
     const payload = {
       username: 'person',
       password: 'person',
@@ -63,7 +63,7 @@ describe('prefix /api/users', () => {
   })
 
   test('Create new user fields written wrong', async done => {
-    const { token } = await user('User1')
+    const { token } = await user('admin')
     const payload = {
       username: 'person',
       passwd: 'fancy-password', // Should be password
@@ -93,7 +93,7 @@ describe('prefix /api/users', () => {
   })
 
   test('Create new user missing fields', async done => {
-    const { token } = await user('User1')
+    const { token } = await user('admin')
     // Should have `username` property
     const payload = {
       active: true,
@@ -119,7 +119,7 @@ describe('prefix /api/users', () => {
   })
 
   test('Create new user invalid fields', async done => {
-    const { token } = await user('User1')
+    const { token } = await user('admin')
     const payload = {
       username: 'Guilherme',
       active: true,
@@ -146,7 +146,7 @@ describe('prefix /api/users', () => {
   })
 
   test('Try to create existing user', async done => {
-    const { token } = await user('User1')
+    const { token } = await user('admin')
     const firstUser = {
       username: 'Guilherme',
       active: true,
@@ -181,7 +181,7 @@ describe('prefix /api/users', () => {
   })
 
   test('Empty payload', async done => {
-    const { token } = await user('User1')
+    const { token } = await user('admin')
     const payload = {}
     const response = await chai
       .request(server.listen())
