@@ -2,7 +2,6 @@ const KnowledgeArea = require('../models/KnowledgeArea')
 const HttpCodes = require('../httpCodes')
 const MessageCodes = require('../../shared/messageCodes')
 const { paginateCtx } = require('../util/utils')
-const { maybe } = require('../../shared/utils')
 
 async function create(ctx) {
   const payload = ctx.request.body
