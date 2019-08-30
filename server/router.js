@@ -3,7 +3,7 @@ const BodyParser = require('koa-body')
 const unless = require('koa-unless')
 
 const messageCodes = require('../shared/messageCodes')
-const { validator, paginatedEntity } = require('./util/middlewares')
+const { validator, paginatedEntity, query } = require('./util/middlewares')
 const frontend = require('./routes/frontend')
 const HttpCodes = require('./httpCodes')
 
@@ -69,7 +69,12 @@ api.post(
 )
 
 // list
-api.get('/knowledgeAreas/', paginatedEntity, kaRoutes.list)
+api.get(
+  '/knowledgeAreas/',
+  query(['page', 'size', 'description']),
+  paginatedEntity,
+  kaRoutes.list
+)
 
 // update
 api.put(

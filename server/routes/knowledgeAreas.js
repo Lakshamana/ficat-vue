@@ -2,6 +2,7 @@ const KnowledgeArea = require('../models/KnowledgeArea')
 const HttpCodes = require('../httpCodes')
 const MessageCodes = require('../../shared/messageCodes')
 const { paginateCtx } = require('../util/utils')
+const { maybe } = require('../../shared/utils')
 
 async function create(ctx) {
   const payload = ctx.request.body
@@ -23,16 +24,21 @@ async function create(ctx) {
 
 async function list(ctx) {
   const pagination = ctx.state.pagination
+  let query = KnowledgeArea
+  const description = ctx.query.description
+  if (description) {
+    query = query.where('description', 'like', `%${description}%`)
+  }
   try {
     if (pagination) {
       const { page, size } = pagination
-      const result = await KnowledgeArea.fetchPage({
+      const result = await query.fetchPage({
         pageSize: size,
         page
       })
       paginateCtx(ctx, result.pagination)
       ctx.body = result
-    } else ctx.body = await KnowledgeArea.fetchAll()
+    } else ctx.body = await query.fetchAll()
   } catch (e) {
     ctx.throw(HttpCodes.BAD_REQUEST, MessageCodes.error.errOnDbFetch, {
       error: {

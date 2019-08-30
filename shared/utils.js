@@ -4,7 +4,7 @@
  * Aceita valores padrão que serão adicionados ou
  * sobrescritos pelo objeto de entrada ao objeto de saída.
  *
- * @param {Object} data: carga útil de entrada
+ * @param {Object} dataObj: carga útil de entrada
  *
  * @param {Array} attrList: lista de atributos selecionados do objeto
  *
@@ -18,15 +18,16 @@
  * @see utils.spec.js (/test/shared/ para casos de teste)
  */
 function select(data, attrList, defaults = {}) {
-  if (data && typeof data === 'object') {
-    if (data.id) {
-      delete data.id
+  const dataObj = Object.assign({}, data) // Evitar problemas com hasOwnProperty
+  if (dataObj && typeof dataObj === 'object') {
+    if (dataObj.id) {
+      delete dataObj.id
     }
     const selected = { ...defaults }
-    for (const d in data) {
+    for (const d in dataObj) {
       // hasOwnProperty - herança é ignorada
-      if (data.hasOwnProperty(d) && attrList.includes(d)) {
-        selected[d] = data[d]
+      if (dataObj.hasOwnProperty(d) && attrList.includes(d)) {
+        selected[d] = dataObj[d]
       }
     }
     return selected
@@ -82,4 +83,16 @@ function validatePayload(data, validFields = [], optional = []) {
   return undefined
 }
 
-module.exports = { validatePayload, select }
+/**
+ * Modo de uso:
+ * const obj = {a: 1, c: 3}
+ * const r = {...maybe('a', obj.a), ...maybe('b', obj.c), ...maybe('c', false)}
+ * r // => {a: 1, b: 3}
+ * @param {*} key
+ * @param {*} value
+ */
+function maybe(key, value) {
+  return value && { [key]: value }
+}
+
+module.exports = { validatePayload, select, maybe }
