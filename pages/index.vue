@@ -2,22 +2,54 @@
   <section class="section">
     <div class="columns is-centered is-mobile">
       <div class="column is-10">
-        <card title="Passo1">
-          Cadastro de ficha: adicionar campos de cadastro de ficha
-        </card>
+        <hooper>
+          <slide>
+            <card title="Dados do Autor">
+              fields
+            </card>
+          </slide>
+          <slide>
+            <card title="Dados do Trabalho">
+              fields
+            </card>
+          </slide>
+          <slide>
+            <card title="Orientadores">
+              fields
+            </card>
+          </slide>
+          <slide>
+            <card title="Palavras-chave">
+              fields
+            </card>
+          </slide>
+          <slide>
+            <card title="Preparar ficha">
+              fields
+            </card>
+          </slide>
+
+          <navigation slot="hooper-addons"></navigation>
+          <pagination slot="hooper-addons"></pagination>
+        </hooper>
       </div>
     </div>
   </section>
 </template>
 
 <script>
-import Card from '~/components/Card'
+import { Hooper, Slide, Navigation, Pagination } from 'hooper'
+import Card from '@/components/Card'
 
 export default {
   name: 'Home',
 
   components: {
-    Card
+    Card,
+    Hooper,
+    Slide,
+    Navigation,
+    Pagination
   },
 
   data() {
@@ -27,3 +59,10 @@ export default {
   }
 }
 </script>
+
+<style>
+.hooper-fit {
+  width: inherit;
+  height: inherit;
+}
+</style>

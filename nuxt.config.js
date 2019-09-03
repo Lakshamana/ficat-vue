@@ -25,11 +25,11 @@ module.exports = {
   /*
    ** Global CSS
    */
-  css: [],
+  css: ['hooper/dist/hooper.css'],
   /*
    ** Plugins to load before mounting the App
    */
-  plugins: [],
+  plugins: ['~/plugins/lang.js'],
   /*
    ** Nuxt.js dev-modules
    */

@@ -20,7 +20,11 @@ const messages = {
     errNotAuthorized: 'errNotAuthorized',
     errOnAuthz: 'errOnAuthz'
   },
-  layout: {}
+  layout: {
+    ltAbout: 'ltAbout',
+    ltTalkUs: 'ltTalkUs',
+    ltInstructions: 'ltInstructions'
+  }
 }
 
 module.exports = messages
