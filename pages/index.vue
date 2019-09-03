@@ -14,6 +14,12 @@
                       required
                     ></b-input>
                   </b-field>
+                  <b-field>
+                    <b-input
+                      placeholder="Sobrenome do autor"
+                      aria-placeholder="Nome do autor"
+                    ></b-input>
+                  </b-field>
                 </div>
               </div>
             </card>
