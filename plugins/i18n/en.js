@@ -5,8 +5,8 @@ module.exports = {
     errNotFound: 'Recurso não encontrado'
   },
   layout: {
-    ltAbout: 'Sobre',
-    ltTalkUs: 'Fale conosco',
-    ltInstructions: 'Instruções'
+    ltAbout: 'About',
+    ltTalkUs: 'Talk with us',
+    ltInstructions: 'Instructions'
   }
 }

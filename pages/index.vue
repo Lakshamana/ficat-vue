@@ -39,6 +39,7 @@
 
 <script>
 import { Hooper, Slide, Navigation, Pagination } from 'hooper'
+import { mapState } from 'vuex'
 import Card from '@/components/Card'
 
 export default {
@@ -56,6 +57,12 @@ export default {
     return {
       step: 0
     }
+  },
+
+  computed: {
+    ...mapState({
+      lang: state => state.langTag
+    })
   }
 }
 </script>

@@ -48,7 +48,6 @@
         </div>
       </div>
     </nav>
-
     <div class="container column is-10">
       <nuxt />
     </div>
@@ -76,7 +75,7 @@ export default {
 
   methods: {
     setLang(langKey) {
-      this.$store.commit('lang/setLangTag', langKey)
+      this.$store.dispatch('lang/change', langKey)
     }
   }
 }

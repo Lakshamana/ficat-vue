@@ -26,7 +26,7 @@ function getType(key) {
 
 export default ({ app }, inject) => {
   inject('tr', (langKey, trKey) => {
-    const tr = translation[langKey]
+    const tr = translation[langKey || 'pt']
     const type = getType(trKey)
     return tr[type][trKey]
   })
