@@ -21,6 +21,7 @@
           <a
             v-for="(path, key) in paths"
             :key="key"
+            :aria-roledescription="path"
             class="navbar-item"
             :aria-label="path"
           >
@@ -66,9 +67,9 @@ export default {
 
     paths() {
       return {
-        about: this.$tr(this.lang, codes.layout.ltAbout),
-        instructions: this.$tr(this.lang, codes.layout.ltInstructions),
-        talk: this.$tr(this.lang, codes.layout.ltTalkUs)
+        about: this.$tr(codes.layout.ltAbout).pt,
+        instructions: this.$tr(this.lang, codes.layout.ltInstructions).pt,
+        talk: this.$tr(this.lang, codes.layout.ltTalkUs).pt
       }
     }
   },

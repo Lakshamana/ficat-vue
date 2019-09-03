@@ -4,8 +4,17 @@
       <div class="column is-10">
         <hooper>
           <slide>
-            <card title="Dados do Autor">
-              fields
+            <card :title="translations.authorTitle">
+              <div class="columns">
+                <div class="column is-half">
+                  <b-field>
+                    <b-input
+                      placeholder="Nome do autor"
+                      aria-placeholder="Nome do autor"
+                    ></b-input>
+                  </b-field>
+                </div>
+              </div>
             </card>
           </slide>
           <slide>
@@ -40,6 +49,7 @@
 <script>
 import { Hooper, Slide, Navigation, Pagination } from 'hooper'
 import { mapState } from 'vuex'
+import codes from '../shared/messageCodes'
 import Card from '@/components/Card'
 
 export default {
@@ -53,16 +63,16 @@ export default {
     Pagination
   },
 
-  data() {
-    return {
-      step: 0
-    }
-  },
-
   computed: {
     ...mapState({
       lang: state => state.langTag
-    })
+    }),
+
+    translations() {
+      return {
+        authorTitle: this.$tr(codes.layout.ltAbout).pt
+      }
+    }
   }
 }
 </script>

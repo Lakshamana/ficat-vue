@@ -2,11 +2,12 @@ module.exports = {
   info: {},
   message: {},
   error: {
-    errNotFound: 'Recurso não encontrado'
+    errNotFound: 'Resource not Found'
   },
   layout: {
     ltAbout: 'About',
     ltTalkUs: 'Talk with us',
-    ltInstructions: 'Instructions'
+    ltInstructions: 'Instructions',
+    ltAuthorData: 'Author data'
   }
 }

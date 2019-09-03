@@ -23,7 +23,8 @@ const messages = {
   layout: {
     ltAbout: 'ltAbout',
     ltTalkUs: 'ltTalkUs',
-    ltInstructions: 'ltInstructions'
+    ltInstructions: 'ltInstructions',
+    ltAuthorData: 'ltAuthorData'
   }
 }
 
