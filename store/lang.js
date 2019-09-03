@@ -1,7 +1,7 @@
 // import { persist, recovery } from '@/front/persistence'
 
 export const state = () => ({
-  langTag: ''
+  langTag: 'pt'
 })
 
 export const mutations = {

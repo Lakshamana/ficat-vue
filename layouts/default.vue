@@ -62,14 +62,14 @@ import codes from '../shared/messageCodes'
 export default {
   computed: {
     ...mapState({
-      lang: state => state.langTag
+      lang: state => state.lang.langTag
     }),
 
     paths() {
       return {
-        about: this.$tr(codes.layout.ltAbout).pt,
-        instructions: this.$tr(this.lang, codes.layout.ltInstructions).pt,
-        talk: this.$tr(this.lang, codes.layout.ltTalkUs).pt
+        about: this.$tr(this.lang, codes.layout.ltAbout),
+        instructions: this.$tr(this.lang, codes.layout.ltInstructions),
+        talk: this.$tr(this.lang, codes.layout.ltTalkUs)
       }
     }
   },

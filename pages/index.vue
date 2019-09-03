@@ -4,13 +4,14 @@
       <div class="column is-10">
         <hooper>
           <slide>
-            <card :title="translations.authorTitle">
+            <card title="Nome do autor">
               <div class="columns">
                 <div class="column is-half">
                   <b-field>
                     <b-input
                       placeholder="Nome do autor"
                       aria-placeholder="Nome do autor"
+                      required
                     ></b-input>
                   </b-field>
                 </div>
@@ -65,12 +66,12 @@ export default {
 
   computed: {
     ...mapState({
-      lang: state => state.langTag
+      lang: state => state.lang.langTag
     }),
 
     translations() {
       return {
-        authorTitle: this.$tr(codes.layout.ltAbout).pt
+        authorTitle: this.$tr(this.lang, codes.layout.ltAbout)
       }
     }
   }
