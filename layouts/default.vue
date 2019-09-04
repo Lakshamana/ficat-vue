@@ -49,7 +49,7 @@
         </div>
       </div>
     </nav>
-    <div class="container column is-10">
+    <div class="container">
       <nuxt />
     </div>
   </div>
@@ -81,5 +81,3 @@ export default {
   }
 }
 </script>
-
-<style></style>

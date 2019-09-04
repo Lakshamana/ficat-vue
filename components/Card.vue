@@ -32,4 +32,8 @@ export default {
 .rounded {
   border-radius: 2px;
 }
+
+.card {
+  height: 50vh;
+}
 </style>
