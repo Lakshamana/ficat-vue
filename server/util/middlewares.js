@@ -28,7 +28,7 @@ function query(fields) {
     const query = ctx.query
     // Se existe uma query
     if (Object.keys(query).length) {
-      // Validar o objeto da query
+      // Validar o objeto da query - todos os parâmetros são opcionais
       const validation = validatePayload(query, fields, fields)
       if (validation.valid) {
         return next()

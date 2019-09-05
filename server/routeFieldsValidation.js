@@ -17,7 +17,7 @@ module.exports = {
   },
   courses: {
     create: {
-      mandatory: ['name', 'program', 'type', 'unity_id'],
+      mandatory: ['name', 'program', 'type', 'unityId'],
       optional: ['program']
     },
     update: {

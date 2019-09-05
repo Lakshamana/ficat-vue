@@ -100,7 +100,7 @@ api.post(
 )
 
 // list
-api.get('/courses/', courseRoutes.list)
+api.get('/courses/', query(['acdUnityId']), courseRoutes.list)
 
 // update
 api.put(

@@ -21,8 +21,13 @@ async function create(ctx) {
 }
 
 async function list(ctx) {
+  let query = Course
+  const unityId = ctx.query.acdUnityId
+  if (unityId) {
+    query = query.where({ unityId })
+  }
   try {
-    ctx.body = await Course.fetchAll()
+    ctx.body = await query.fetchAll()
   } catch (e) {
     ctx.throw(HttpCodes.BAD_REQUEST, MessageCodes.error.errOnDbFetch, {
       error: {
