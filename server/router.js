@@ -30,13 +30,24 @@ api.post('/auth', bodyParser, validator('auth'), auth)
 
 /**
  * Use middleware de autorização (authz) em todas as
- * rotas, exceto autenticação e criação de registro
+ * rotas, exceto autenticação (funcionários), e GET /knowledgeAreas,
+ * GET /academicUnities e criação de registro
  * de ficha catalográfica (usuários finais)
  *
  * TODO: add catalog route
  */
 authz.unless = unless
-api.use(authz.unless({ path: ['/auth'] }))
+api.use(
+  authz.unless({
+    custom: ctx => {
+      return (
+        ctx.path.includes('auth') ||
+        (ctx.path.includes('knowledgeAreas') && ctx.method === 'GET') ||
+        (ctx.path.includes('academicUnities') && ctx.method === 'GET')
+      )
+    }
+  })
+)
 
 /**
  * Users

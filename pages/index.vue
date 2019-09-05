@@ -17,6 +17,7 @@
                         pattern="[A-Za-z]+"
                         required
                         aria-required="true"
+                        rounded
                       ></b-input>
                     </b-field>
                     <b-field>
@@ -27,6 +28,7 @@
                         pattern="[A-Za-z]+"
                         required
                         aria-required="true"
+                        rounded
                       ></b-input>
                     </b-field>
                   </div>
@@ -39,6 +41,7 @@
                         message="Campo opcional"
                         validation-message="Digite letras apenas"
                         pattern="[A-Za-z]+"
+                        rounded
                       ></b-input>
                     </b-field>
                     <b-field>
@@ -47,6 +50,7 @@
                         placeholder="Sobrenome do 2º autor"
                         aria-placeholder="Sobrenome do 2º autor"
                         message="Campo opcional"
+                        rounded
                       ></b-input>
                     </b-field>
                   </div>
@@ -66,6 +70,7 @@
                         required
                         aria-required="true"
                         minlength="10"
+                        rounded
                       ></b-input>
                     </b-field>
                     <b-field>
@@ -74,44 +79,66 @@
                         placeholder="Subtítulo do trabalho"
                         aria-placeholder="Subtítulo do trabalho"
                         message="Campo opcional"
+                        rounded
                       ></b-input>
                     </b-field>
-                    <b-field>
-                      <b-select
-                        v-model="presentationYear"
-                        placeholder="Ano de apresentação"
-                        aria-placeholder="Ano de apresentação"
-                        rounded
-                      >
-                        <option v-for="y in 10" :key="y" :value="y">
-                          {{ getYear(y - 1) }}
-                        </option>
-                      </b-select>
-                    </b-field>
+                    <div class="columns">
+                      <div class="column is-4">
+                        <b-field>
+                          <b-select
+                            v-model="presentationYear"
+                            placeholder="Ano"
+                            aria-placeholder="Ano"
+                            rounded
+                          >
+                            <option v-for="y in 10" :key="y" :value="y">
+                              {{ getYear(y - 1) }}
+                            </option>
+                          </b-select>
+                        </b-field>
+                      </div>
+                      <div class="column is-8">
+                        <b-field>
+                          <b-input
+                            v-model="pageNumber"
+                            type="number"
+                            placeholder="Número de páginas"
+                            aria-placeholder="Número de páginas"
+                            validation-message="Campo obrigatório e somente números"
+                            required
+                            pattern="[0-9]+"
+                            aria-required="true"
+                            rounded
+                          ></b-input>
+                        </b-field>
+                      </div>
+                    </div>
                   </div>
                   <div class="column is-half">
                     <b-field>
                       <b-select
-                        v-model="hasImages"
+                        v-model="workImagesType"
                         placeholder="Ilustração"
                         aria-placeholder="Ilustração"
+                        expanded
                         rounded
                       >
-                        <option value="none">Não possui</option>
+                        <option value="nocolor">Não possui</option>
                         <option value="color">Coloridas</option>
                         <option value="pb">Preto e branco</option>
                       </b-select>
                     </b-field>
                     <b-field>
                       <b-autocomplete
-                        v-model="acdUnity"
-                        rounded
-                        :data="filteredDataArray"
+                        v-model="acdUnitySearch"
+                        :data="academicUnities"
                         placeholder="Unidade acadêmica"
                         aria-placeholder="Unidade acadêmica"
                         required
+                        rounded
                         icon="magnify"
-                        @select="option => (selected = option)"
+                        @typing="getAcdUnities"
+                        @select="option => (selectedAcdUnity = option)"
                       >
                         <template slot="empty">
                           Nenhum resultado encontrado
@@ -120,13 +147,14 @@
                     </b-field>
                     <b-field>
                       <b-autocomplete
-                        v-model="knArea"
-                        rounded
-                        :data="filteredDataArray"
+                        v-model="knAreaSearch"
+                        :data="knAreas"
                         placeholder="Área de conhecimento"
                         aria-placeholder="Unidade acadêmica"
+                        rounded
                         icon="magnify"
-                        @select="option => (selected = option)"
+                        @typing="getKnAreas"
+                        @select="option => (selectedKnArea = option)"
                       >
                         <template slot="empty">
                           Nenhum resultado encontrado
@@ -150,6 +178,7 @@
                         required
                         aria-required="true"
                         pattern="[A-Za-z]+"
+                        rounded
                       ></b-input>
                     </b-field>
                     <b-field>
@@ -159,12 +188,13 @@
                         aria-placeholder="Nome do orientador"
                         validation-message="Digite letras apenas"
                         pattern="[A-Za-z]+"
+                        rounded
                       ></b-input>
                     </b-field>
                     <div class="columns vcenter">
                       <div class="column is-half">
                         <div class="field">
-                          <b-checkbox v-model="femaleAdvicer">
+                          <b-checkbox v-model="isFemaleAdvicer">
                             Orientadora
                           </b-checkbox>
                         </div>
@@ -195,6 +225,7 @@
                         message="Campo opcional"
                         validation-message="Digite letras apenas"
                         pattern="[A-Za-z]+"
+                        rounded
                       ></b-input>
                     </b-field>
                     <b-field>
@@ -205,12 +236,13 @@
                         message="Campo opcional"
                         validation-message="Digite letras apenas"
                         pattern="[A-Za-z]+"
+                        rounded
                       ></b-input>
                     </b-field>
                     <div class="columns vcenter">
                       <div class="column is-half">
                         <div class="field">
-                          <b-checkbox v-model="femaleCoadvicer">
+                          <b-checkbox v-model="isFemaleCoadvicer">
                             Coorientadora
                           </b-checkbox>
                         </div>
@@ -303,7 +335,6 @@
                 </div>
               </card>
             </slide>
-
             <navigation slot="hooper-addons"></navigation>
             <pagination slot="hooper-addons"></pagination>
           </hooper>
@@ -316,6 +347,7 @@
 <script>
 import { Hooper, Slide, Navigation, Pagination } from 'hooper'
 import { mapState } from 'vuex'
+import pDebounce from 'p-debounce'
 import codes from '../shared/messageCodes'
 import Card from '@/components/Card'
 
@@ -332,7 +364,33 @@ export default {
 
   data() {
     return {
-      keywords: ['']
+      keywords: [''],
+      authorName: '',
+      authorSurname: '',
+      author2Name: '',
+      author2Surname: '',
+      workTitle: '',
+      workSubtitle: '',
+      presentationYear: undefined,
+      workImagesType: undefined,
+      acdUnityPreviousSearch: '',
+      acdUnitySearch: '',
+      knAreaSearch: '',
+      knAreaPreviousSearch: '',
+      advicerName: '',
+      advicerSurname: '',
+      isFemaleAdvicer: false,
+      advisorTitle: '',
+      coadvicerName: '',
+      coadvicerSurname: '',
+      isFemaleCoadvicer: false,
+      coadvicerTitle: '',
+      catalogFont: '',
+      selectedAcdUnity: undefined,
+      selectedKnArea: undefined,
+      academicUnities: [],
+      knAreas: [],
+      pageNumber: undefined
     }
   },
 
@@ -349,9 +407,40 @@ export default {
   },
 
   methods: {
-    getYear(y = 0) {
-      return new Date(Date.now()).getFullYear() - y
-    }
+    getYear(y) {
+      return '' + (new Date(Date.now()).getFullYear() - y)
+    },
+
+    getAcdUnities: pDebounce(function(term) {
+      // Evitar que consultas iguais sejam repetidas
+      console.log(term)
+      if (!term === this.acdUnityPreviousSearch) {
+        this.acdUnityPreviousSearch = term
+        this.$axios
+          .get('/api/academicUnities')
+          .then(response => {
+            this.academicUnities = response.data
+          })
+          .catch(console.log)
+      }
+    }, 500),
+
+    getKnAreas: pDebounce(function(term) {
+      // Evitar que consultas iguais sejam repetidas
+      if (!term === this.knAreaPreviousSearch) {
+        this.knAreaPreviousSearch = term
+        this.$axios
+          .get('/api/knowledgeAreas', {
+            params: {
+              acdUnityId: this.selectedAcdUnity.id
+            }
+          })
+          .then(response => {
+            this.knAreas = response.data
+          })
+          .catch(console.log)
+      }
+    }, 500)
   }
 }
 </script>
