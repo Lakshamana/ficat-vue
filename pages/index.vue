@@ -10,6 +10,7 @@
                   <div class="column is-half">
                     <b-field>
                       <b-input
+                        v-model="authorName"
                         placeholder="Nome do autor"
                         aria-placeholder="Nome do autor"
                         validation-message="Campo obrigatório. Digite letras apenas"
@@ -20,6 +21,7 @@
                     </b-field>
                     <b-field>
                       <b-input
+                        v-model="authorSurname"
                         placeholder="Sobrenome do autor"
                         aria-placeholder="Nome do autor"
                         pattern="[A-Za-z]+"
@@ -31,6 +33,7 @@
                   <div class="column is-half">
                     <b-field>
                       <b-input
+                        v-model="author2Name"
                         placeholder="Nome do 2º autor"
                         aria-placeholder="Nome do 2º autor"
                         message="Campo opcional"
@@ -40,6 +43,7 @@
                     </b-field>
                     <b-field>
                       <b-input
+                        v-model="author2Surname"
                         placeholder="Sobrenome do 2º autor"
                         aria-placeholder="Sobrenome do 2º autor"
                         message="Campo opcional"
@@ -55,6 +59,7 @@
                   <div class="column is-half">
                     <b-field>
                       <b-input
+                        v-model="workTitle"
                         placeholder="Título do trabalho"
                         aria-placeholder="Título do trabalho"
                         validation-message="Mínimo de 10 caracteres"
@@ -65,6 +70,7 @@
                     </b-field>
                     <b-field>
                       <b-input
+                        v-model="workSubtitle"
                         placeholder="Subtítulo do trabalho"
                         aria-placeholder="Subtítulo do trabalho"
                         message="Campo opcional"
@@ -72,8 +78,9 @@
                     </b-field>
                     <b-field>
                       <b-select
-                        placeholder="Ano"
-                        aria-placeholder="Ano"
+                        v-model="presentationYear"
+                        placeholder="Ano de apresentação"
+                        aria-placeholder="Ano de apresentação"
                         rounded
                       >
                         <option v-for="y in 10" :key="y" :value="y">
@@ -85,6 +92,7 @@
                   <div class="column is-half">
                     <b-field>
                       <b-select
+                        v-model="hasImages"
                         placeholder="Ilustração"
                         aria-placeholder="Ilustração"
                         rounded
@@ -135,6 +143,7 @@
                   <div class="column is-half">
                     <b-field>
                       <b-input
+                        v-model="advicerName"
                         placeholder="Nome do orientador"
                         aria-placeholder="Nome do orientador"
                         validation-message="Campo obrigatório. Digite letras apenas"
@@ -145,9 +154,10 @@
                     </b-field>
                     <b-field>
                       <b-input
+                        v-model="advicerSurname"
                         placeholder="Sobrenome do orientador"
                         aria-placeholder="Nome do orientador"
-                        validation-message="Campo obrigatório. Digite letras apenas"
+                        validation-message="Digite letras apenas"
                         pattern="[A-Za-z]+"
                       ></b-input>
                     </b-field>
@@ -162,6 +172,7 @@
                       <div class="column is-half">
                         <b-field>
                           <b-select
+                            v-model="advisorTitle"
                             placeholder="Titulação"
                             aria-placeholder="Titulação"
                             rounded
@@ -178,6 +189,7 @@
                   <div class="column is-half">
                     <b-field>
                       <b-input
+                        v-model="coadvicerName"
                         placeholder="Nome do coorientador"
                         aria-placeholder="Nome do coorientador"
                         message="Campo opcional"
@@ -187,6 +199,7 @@
                     </b-field>
                     <b-field>
                       <b-input
+                        v-model="coadvicerSurname"
                         placeholder="Sobrenome do coorientador"
                         aria-placeholder="Nome do coorientador"
                         message="Campo opcional"
@@ -194,6 +207,30 @@
                         pattern="[A-Za-z]+"
                       ></b-input>
                     </b-field>
+                    <div class="columns vcenter">
+                      <div class="column is-half">
+                        <div class="field">
+                          <b-checkbox v-model="femaleCoadvicer">
+                            Coorientadora
+                          </b-checkbox>
+                        </div>
+                      </div>
+                      <div class="column is-half">
+                        <b-field>
+                          <b-select
+                            v-model="coadvicerTitle"
+                            placeholder="Titulação"
+                            aria-placeholder="Titulação"
+                            rounded
+                          >
+                            <option value="graduate">Graduado</option>
+                            <option value="expert">Especialista</option>
+                            <option value="master">Mestre</option>
+                            <option value="doctor">Doutor</option>
+                          </b-select>
+                        </b-field>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </card>
@@ -202,17 +239,38 @@
               <card title="Palavras-chave">
                 <div class="columns is-centered">
                   <div class="column is-half">
-                    <b-field>
-                      <b-input
-                        placeholder="Adicione uma palavra-chave"
-                        aria-placeholder="Adicione uma palavra-chave"
-                        validation-message="Digite letras apenas. Mínimo de 10 caracteres"
-                        required
-                        aria-required="true"
-                        minlength="10"
-                        pattern="[A-Za-z]+"
-                      ></b-input>
-                    </b-field>
+                    <div
+                      v-for="(k, idx) in keywords"
+                      :key="idx"
+                      class="field is-grouped is-grouped"
+                    >
+                      <b-field>
+                        <b-input
+                          v-model="keywords[idx]"
+                          placeholder="Adicione uma palavra-chave"
+                          aria-placeholder="Adicione uma palavra-chave"
+                          validation-message="Digite letras apenas. Mínimo de 10 caracteres"
+                          required
+                          aria-required="true"
+                          minlength="10"
+                          pattern="[A-Za-z]+"
+                        ></b-input>
+                      </b-field>
+                      <div style="padding-left: 1em; display: inline;">
+                        <b-button
+                          icon-right="plus"
+                          class="is-success is-round is-outlined"
+                          :disabled="keywords.length > 4"
+                          @click="keywords.push('')"
+                        ></b-button>
+                        <b-button
+                          v-if="idx > 0"
+                          icon-right="minus"
+                          class="is-danger is-round btn-margin is-outlined"
+                          @click="keywords.splice(idx, 1)"
+                        ></b-button>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </card>
@@ -223,6 +281,7 @@
                   <div class="column is-4">
                     <b-field>
                       <b-select
+                        v-model="catalogFont"
                         placeholder="Fonte"
                         aria-placeholder="Fonte"
                         rounded
@@ -271,6 +330,12 @@ export default {
     Pagination
   },
 
+  data() {
+    return {
+      keywords: ['']
+    }
+  },
+
   computed: {
     ...mapState({
       lang: state => state.lang.langTag
@@ -300,5 +365,9 @@ export default {
 
 .vcenter {
   align-items: center;
+}
+
+.btn-margin {
+  margin: 0 0.2em 0 0.2em;
 }
 </style>
