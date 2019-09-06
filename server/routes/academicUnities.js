@@ -21,8 +21,13 @@ async function create(ctx) {
 }
 
 async function list(ctx) {
+  let query = AcademicUnity
+  const name = ctx.query.name
+  if (name) {
+    query = query.where('name', 'like', `%${name}%`)
+  }
   try {
-    ctx.body = await AcademicUnity.fetchAll()
+    ctx.body = await query.fetchAll()
   } catch (e) {
     ctx.throw(HttpCodes.BAD_REQUEST, MessageCodes.error.errOnDbFetch, {
       error: {

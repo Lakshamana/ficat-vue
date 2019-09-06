@@ -137,7 +137,7 @@ api.post(
 )
 
 // list
-api.get('/academicUnities/', acdUnitiesRoutes.list)
+api.get('/academicUnities/', query(['name']), acdUnitiesRoutes.list)
 
 // update
 api.put(
