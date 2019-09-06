@@ -8,10 +8,10 @@
   >
     <b-input
       ref="ipt"
-      v-model="properties.model"
+      :value="value"
       :type="properties.type"
       :placeholder="properties.placeholder"
-      :aria-placeholder="properties.ariaPlaceholder"
+      :aria-placeholder="ariaPlaceholder"
       :pattern="properties.pattern"
       :minlength="properties.minlength"
       :maxlength="properties.maxlength"
@@ -19,6 +19,7 @@
       :aria-required="properties.ariaRequired"
       :rounded="properties.rounded"
       @blur="dirty = true"
+      @input="onChange"
     ></b-input>
   </b-field>
 </template>
@@ -30,12 +31,18 @@ export default {
     properties: {
       type: Object,
       default: () => ({})
+    },
+
+    value: {
+      type: String,
+      default: ''
     }
   },
 
   data() {
     return {
-      dirty: false
+      dirty: false,
+      valid: false
     }
   },
 
@@ -44,7 +51,8 @@ export default {
       const obj = {}
       if (this.dirty) {
         if (this.valid) {
-          obj[this.properties.validMessage] = this.dirty
+          this.properties.validMessage &&
+            (obj[this.properties.validMessage] = this.dirty)
         } else {
           for (const msg of this.properties.invalidMessages) {
             obj[msg] = this.dirty
@@ -57,12 +65,19 @@ export default {
       return obj
     },
 
-    valid() {
-      return this.$refs.ipt && this.$refs.ipt.checkHtml5Validity()
+    ariaPlaceholder() {
+      return this.properties.ariaPlaceholder || this.properties.placeholder
     },
 
-    value() {
-      return this.$refs.ipt && this.$refs.ipt.nodeValue
+    ariaRequired() {
+      return this.properties.ariaRequired || this.properties.required
+    }
+  },
+
+  methods: {
+    onChange(value) {
+      this.$emit('input', value)
+      this.$refs.ipt && (this.valid = this.$refs.ipt.checkHtml5Validity())
     }
   }
 }

@@ -9,41 +9,23 @@
                 <div class="columns">
                   <div class="column is-half">
                     <input-validation
-                      ref="authorNameIpt"
+                      v-model="authorName"
                       :properties="authorNameProperties"
                     ></input-validation>
-                    <b-field>
-                      <b-input
-                        v-model="authorSurname"
-                        placeholder="Sobrenome do autor"
-                        aria-placeholder="Nome do autor"
-                        validation-message="Campo obrigatório. Digite letras apenas"
-                        pattern="[A-Za-z]+"
-                        required
-                        aria-required="true"
-                        rounded
-                      ></b-input>
-                    </b-field>
+                    <input-validation
+                      v-model="authorSurname"
+                      :properties="authorSurnameProperties"
+                    ></input-validation>
                   </div>
                   <div class="column is-half">
-                    <b-field message="Campo opcional">
-                      <b-input
-                        v-model="author2Name"
-                        placeholder="Nome do 2º autor"
-                        aria-placeholder="Nome do 2º autor"
-                        validation-message="Digite letras apenas"
-                        pattern="[A-Za-z]+"
-                        rounded
-                      ></b-input>
-                    </b-field>
-                    <b-field message="Campo opcional">
-                      <b-input
-                        v-model="author2Surname"
-                        placeholder="Sobrenome do 2º autor"
-                        aria-placeholder="Sobrenome do 2º autor"
-                        rounded
-                      ></b-input>
-                    </b-field>
+                    <input-validation
+                      v-model="author2Name"
+                      :properties="author2NameProperties"
+                    ></input-validation>
+                    <input-validation
+                      v-model="author2Surname"
+                      :properties="author2SurnameProperties"
+                    ></input-validation>
                   </div>
                 </div>
               </card>
@@ -52,26 +34,14 @@
               <card title="Dados do Trabalho">
                 <div class="columns">
                   <div class="column is-half">
-                    <b-field>
-                      <b-input
-                        v-model="workTitle"
-                        placeholder="Título do trabalho"
-                        aria-placeholder="Título do trabalho"
-                        validation-message="Mínimo de 10 caracteres"
-                        required
-                        aria-required="true"
-                        minlength="10"
-                        rounded
-                      ></b-input>
-                    </b-field>
-                    <b-field message="Campo opcional">
-                      <b-input
-                        v-model="workSubtitle"
-                        placeholder="Subtítulo do trabalho"
-                        aria-placeholder="Subtítulo do trabalho"
-                        rounded
-                      ></b-input>
-                    </b-field>
+                    <input-validation
+                      v-model="workTitle"
+                      :properties="workTitleProperties"
+                    ></input-validation>
+                    <input-validation
+                      v-model="workSubtitle"
+                      :properties="workSubitleProperties"
+                    ></input-validation>
                     <div class="columns">
                       <div class="column is-4">
                         <b-field>
@@ -90,19 +60,10 @@
                         </b-field>
                       </div>
                       <div class="column is-8">
-                        <b-field>
-                          <b-input
-                            v-model="pageNumber"
-                            type="number"
-                            placeholder="Número de páginas"
-                            aria-placeholder="Número de páginas"
-                            validation-message="Campo obrigatório e somente números"
-                            required
-                            pattern="[0-9]+"
-                            aria-required="true"
-                            rounded
-                          ></b-input>
-                        </b-field>
+                        <input-validation
+                          v-model="totalPages"
+                          :properties="totalPagesProperties"
+                        ></input-validation>
                       </div>
                     </div>
                   </div>
@@ -387,18 +348,63 @@ export default {
       selectedKnArea: undefined,
       academicUnities: [],
       knAreas: [],
-      pageNumber: undefined,
+      totalPages: undefined,
       loading: false,
 
       authorNameProperties: {
         placeholder: 'Nome do autor',
-        type: 'text',
-        ariaPlaceholder: 'Nome do autor',
         invalidMessages: ['Campo obrigatório. Digite letras apenas'],
         pattern: '[A-Za-z]+',
         minlength: 6,
         required: true,
-        ariaRequired: true,
+        rounded: true
+      },
+
+      authorSurnameProperties: {
+        placeholder: 'Sobrenome do autor',
+        invalidMessages: ['Campo obrigatório. Digite letras apenas'],
+        pattern: '[A-Za-z]+',
+        required: true,
+        rounded: true
+      },
+
+      author2NameProperties: {
+        placeholder: 'Nome do 2º autor',
+        invalidMessages: ['Digite letras apenas'],
+        pattern: '[A-Za-z]+',
+        minlength: 6,
+        rounded: true
+      },
+
+      author2SurnameProperties: {
+        placeholder: 'Sobrenome do 2º autor',
+        invalidMessages: ['Digite letras apenas'],
+        pattern: '[A-Za-z]+',
+        rounded: true
+      },
+
+      workTitleProperties: {
+        placeholder: 'Título do trabalho',
+        invalidMessages: ['Mínimo de 10 caracteres'],
+        required: true,
+        minlength: 10,
+        rounded: true
+      },
+
+      workSubtitleProperties: {
+        placeholder: 'Subtítulo do trabalho',
+        invalidMessages: ['Mínimo de 10 caracteres'],
+        required: true,
+        minlength: 10,
+        rounded: true
+      },
+
+      totalPagesProperties: {
+        type: 'number',
+        placeholder: 'Número de páginas',
+        invalidMessages: ['Campo obrigatório e somente números'],
+        required: true,
+        pattern: '[0-9]+',
         rounded: true
       }
     }
