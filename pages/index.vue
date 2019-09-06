@@ -445,7 +445,7 @@ export default {
           .then(response => {
             this.academicUnities = response.data
           })
-          .catch(console.log)
+          .catch()
           .finally(() => (this.loading = false))
       }
     }, 500),
@@ -463,7 +463,7 @@ export default {
           .then(response => {
             this.knAreas = response.data
           })
-          .catch(console.log)
+          .catch()
           .finally(() => (this.loading = false))
       }
     }, 500)
