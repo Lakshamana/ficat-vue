@@ -18,7 +18,7 @@
       :required="properties.required"
       :aria-required="properties.ariaRequired"
       :rounded="properties.rounded"
-      @blur="dirty = true"
+      @blur="onBlur"
       @input="onChange"
     ></b-input>
   </b-field>
@@ -42,6 +42,7 @@ export default {
   data() {
     return {
       dirty: false,
+      touched: false,
       valid: false
     }
   },
@@ -77,6 +78,16 @@ export default {
   methods: {
     onChange(value) {
       this.$emit('input', value)
+      this.validate()
+    },
+
+    onBlur() {
+      this.dirty = !!this.value.length
+      this.touched = true
+      this.validate()
+    },
+
+    validate() {
       this.$refs.ipt && (this.valid = this.$refs.ipt.checkHtml5Validity())
     }
   }

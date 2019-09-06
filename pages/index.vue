@@ -1,5 +1,5 @@
 <template>
-  <section class="section">
+  <section class="section center">
     <div class="columns is-centered is-mobile">
       <div class="column is-10">
         <form @submit.prevent="onSubmit">
@@ -40,7 +40,7 @@
                     ></input-validation>
                     <input-validation
                       v-model="workSubtitle"
-                      :properties="workSubitleProperties"
+                      :properties="workSubtitleProperties"
                     ></input-validation>
                     <div class="columns">
                       <div class="column is-4">
@@ -91,6 +91,7 @@
                         :loading="loading"
                         field="name"
                         required
+                        aria-required="true"
                         rounded
                         icon="magnify"
                         @typing="getAcdUnities"
@@ -109,6 +110,8 @@
                         :loading="loading"
                         field="description"
                         rounded
+                        required
+                        aria-required="true"
                         icon="magnify"
                         @typing="getKnAreas"
                         @select="option => (selectedKnArea = option)"
@@ -126,28 +129,14 @@
               <card title="Orientadores">
                 <div class="columns">
                   <div class="column is-half">
-                    <b-field>
-                      <b-input
-                        v-model="advicerName"
-                        placeholder="Nome do orientador"
-                        aria-placeholder="Nome do orientador"
-                        validation-message="Campo obrigatório. Digite letras apenas"
-                        required
-                        aria-required="true"
-                        pattern="[A-Za-z]+"
-                        rounded
-                      ></b-input>
-                    </b-field>
-                    <b-field>
-                      <b-input
-                        v-model="advicerSurname"
-                        placeholder="Sobrenome do orientador"
-                        aria-placeholder="Nome do orientador"
-                        validation-message="Digite letras apenas"
-                        pattern="[A-Za-z]+"
-                        rounded
-                      ></b-input>
-                    </b-field>
+                    <input-validation
+                      v-model="advicerName"
+                      :properties="advicerNameProperties"
+                    ></input-validation>
+                    <input-validation
+                      v-model="advicerSurname"
+                      :properties="advicerSurnameProperties"
+                    ></input-validation>
                     <div class="columns vcenter">
                       <div class="column is-half">
                         <div class="field">
@@ -161,6 +150,8 @@
                           <b-select
                             v-model="advisorTitle"
                             placeholder="Titulação"
+                            required
+                            aria-required="true"
                             aria-placeholder="Titulação"
                             rounded
                           >
@@ -174,28 +165,14 @@
                     </div>
                   </div>
                   <div class="column is-half">
-                    <b-field>
-                      <b-input
-                        v-model="coadvicerName"
-                        placeholder="Nome do coorientador"
-                        aria-placeholder="Nome do coorientador"
-                        message="Campo opcional"
-                        validation-message="Digite letras apenas"
-                        pattern="[A-Za-z]+"
-                        rounded
-                      ></b-input>
-                    </b-field>
-                    <b-field>
-                      <b-input
-                        v-model="coadvicerSurname"
-                        placeholder="Sobrenome do coorientador"
-                        aria-placeholder="Nome do coorientador"
-                        message="Campo opcional"
-                        validation-message="Digite letras apenas"
-                        pattern="[A-Za-z]+"
-                        rounded
-                      ></b-input>
-                    </b-field>
+                    <input-validation
+                      v-model="coadvicerName"
+                      :properties="coadvicerNameProperties"
+                    ></input-validation>
+                    <input-validation
+                      v-model="coadvicerSurname"
+                      :properties="coadvicerSurnameProperties"
+                    ></input-validation>
                     <div class="columns vcenter">
                       <div class="column is-half">
                         <div class="field">
@@ -233,18 +210,10 @@
                       :key="idx"
                       class="field is-grouped is-grouped"
                     >
-                      <b-field>
-                        <b-input
-                          v-model="keywords[idx]"
-                          placeholder="Adicione uma palavra-chave"
-                          aria-placeholder="Adicione uma palavra-chave"
-                          validation-message="Digite letras apenas. Mínimo de 10 caracteres"
-                          required
-                          aria-required="true"
-                          minlength="10"
-                          pattern="[A-Za-z]+"
-                        ></b-input>
-                      </b-field>
+                      <input-validation
+                        v-model="keywords[idx]"
+                        :properties="keywordProperties"
+                      ></input-validation>
                       <div style="padding-left: 1em; display: inline;">
                         <b-button
                           icon-right="plus"
@@ -353,7 +322,9 @@ export default {
 
       authorNameProperties: {
         placeholder: 'Nome do autor',
-        invalidMessages: ['Campo obrigatório. Digite letras apenas'],
+        invalidMessages: [
+          'Campo obrigatório e mínimo de 6 letras. Digite letras apenas'
+        ],
         pattern: '[A-Za-z]+',
         minlength: 6,
         required: true,
@@ -362,30 +333,35 @@ export default {
 
       authorSurnameProperties: {
         placeholder: 'Sobrenome do autor',
-        invalidMessages: ['Campo obrigatório. Digite letras apenas'],
+        invalidMessages: [
+          'Campo obrigatório e mínimo de 6 letras. Digite letras apenas'
+        ],
         pattern: '[A-Za-z]+',
+        minlength: 6,
         required: true,
         rounded: true
       },
 
       author2NameProperties: {
         placeholder: 'Nome do 2º autor',
-        invalidMessages: ['Digite letras apenas'],
-        pattern: '[A-Za-z]+',
+        invalidMessages: ['Mínimo de 6 letras. Digite letras apenas'],
+        defaultMessage: 'Campo opcional',
+        pattern: '[A-Za-z]*',
         minlength: 6,
         rounded: true
       },
 
       author2SurnameProperties: {
         placeholder: 'Sobrenome do 2º autor',
-        invalidMessages: ['Digite letras apenas'],
-        pattern: '[A-Za-z]+',
+        invalidMessages: ['Mínimo de 6 letras. Digite letras apenas'],
+        defaultMessage: 'Campo opcional',
+        pattern: '[A-Za-z]*',
         rounded: true
       },
 
       workTitleProperties: {
         placeholder: 'Título do trabalho',
-        invalidMessages: ['Mínimo de 10 caracteres'],
+        invalidMessages: ['Campo obrigatório e mínimo de 10 caracteres'],
         required: true,
         minlength: 10,
         rounded: true
@@ -393,7 +369,7 @@ export default {
 
       workSubtitleProperties: {
         placeholder: 'Subtítulo do trabalho',
-        invalidMessages: ['Mínimo de 10 caracteres'],
+        invalidMessages: ['Campo obrigatório e mínimo de 10 caracteres'],
         required: true,
         minlength: 10,
         rounded: true
@@ -405,6 +381,48 @@ export default {
         invalidMessages: ['Campo obrigatório e somente números'],
         required: true,
         pattern: '[0-9]+',
+        rounded: true
+      },
+
+      advicerNameProperties: {
+        placeholder: 'Nome do(a) orientador(a)',
+        invalidMessages: [
+          'Campo obrigatório e somente letras. Mínimo de 10 caracteres'
+        ],
+        required: true,
+        pattern: '[A-Za-z]+',
+        rounded: true
+      },
+
+      advicerSurnameProperties: {
+        placeholder: 'Sobrenome do(a) orientador(a)',
+        invalidMessages: ['Digite letras apenas'],
+        required: true,
+        pattern: '[A-Za-z]+',
+        rounded: true
+      },
+
+      coadvicerNameProperties: {
+        placeholder: 'Nome do coorientador',
+        invalidMessages: ['Somente letras. Mínimo de 10 caracteres'],
+        pattern: '[A-Za-z]*',
+        rounded: true
+      },
+
+      coadvicerSurnameProperties: {
+        placeholder: 'Sobrenome do(a) orientador(a)',
+        invalidMessages: ['Digite letras apenas'],
+        defaultMessage: 'Campo opcional',
+        pattern: '[A-Za-z]*',
+        rounded: true
+      },
+
+      keywordProperties: {
+        placeholder: 'Adicione uma palavra-chave',
+        invalidMessages: [this.getKwInvalidMessage],
+        required: this.requiredKeyword,
+        minlength: 10,
+        pattern: '[A-Za-z]+',
         rounded: true
       }
     }
@@ -419,6 +437,15 @@ export default {
       return {
         authorTitle: this.$tr(this.lang, codes.layout.ltAbout)
       }
+    },
+
+    getKwInvalidMessage() {
+      const prefix = this.keywords.length === 1 ? 'Campo obrigatório. ' : ''
+      return `${prefix}Digite letras apenas. Mínimo de 10 caracteres`
+    },
+
+    requiredKeyword() {
+      return this.keywords.length === 1
     }
   },
 
@@ -480,6 +507,10 @@ export default {
 
 .vcenter {
   align-items: center;
+}
+
+.center {
+  margin: auto;
 }
 
 .btn-margin {
