@@ -1,12 +1,25 @@
 <template>
   <b-field
-    :label="inputLabel"
+    :label="properties.inputLabel || ''"
     :message="messageParams"
     :type="{
       [valid ? 'is-success' : 'is-danger']: dirty
     }"
   >
-    <slot></slot>
+    <b-input
+      ref="ipt"
+      v-model="properties.model"
+      :type="properties.type"
+      :placeholder="properties.placeholder"
+      :aria-placeholder="properties.ariaPlaceholder"
+      :pattern="properties.pattern"
+      :minlength="properties.minlength"
+      :maxlength="properties.maxlength"
+      :required="properties.required"
+      :aria-required="properties.ariaRequired"
+      :rounded="properties.rounded"
+      @blur="dirty = true"
+    ></b-input>
   </b-field>
 </template>
 
@@ -14,29 +27,9 @@
 export default {
   name: 'InputValidation',
   props: {
-    inputLabel: {
-      type: String,
-      default: ''
-    },
-
-    defaultMessage: {
-      type: String,
-      default: ''
-    },
-
-    validMessage: {
-      type: String,
-      default: ''
-    },
-
-    invalidMessage: {
-      type: Array,
-      default: () => []
-    },
-
-    valid: {
-      type: Boolean,
-      default: false
+    properties: {
+      type: Object,
+      default: () => ({})
     }
   },
 
@@ -51,16 +44,25 @@ export default {
       const obj = {}
       if (this.dirty) {
         if (this.valid) {
-          obj[this.validMessage] = this.dirty
+          obj[this.properties.validMessage] = this.dirty
         } else {
-          for (const msg of this.invalidMessage) {
+          for (const msg of this.properties.invalidMessages) {
             obj[msg] = this.dirty
           }
         }
       } else {
-        obj[this.defaultMessage] = !this.dirty
+        this.properties.defaultMessage &&
+          (obj[this.properties.defaultMessage] = !this.dirty)
       }
       return obj
+    },
+
+    valid() {
+      return this.$refs.ipt && this.$refs.ipt.checkHtml5Validity()
+    },
+
+    value() {
+      return this.$refs.ipt && this.$refs.ipt.nodeValue
     }
   }
 }

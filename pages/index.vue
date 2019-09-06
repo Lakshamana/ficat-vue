@@ -8,10 +8,14 @@
               <card title="Nome do autor">
                 <div class="columns">
                   <div class="column is-half">
+                    <input-validation
+                      ref="authorNameIpt"
+                      :properties="authorNameProperties"
+                    ></input-validation>
                     <b-field>
                       <b-input
-                        v-model="authorName"
-                        placeholder="Nome do autor"
+                        v-model="authorSurname"
+                        placeholder="Sobrenome do autor"
                         aria-placeholder="Nome do autor"
                         validation-message="Campo obrigatório. Digite letras apenas"
                         pattern="[A-Za-z]+"
@@ -20,36 +24,23 @@
                         rounded
                       ></b-input>
                     </b-field>
-                    <b-field>
-                      <b-input
-                        v-model="authorSurname"
-                        placeholder="Sobrenome do autor"
-                        aria-placeholder="Nome do autor"
-                        pattern="[A-Za-z]+"
-                        required
-                        aria-required="true"
-                        rounded
-                      ></b-input>
-                    </b-field>
                   </div>
                   <div class="column is-half">
-                    <b-field>
+                    <b-field message="Campo opcional">
                       <b-input
                         v-model="author2Name"
                         placeholder="Nome do 2º autor"
                         aria-placeholder="Nome do 2º autor"
-                        message="Campo opcional"
                         validation-message="Digite letras apenas"
                         pattern="[A-Za-z]+"
                         rounded
                       ></b-input>
                     </b-field>
-                    <b-field>
+                    <b-field message="Campo opcional">
                       <b-input
                         v-model="author2Surname"
                         placeholder="Sobrenome do 2º autor"
                         aria-placeholder="Sobrenome do 2º autor"
-                        message="Campo opcional"
                         rounded
                       ></b-input>
                     </b-field>
@@ -73,12 +64,11 @@
                         rounded
                       ></b-input>
                     </b-field>
-                    <b-field>
+                    <b-field message="Campo opcional">
                       <b-input
                         v-model="workSubtitle"
                         placeholder="Subtítulo do trabalho"
                         aria-placeholder="Subtítulo do trabalho"
-                        message="Campo opcional"
                         rounded
                       ></b-input>
                     </b-field>
@@ -89,6 +79,8 @@
                             v-model="presentationYear"
                             placeholder="Ano"
                             aria-placeholder="Ano"
+                            required
+                            aria-required="true"
                             rounded
                           >
                             <option v-for="y in 10" :key="y" :value="y">
@@ -120,6 +112,8 @@
                         v-model="workImagesType"
                         placeholder="Ilustração"
                         aria-placeholder="Ilustração"
+                        required
+                        aria-required="true"
                         expanded
                         rounded
                       >
@@ -130,10 +124,11 @@
                     </b-field>
                     <b-field>
                       <b-autocomplete
-                        v-model="acdUnitySearch"
                         :data="academicUnities"
                         placeholder="Unidade acadêmica"
                         aria-placeholder="Unidade acadêmica"
+                        :loading="loading"
+                        field="name"
                         required
                         rounded
                         icon="magnify"
@@ -147,10 +142,11 @@
                     </b-field>
                     <b-field>
                       <b-autocomplete
-                        v-model="knAreaSearch"
                         :data="knAreas"
                         placeholder="Área de conhecimento"
-                        aria-placeholder="Unidade acadêmica"
+                        aria-placeholder="Área de conhecimento"
+                        :loading="loading"
+                        field="description"
                         rounded
                         icon="magnify"
                         @typing="getKnAreas"
@@ -349,6 +345,8 @@ import { Hooper, Slide, Navigation, Pagination } from 'hooper'
 import { mapState } from 'vuex'
 import pDebounce from 'p-debounce'
 import codes from '../shared/messageCodes'
+
+import InputValidation from '@/components/InputValidation'
 import Card from '@/components/Card'
 
 export default {
@@ -359,7 +357,8 @@ export default {
     Hooper,
     Slide,
     Navigation,
-    Pagination
+    Pagination,
+    InputValidation
   },
 
   data() {
@@ -374,8 +373,6 @@ export default {
       presentationYear: undefined,
       workImagesType: undefined,
       acdUnityPreviousSearch: '',
-      acdUnitySearch: '',
-      knAreaSearch: '',
       knAreaPreviousSearch: '',
       advicerName: '',
       advicerSurname: '',
@@ -390,7 +387,20 @@ export default {
       selectedKnArea: undefined,
       academicUnities: [],
       knAreas: [],
-      pageNumber: undefined
+      pageNumber: undefined,
+      loading: false,
+
+      authorNameProperties: {
+        placeholder: 'Nome do autor',
+        type: 'text',
+        ariaPlaceholder: 'Nome do autor',
+        invalidMessages: ['Campo obrigatório. Digite letras apenas'],
+        pattern: '[A-Za-z]+',
+        minlength: 6,
+        required: true,
+        ariaRequired: true,
+        rounded: true
+      }
     }
   },
 
@@ -412,33 +422,43 @@ export default {
     },
 
     getAcdUnities: pDebounce(function(term) {
+      if (!term.length) {
+        this.academicUnities = []
+        return
+      }
       // Evitar que consultas iguais sejam repetidas
-      console.log(term)
-      if (!term === this.acdUnityPreviousSearch) {
+      if (term !== this.acdUnityPreviousSearch) {
+        this.loading = true
         this.acdUnityPreviousSearch = term
         this.$axios
-          .get('/api/academicUnities')
+          .get('/api/academicUnities', {
+            params: {
+              name: term
+            }
+          })
           .then(response => {
             this.academicUnities = response.data
           })
           .catch(console.log)
+          .finally(() => (this.loading = false))
       }
     }, 500),
 
     getKnAreas: pDebounce(function(term) {
       // Evitar que consultas iguais sejam repetidas
-      if (!term === this.knAreaPreviousSearch) {
+      if (term !== this.knAreaPreviousSearch) {
         this.knAreaPreviousSearch = term
         this.$axios
           .get('/api/knowledgeAreas', {
             params: {
-              acdUnityId: this.selectedAcdUnity.id
+              description: term
             }
           })
           .then(response => {
             this.knAreas = response.data
           })
           .catch(console.log)
+          .finally(() => (this.loading = false))
       }
     }, 500)
   }
