@@ -8,7 +8,7 @@
   >
     <b-input
       ref="ipt"
-      :value="value"
+      v-model="iptValue"
       :type="properties.type"
       :placeholder="properties.placeholder"
       :aria-placeholder="ariaPlaceholder"
@@ -42,8 +42,7 @@ export default {
   data() {
     return {
       dirty: false,
-      touched: false,
-      valid: false
+      iptValue: this.value
     }
   },
 
@@ -72,23 +71,26 @@ export default {
 
     ariaRequired() {
       return this.properties.ariaRequired || this.properties.required
+    },
+
+    valid() {
+      const ipt = this.$refs.ipt
+      const val = this.iptValue
+      if (this.properties.valid) {
+        return this.properties.valid(val)
+      } else {
+        return ipt && ipt.checkHtml5Validity()
+      }
     }
   },
 
   methods: {
     onChange(value) {
       this.$emit('input', value)
-      this.validate()
     },
 
     onBlur() {
-      this.dirty = !!this.value.length
-      this.touched = true
-      this.validate()
-    },
-
-    validate() {
-      this.$refs.ipt && (this.valid = this.$refs.ipt.checkHtml5Validity())
+      this.dirty = true
     }
   }
 }

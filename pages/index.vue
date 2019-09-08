@@ -346,8 +346,10 @@ export default {
         placeholder: 'Nome do 2º autor',
         invalidMessages: ['Mínimo de 6 letras. Digite letras apenas'],
         defaultMessage: 'Campo opcional',
-        pattern: '[A-Za-z]*',
-        minlength: 6,
+        valid: name => {
+          const re = /^[A-Za-z]{6,}$/
+          return name === '' || re.test(name)
+        },
         rounded: true
       },
 
@@ -355,7 +357,10 @@ export default {
         placeholder: 'Sobrenome do 2º autor',
         invalidMessages: ['Mínimo de 6 letras. Digite letras apenas'],
         defaultMessage: 'Campo opcional',
-        pattern: '[A-Za-z]*',
+        valid: name => {
+          const re = /^[A-Za-z]{6,}$/
+          return name === '' || re.test(name)
+        },
         rounded: true
       },
 
