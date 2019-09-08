@@ -76,11 +76,9 @@ export default {
     valid() {
       const ipt = this.$refs.ipt
       const val = this.iptValue
-      if (this.properties.valid) {
-        return this.properties.valid(val)
-      } else {
-        return ipt && ipt.checkHtml5Validity()
-      }
+      return this.properties.valid
+        ? this.properties.valid(val)
+        : ipt && ipt.checkHtml5Validity()
     }
   },
 
