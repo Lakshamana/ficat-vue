@@ -225,7 +225,7 @@
                           v-if="idx > 0"
                           icon-right="minus"
                           class="is-danger is-round btn-margin is-outlined"
-                          @click="onKwDelete(k)"
+                          @click="keywords.splice(idx, 1)"
                         ></b-button>
                       </div>
                     </div>
@@ -307,11 +307,11 @@ export default {
       advicerName: '',
       advicerSurname: '',
       isFemaleAdvicer: false,
-      advisorTitle: '',
+      advisorTitle: undefined,
       coadvicerName: '',
       coadvicerSurname: '',
       isFemaleCoadvicer: false,
-      coadvicerTitle: '',
+      coadvicerTitle: undefined,
       catalogFont: '',
       selectedAcdUnity: undefined,
       selectedKnArea: undefined,
@@ -457,10 +457,6 @@ export default {
   methods: {
     newKeyword() {
       return { id: new Date().getTime(), value: '' }
-    },
-
-    onKwDelete(k) {
-      this.keywords.splice(this.keywords.indexOf(k), 1)
     },
 
     getYear(y) {
