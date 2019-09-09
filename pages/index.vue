@@ -207,11 +207,11 @@
                   <div class="column is-half">
                     <div
                       v-for="(k, idx) in keywords"
-                      :key="idx"
+                      :key="k.id"
                       class="field is-grouped is-grouped"
                     >
                       <input-validation
-                        v-model="keywords[idx]"
+                        v-model="k.value"
                         :properties="keywordProperties"
                       ></input-validation>
                       <div style="padding-left: 1em; display: inline;">
@@ -219,13 +219,13 @@
                           icon-right="plus"
                           class="is-success is-round is-outlined"
                           :disabled="keywords.length > 4"
-                          @click="keywords.push('')"
+                          @click="keywords.push(newKeyword())"
                         ></b-button>
                         <b-button
                           v-if="idx > 0"
                           icon-right="minus"
                           class="is-danger is-round btn-margin is-outlined"
-                          @click="keywords.splice(idx, 1)"
+                          @click="onKwDelete(k)"
                         ></b-button>
                       </div>
                     </div>
@@ -293,7 +293,7 @@ export default {
 
   data() {
     return {
-      keywords: [''],
+      keywords: [this.newKeyword()],
       authorName: '',
       authorSurname: '',
       author2Name: '',
@@ -424,7 +424,7 @@ export default {
 
       keywordProperties: {
         placeholder: 'Adicione uma palavra-chave',
-        invalidMessages: [this.getKwInvalidMessage],
+        invalidMessages: [],
         required: this.requiredKeyword,
         minlength: 10,
         pattern: '[A-Za-z]+',
@@ -455,6 +455,14 @@ export default {
   },
 
   methods: {
+    newKeyword() {
+      return { id: new Date().getTime(), value: '' }
+    },
+
+    onKwDelete(k) {
+      this.keywords.splice(this.keywords.indexOf(k), 1)
+    },
+
     getYear(y) {
       return '' + (new Date(Date.now()).getFullYear() - y)
     },
