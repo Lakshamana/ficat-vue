@@ -12,6 +12,7 @@ const userRoutes = require('./routes/users')
 const kaRoutes = require('./routes/knowledgeAreas')
 const courseRoutes = require('./routes/courses')
 const acdUnitiesRoutes = require('./routes/academicUnities')
+const catalogRoutes = require('./routes/catalogCards')
 
 // Auth* routes
 const { auth, authz } = require('./routes/auth')
@@ -33,8 +34,6 @@ api.post('/auth', bodyParser, validator('auth'), auth)
  * rotas, exceto autenticação (funcionários), e GET /knowledgeAreas,
  * GET /academicUnities e criação de registro
  * de ficha catalográfica (usuários finais)
- *
- * TODO: add catalog route
  */
 authz.unless = unless
 api.use(
@@ -43,11 +42,17 @@ api.use(
       return (
         ctx.path.includes('auth') ||
         (ctx.path.includes('knowledgeAreas') && ctx.method === 'GET') ||
-        (ctx.path.includes('academicUnities') && ctx.method === 'GET')
+        (ctx.path.includes('academicUnities') && ctx.method === 'GET') ||
+        (ctx.path.includes('catalog') && ctx.method === 'POST')
       )
     }
   })
 )
+
+/**
+ * Catalog card
+ */
+api.post('/catalog/', bodyParser, validator('catalog'), catalogRoutes.create)
 
 /**
  * Users
