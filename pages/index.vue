@@ -11,6 +11,7 @@
                     <input-validation
                       v-model="authorName"
                       :properties="authorNameProperties"
+                      class="mb"
                     ></input-validation>
                     <input-validation
                       v-model="authorSurname"
@@ -41,6 +42,7 @@
                     <input-validation
                       v-model="workSubtitle"
                       :properties="workSubtitleProperties"
+                      style="margin-bottom: 2.4em;"
                     ></input-validation>
                     <div class="columns">
                       <div class="column is-4">
@@ -81,6 +83,22 @@
                         <option value="nocolor">Não possui</option>
                         <option value="color">Coloridas</option>
                         <option value="pb">Preto e branco</option>
+                      </b-select>
+                    </b-field>
+                    <b-field>
+                      <b-select
+                        v-model="workType"
+                        placeholder="Tipo de trabalho"
+                        aria-placeholder="Tipo de trabalho"
+                        required
+                        aria-required="true"
+                        expanded
+                        rounded
+                      >
+                        <option value="thesis">Tese</option>
+                        <option value="dissertation">Dissertação</option>
+                        <option value="tccExpert">TCC (Especialização)</option>
+                        <option value="tccGraduation">TCC (Graduação)</option>
                       </b-select>
                     </b-field>
                     <b-field>
@@ -132,10 +150,12 @@
                     <input-validation
                       v-model="advicerName"
                       :properties="advicerNameProperties"
+                      class="mb"
                     ></input-validation>
                     <input-validation
                       v-model="advicerSurname"
                       :properties="advicerSurnameProperties"
+                      class="mb"
                     ></input-validation>
                     <div class="columns vcenter">
                       <div class="column is-half">
@@ -302,6 +322,7 @@ export default {
       workSubtitle: '',
       presentationYear: undefined,
       workImagesType: undefined,
+      workType: undefined,
       acdUnityPreviousSearch: '',
       knAreaPreviousSearch: '',
       advicerName: '',
@@ -323,10 +344,10 @@ export default {
       authorNameProperties: {
         placeholder: 'Nome do autor',
         invalidMessages: [
-          'Campo obrigatório e mínimo de 6 letras. Digite letras apenas'
+          'Campo obrigatório e mínimo de 10 caracteres. Digite letras apenas'
         ],
         pattern: '[A-Za-z]+',
-        minlength: 6,
+        minlength: 10,
         required: true,
         rounded: true
       },
@@ -334,20 +355,20 @@ export default {
       authorSurnameProperties: {
         placeholder: 'Sobrenome do autor',
         invalidMessages: [
-          'Campo obrigatório e mínimo de 6 letras. Digite letras apenas'
+          'Campo obrigatório e mínimo de 10 caracteres. Digite letras apenas'
         ],
         pattern: '[A-Za-z]+',
-        minlength: 6,
+        minlength: 10,
         required: true,
         rounded: true
       },
 
       author2NameProperties: {
         placeholder: 'Nome do 2º autor',
-        invalidMessages: ['Mínimo de 6 letras. Digite letras apenas'],
+        invalidMessages: ['Mínimo de 10 caracteres. Digite letras apenas'],
         defaultMessage: 'Campo opcional',
         valid: name => {
-          const re = /^[A-Za-z]{6,}$/
+          const re = /^[A-Za-z]{10,}$/
           return name === '' || re.test(name)
         },
         rounded: true
@@ -355,10 +376,10 @@ export default {
 
       author2SurnameProperties: {
         placeholder: 'Sobrenome do 2º autor',
-        invalidMessages: ['Mínimo de 6 letras. Digite letras apenas'],
+        invalidMessages: ['Mínimo de 10 caracteres. Digite letras apenas'],
         defaultMessage: 'Campo opcional',
         valid: name => {
-          const re = /^[A-Za-z]{6,}$/
+          const re = /^[A-Za-z]{10,}$/
           return name === '' || re.test(name)
         },
         rounded: true
@@ -374,9 +395,12 @@ export default {
 
       workSubtitleProperties: {
         placeholder: 'Subtítulo do trabalho',
-        invalidMessages: ['Campo obrigatório e mínimo de 10 caracteres'],
-        required: true,
-        minlength: 10,
+        invalidMessages: ['Mínimo de 10 caracteres. Digite letras apenas'],
+        defaultMessage: 'Campo opcional',
+        valid: name => {
+          const re = /^[A-Za-z]{10,}$/
+          return name === '' || re.test(name)
+        },
         rounded: true
       },
 
@@ -410,6 +434,7 @@ export default {
       coadvicerNameProperties: {
         placeholder: 'Nome do coorientador',
         invalidMessages: ['Somente letras. Mínimo de 10 caracteres'],
+        defaultMessage: 'Campo opcional',
         pattern: '[A-Za-z]*',
         rounded: true
       },
@@ -524,5 +549,9 @@ export default {
 
 .btn-margin {
   margin: 0 0.2em 0 0.2em;
+}
+
+.mb {
+  margin-bottom: 2.1em;
 }
 </style>
