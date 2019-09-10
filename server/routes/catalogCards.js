@@ -60,7 +60,9 @@ async function create(ctx) {
 
   const cdd = await KnowledgeArea.where({
     id: academicDetails.knArea.id
-  }).fetch()
+  })
+    .fetch()
+    .get('code')
 
   // Criar o PDF
   const doc = new PDFDocument()
@@ -73,6 +75,9 @@ async function create(ctx) {
     keywords,
     cdd
   })
+  const title = 'ficha.pdf'
+  doc.info.Title = title
+  await doc.end()
 
   try {
     const payload = {
@@ -81,7 +86,9 @@ async function create(ctx) {
       courseId: academicDetails.course
     }
     const newCatalogCard = await CatalogCard.forge(payload).save()
-    ctx.body = newCatalogCard
+    ctx.set('Content-Type', 'application/pdf')
+    ctx.set('Content-Disposition', `filename=${title}`)
+    ctx.body = doc
     ctx.status = HttpCodes.OK
     const id = newCatalogCard.id
     ctx.set('Location', `/api/catalogCards/${id}`)

@@ -57,7 +57,7 @@
 
 <script>
 import { mapState } from 'vuex'
-import codes from '../shared/messageCodes'
+import codes from '@/shared/messageCodes'
 
 export default {
   computed: {
