@@ -2,6 +2,7 @@
   <b-field
     :label="properties.inputLabel || ''"
     :message="messageParams"
+    :aria-errormessage="ariaErrorMessages"
     :type="{
       [valid ? 'is-success' : 'is-danger']: dirty
     }"
@@ -19,7 +20,6 @@
       :required="properties.required"
       :aria-required="properties.ariaRequired"
       :rounded="properties.rounded"
-      :aria-errormessage="properties.invalidMessages"
       @blur="onBlur"
       @input="onChange"
     ></b-input>
@@ -64,6 +64,13 @@ export default {
         }
       }
       return obj
+    },
+
+    ariaErrorMessages() {
+      return (
+        this.messageParams.invalidParams &&
+        this.messageParams.invalidMessages.join(' ')
+      )
     },
 
     ariaPlaceholder() {

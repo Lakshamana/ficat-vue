@@ -576,8 +576,8 @@ export default {
               coadvicerTitle: this.coadvicerTitle
             },
             academicDetails: {
-              acdUnity: this.selectedAcdUnity.name,
-              knArea: this.selectedKnArea.code
+              acdUnity: this.selectedAcdUnity.id,
+              knArea: this.selectedKnArea.id
             },
             catalogFont: this.catalogFont
           }
