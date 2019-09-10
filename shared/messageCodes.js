@@ -18,7 +18,8 @@ const messages = {
     errOnAuth: 'errOnAuth',
     errPasswordMismatch: 'errPasswordMismatch',
     errNotAuthorized: 'errNotAuthorized',
-    errOnAuthz: 'errOnAuthz'
+    errOnAuthz: 'errOnAuthz',
+    errInvalidCatalogFields: 'errInvalidCatalogFields'
   },
   layout: {
     ltAbout: 'ltAbout',

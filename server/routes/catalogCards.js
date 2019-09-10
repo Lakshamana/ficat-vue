@@ -1,5 +1,6 @@
 const PDFDocument = require('pdfkit')
 const CatalogCard = require('../models/CatalogCard')
+const KnowledgeArea = require('../models/KnowledgeArea')
 const HttpCodes = require('../httpCodes')
 const MessageCodes = require('../../shared/messageCodes')
 const { validatePayload } = require('../../shared/utils')
@@ -50,13 +51,28 @@ async function create(ctx) {
       !fields.fonts.includes(catalogFont) ||
       !keywords.length
     ) {
-      ctx.throw(HttpCodes.BAD_REQUEST, 'Invalid Fields')
+      ctx.throw(
+        HttpCodes.BAD_REQUEST,
+        MessageCodes.error.errInvalidCatalogFields
+      )
     }
   })
 
+  const cdd = await KnowledgeArea.where({
+    id: academicDetails.knArea.id
+  }).fetch()
+
   // Criar o PDF
   const doc = new PDFDocument()
-  catalogCardModel(doc, { cutter: 'cutter', authors, advisors })
+  catalogCardModel(doc, catalogFont, {
+    cutter: 'cutter',
+    authors,
+    work,
+    advisors,
+    academicDetails,
+    keywords,
+    cdd
+  })
 
   try {
     const payload = {
