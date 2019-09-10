@@ -1,11 +1,69 @@
+const PDFDocument = require('pdfkit')
 const CatalogCard = require('../models/CatalogCard')
 const HttpCodes = require('../httpCodes')
 const MessageCodes = require('../../shared/messageCodes')
+const { validatePayload } = require('../../shared/utils')
+const catalogCardModel = require('../models/pdfdocs/catalogCard')
+
+const fields = {
+  authors: ['authorName', 'authorSurname', 'authorSurname', 'author2Surname'],
+  work: [
+    'workTitle',
+    'workSubtitle',
+    'presentationYear',
+    'workImagesType',
+    'totalPages',
+    'workType'
+  ],
+  advisors: [
+    'advisorName',
+    'advisorSurname',
+    'isFemaleAdvisor',
+    'advisorTitle',
+    'coadvisorName',
+    'coadvisorSurname',
+    'isFemaleCoadvisor',
+    'coadvisorTitle'
+  ],
+  academicDetails: ['acdUnity', 'knArea'],
+  fonts: ['times', 'arial']
+}
 
 async function create(ctx) {
-  const payload = ctx.request.body
-  ctx.status = HttpCodes.OK
+  // Validação interna do payload
+  const {
+    keywords,
+    work,
+    authors,
+    advisors,
+    academicDetails,
+    catalogFont
+  } = ctx.request.body
+  Promise.all([
+    validatePayload(authors, fields.authors),
+    validatePayload(work, fields.work),
+    validatePayload(advisors, fields.advisors),
+    validatePayload(academicDetails, fields.academicDetails)
+  ]).then(validations => {
+    if (
+      !validations.every(val => val.valid) ||
+      !fields.fonts.includes(catalogFont) ||
+      !keywords.length
+    ) {
+      ctx.throw(HttpCodes.BAD_REQUEST, 'Invalid Fields')
+    }
+  })
+
+  // Criar o PDF
+  const doc = new PDFDocument()
+  catalogCardModel(doc, { cutter: 'cutter', authors, advisors })
+
   try {
+    const payload = {
+      type: work.workType,
+      unityId: academicDetails.acdUnity,
+      courseId: academicDetails.course
+    }
     const newCatalogCard = await CatalogCard.forge(payload).save()
     ctx.body = newCatalogCard
     ctx.status = HttpCodes.OK

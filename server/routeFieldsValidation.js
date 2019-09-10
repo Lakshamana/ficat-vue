@@ -39,5 +39,14 @@ module.exports = {
   },
   authz: {
     mandatory: ['accessToken']
+  },
+  catalogCard: {
+    mandatory: [
+      'keywords',
+      'work',
+      'advisors',
+      'academicDetails',
+      'catalogFont'
+    ]
   }
 }

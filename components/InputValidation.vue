@@ -2,7 +2,6 @@
   <b-field
     :label="properties.inputLabel || ''"
     :message="messageParams"
-    :aria-errormessage="ariaErrorMessages"
     :type="{
       [valid ? 'is-success' : 'is-danger']: dirty
     }"
@@ -19,8 +18,9 @@
       :maxlength="properties.maxlength"
       :required="properties.required"
       :aria-required="properties.ariaRequired"
+      :aria-errormessage="ariaErrorMessages"
       :rounded="properties.rounded"
-      @blur="onBlur"
+      @blur="dirty = true"
       @input="onChange"
     ></b-input>
   </b-field>
@@ -93,10 +93,6 @@ export default {
   methods: {
     onChange(value) {
       this.$emit('input', value)
-    },
-
-    onBlur() {
-      this.dirty = true
     }
   }
 }

@@ -4,28 +4,39 @@
  * @param {PDFKit.PDFDocument} doc
  * @param {Object} {
  *  cutter: String
- *  writer: {
- *    name: String,
- *    surname: String,
- *    course: String,
- *    institute: String
- *  },
- *  advicer: {name: String, surname: String, title: String},
- *  coadvicer: {name: String, surname: String, title: String},
- *  work: {
- *    title: String,
- *    subtitle: String,
- *    year: String,
- *    totalPages: String,
- *    type: String
- *  },
- *  keywords: String[],
- *  cdd: String
- * }
+ *  authors: {
+      authorName: String
+      authorSurname: String
+      author2Name: String
+      author2Surname: String
+    },
+    work: {
+      workTitle: String
+      workSubtitle: String
+      presentationYear: String
+      workImagesType: String
+      totalPages: String,
+      workType: String
+    },
+    advisors: {
+      advisorName: String
+      advisorSurname: String
+      isFemaleAdvisor: Boolean
+      advisorTitle: String
+      coadvisorName: String
+      coadvisorSurname: String
+      isFemaleCoadvisor: Boolean
+      coadvisorTitle: String
+    },
+    academicDetails: {
+      acdUnity: String
+      knArea: String
+      course: String
+    },
  */
 function catalogCard(
   doc,
-  { cutter, writer, advicer, coadvicer, work, keywords, cdd }
+  { cutter, authors, advisor, coadvisor, work, academicDetails, keywords, cdd }
 ) {
   doc.moveDown(20)
 
@@ -54,27 +65,29 @@ Gerada automaticamente pelo módulo Ficat, mediante os dados fornecidos pelo(a) 
     .text(cutter, -270, 450, {
       align: 'justify'
     })
-    .text(` ${writer.surname}, ${writer.name}`, 150, 450)
-    .text(`   ${work.title} - ${writer.name} ${writer.surname}. — ${work.year}`)
+    .text(` ${authors.surname}, ${authors.name}`, 150, 450)
+    .text(
+      `   ${work.workTitle} - ${authors.name} ${authors.surname}. — ${work.presentationYear}`
+    )
     .text(` ${work.totalPages} f.`)
 
-  const advicerHeader = `Orientador(a): ${advicer.title} ${advicer.name} ${advicer.surname}`
-  const coadvicerHeader = `Coorientador(a): ${coadvicer.title} ${coadvicer.name} ${coadvicer.surname}`
+  const advisorHeader = `Orientador(a): ${advisor.title} ${advisor.name} ${advisor.surname}`
+  const coadvisorHeader = `Coorientador(a): ${coadvisor.title} ${coadvisor.name} ${coadvisor.surname}`
 
-  const workHeader = `${work.type} - ${writer.course}`
+  const workHeader = `${work.workType} - ${academicDetails.course}`
 
-  const localHeader = `${writer.institute}, Universidade Federal do Pará, Belém, 2019.`
+  const localHeader = `${authors.institute}, Universidade Federal do Pará, Belém, 2019.`
 
   let kws = ''
   for (const kn in keywords) {
     kws += `${kn + 1}. ${keywords[kn]}`
   }
-  const keywordHeader = `${kws} . I. ${work.title}.`
+  const keywordHeader = `${kws} . I. ${work.workTitle}.`
 
   doc
     .moveDown(1)
-    .text('   ' + advicerHeader)
-    .text('   ' + coadvicerHeader)
+    .text('   ' + advisorHeader)
+    .text('   ' + coadvisorHeader)
     .text('   ' + workHeader, {
       width: 300
     })

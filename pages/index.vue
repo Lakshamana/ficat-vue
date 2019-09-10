@@ -45,7 +45,7 @@
                       style="margin-bottom: 2.4em;"
                     ></input-validation>
                     <div class="columns">
-                      <div class="column is-4">
+                      <div class="column is-3">
                         <b-field>
                           <b-select
                             v-model="presentationYear"
@@ -61,7 +61,7 @@
                           </b-select>
                         </b-field>
                       </div>
-                      <div class="column is-8">
+                      <div class="column is-9">
                         <input-validation
                           v-model="totalPages"
                           :properties="totalPagesProperties"
@@ -155,19 +155,19 @@
                 <div class="columns">
                   <div class="column is-half">
                     <input-validation
-                      v-model="advicerName"
-                      :properties="advicerNameProperties"
+                      v-model="advisorName"
+                      :properties="advisorNameProperties"
                       class="mb"
                     ></input-validation>
                     <input-validation
-                      v-model="advicerSurname"
-                      :properties="advicerSurnameProperties"
+                      v-model="advisorSurname"
+                      :properties="advisorSurnameProperties"
                       class="mb"
                     ></input-validation>
                     <div class="columns vcenter">
                       <div class="column is-half">
                         <div class="field">
-                          <b-checkbox v-model="isFemaleAdvicer">
+                          <b-checkbox v-model="isFemaleAdvisor">
                             Orientadora
                           </b-checkbox>
                         </div>
@@ -193,17 +193,17 @@
                   </div>
                   <div class="column is-half">
                     <input-validation
-                      v-model="coadvicerName"
-                      :properties="coadvicerNameProperties"
+                      v-model="coadvisorName"
+                      :properties="coadvisorNameProperties"
                     ></input-validation>
                     <input-validation
-                      v-model="coadvicerSurname"
-                      :properties="coadvicerSurnameProperties"
+                      v-model="coadvisorSurname"
+                      :properties="coadvisorSurnameProperties"
                     ></input-validation>
                     <div class="columns vcenter">
                       <div class="column is-half">
                         <div class="field">
-                          <b-checkbox v-model="isFemaleCoadvicer">
+                          <b-checkbox v-model="isFemaleCoadvisor">
                             Coorientadora
                           </b-checkbox>
                         </div>
@@ -211,7 +211,7 @@
                       <div class="column is-half">
                         <b-field>
                           <b-select
-                            v-model="coadvicerTitle"
+                            v-model="coadvisorTitle"
                             placeholder="Titulação"
                             aria-placeholder="Titulação"
                             rounded
@@ -333,14 +333,14 @@ export default {
       workType: undefined,
       acdUnityPreviousSearch: '',
       knAreaPreviousSearch: '',
-      advicerName: '',
-      advicerSurname: '',
-      isFemaleAdvicer: false,
+      advisorName: '',
+      advisorSurname: '',
+      isFemaleAdvisor: false,
       advisorTitle: undefined,
-      coadvicerName: '',
-      coadvicerSurname: '',
-      isFemaleCoadvicer: false,
-      coadvicerTitle: undefined,
+      coadvisorName: '',
+      coadvisorSurname: '',
+      isFemaleCoadvisor: false,
+      coadvisorTitle: undefined,
       catalogFont: undefined,
       selectedAcdUnity: undefined,
       selectedKnArea: undefined,
@@ -415,14 +415,14 @@ export default {
 
       totalPagesProperties: {
         type: 'number',
-        placeholder: 'Número de páginas',
+        placeholder: 'Páginas',
         invalidMessages: ['Campo obrigatório e somente números'],
         required: true,
         pattern: '[0-9]+',
         rounded: true
       },
 
-      advicerNameProperties: {
+      advisorNameProperties: {
         placeholder: 'Nome do(a) orientador(a)',
         invalidMessages: [
           'Campo obrigatório e somente letras. Mínimo de 5 caracteres'
@@ -433,7 +433,7 @@ export default {
         rounded: true
       },
 
-      advicerSurnameProperties: {
+      advisorSurnameProperties: {
         placeholder: 'Sobrenome do(a) orientador(a)',
         invalidMessages: ['Mínimo de 5 caracteres. Digite letras apenas'],
         required: true,
@@ -442,7 +442,7 @@ export default {
         rounded: true
       },
 
-      coadvicerNameProperties: {
+      coadvisorNameProperties: {
         placeholder: 'Nome do coorientador',
         invalidMessages: ['Somente letras. Mínimo de 5 caracteres'],
         defaultMessage: 'Campo opcional',
@@ -451,7 +451,7 @@ export default {
         rounded: true
       },
 
-      coadvicerSurnameProperties: {
+      coadvisorSurnameProperties: {
         placeholder: 'Sobrenome do(a) orientador(a)',
         invalidMessages: ['Mínimo de 5 caracteres. Digite letras apenas'],
         defaultMessage: 'Campo opcional',
@@ -565,19 +565,20 @@ export default {
               totalPages: formattedTotalPages,
               workType: this.workType
             },
-            advicers: {
-              advicerName: this.advicerName,
-              advicerSurname: this.advicerSurname,
-              isFemaleAdvicer: this.isFemaleAdvicer,
+            advisors: {
+              advisorName: this.advisorName,
+              advisorSurname: this.advisorSurname,
+              isFemaleAdvisor: this.isFemaleAdvisor,
               advisorTitle: this.advisorTitle,
-              coadvicerName: this.coadvicerName,
-              coadvicerSurname: this.coadvicerSurname,
-              isFemaleCoadvicer: this.isFemaleCoadvicer,
-              coadvicerTitle: this.coadvicerTitle
+              coadvisorName: this.coadvisorName,
+              coadvisorSurname: this.coadvisorSurname,
+              isFemaleCoadvisor: this.isFemaleCoadvisor,
+              coadvisorTitle: this.coadvisorTitle
             },
             academicDetails: {
               acdUnity: this.selectedAcdUnity.id,
-              knArea: this.selectedKnArea.id
+              knArea: this.selectedKnArea.id,
+              course: 'course'
             },
             catalogFont: this.catalogFont
           }
