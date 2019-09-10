@@ -65,7 +65,14 @@
                         <input-validation
                           v-model="totalPages"
                           :properties="totalPagesProperties"
-                        ></input-validation>
+                        >
+                          <template v-slot:addon>
+                            <b-select v-model="numberType" placeholder="XXI">
+                              <option value="roman">Romanos</option>
+                              <option value="arabic">Indo-arábicos</option>
+                            </b-select>
+                          </template>
+                        </input-validation>
                       </div>
                     </div>
                   </div>
@@ -294,7 +301,8 @@
 import { Hooper, Slide, Navigation, Pagination } from 'hooper'
 import { mapState } from 'vuex'
 import pDebounce from 'p-debounce'
-import codes from '../shared/messageCodes'
+import codes from '@/shared/messageCodes'
+import { romanize } from '@/shared/frontUtils'
 
 import InputValidation from '@/components/InputValidation'
 import Card from '@/components/Card'
@@ -333,21 +341,22 @@ export default {
       coadvicerSurname: '',
       isFemaleCoadvicer: false,
       coadvicerTitle: undefined,
-      catalogFont: '',
+      catalogFont: undefined,
       selectedAcdUnity: undefined,
       selectedKnArea: undefined,
       academicUnities: [],
       knAreas: [],
       totalPages: undefined,
       loading: false,
+      numberType: 'roman',
 
       authorNameProperties: {
         placeholder: 'Nome do autor',
         invalidMessages: [
-          'Campo obrigatório e mínimo de 10 caracteres. Digite letras apenas'
+          'Campo obrigatório e mínimo de 5 caracteres. Digite letras apenas'
         ],
         pattern: '[A-Za-z]+',
-        minlength: 10,
+        minlength: 5,
         required: true,
         rounded: true
       },
@@ -355,20 +364,20 @@ export default {
       authorSurnameProperties: {
         placeholder: 'Sobrenome do autor',
         invalidMessages: [
-          'Campo obrigatório e mínimo de 10 caracteres. Digite letras apenas'
+          'Campo obrigatório e mínimo de 5 caracteres. Digite letras apenas'
         ],
         pattern: '[A-Za-z]+',
-        minlength: 10,
+        minlength: 5,
         required: true,
         rounded: true
       },
 
       author2NameProperties: {
         placeholder: 'Nome do 2º autor',
-        invalidMessages: ['Mínimo de 10 caracteres. Digite letras apenas'],
+        invalidMessages: ['Mínimo de 5 caracteres. Digite letras apenas'],
         defaultMessage: 'Campo opcional',
         valid: name => {
-          const re = /^[A-Za-z]{10,}$/
+          const re = /^[A-Za-z]{5,}$/
           return name === '' || re.test(name)
         },
         rounded: true
@@ -376,10 +385,10 @@ export default {
 
       author2SurnameProperties: {
         placeholder: 'Sobrenome do 2º autor',
-        invalidMessages: ['Mínimo de 10 caracteres. Digite letras apenas'],
+        invalidMessages: ['Mínimo de 5 caracteres. Digite letras apenas'],
         defaultMessage: 'Campo opcional',
         valid: name => {
-          const re = /^[A-Za-z]{10,}$/
+          const re = /^[A-Za-z]{5,}$/
           return name === '' || re.test(name)
         },
         rounded: true
@@ -416,40 +425,44 @@ export default {
       advicerNameProperties: {
         placeholder: 'Nome do(a) orientador(a)',
         invalidMessages: [
-          'Campo obrigatório e somente letras. Mínimo de 10 caracteres'
+          'Campo obrigatório e somente letras. Mínimo de 5 caracteres'
         ],
         required: true,
+        minlength: 5,
         pattern: '[A-Za-z]+',
         rounded: true
       },
 
       advicerSurnameProperties: {
         placeholder: 'Sobrenome do(a) orientador(a)',
-        invalidMessages: ['Digite letras apenas'],
+        invalidMessages: ['Mínimo de 5 caracteres. Digite letras apenas'],
         required: true,
+        minlength: 5,
         pattern: '[A-Za-z]+',
         rounded: true
       },
 
       coadvicerNameProperties: {
         placeholder: 'Nome do coorientador',
-        invalidMessages: ['Somente letras. Mínimo de 10 caracteres'],
+        invalidMessages: ['Somente letras. Mínimo de 5 caracteres'],
         defaultMessage: 'Campo opcional',
+        minlength: 5,
         pattern: '[A-Za-z]*',
         rounded: true
       },
 
       coadvicerSurnameProperties: {
         placeholder: 'Sobrenome do(a) orientador(a)',
-        invalidMessages: ['Digite letras apenas'],
+        invalidMessages: ['Mínimo de 5 caracteres. Digite letras apenas'],
         defaultMessage: 'Campo opcional',
+        minlength: 5,
         pattern: '[A-Za-z]*',
         rounded: true
       },
 
       keywordProperties: {
         placeholder: 'Adicione uma palavra-chave',
-        invalidMessages: [],
+        invalidMessages: [this.getKwInvalidMessage],
         required: this.requiredKeyword,
         minlength: 10,
         pattern: '[A-Za-z]+',
@@ -527,7 +540,54 @@ export default {
           .catch()
           .finally(() => (this.loading = false))
       }
-    }, 500)
+    }, 500),
+
+    onSubmit() {
+      const formattedTotalPages =
+        this.numberType === 'roman'
+          ? romanize(this.totalPages)
+          : this.totalPages
+      this.$axios
+        .get('/api/knowledgeAreas', {
+          params: {
+            keywords: this.keywords,
+            authors: {
+              authorName: this.authorName,
+              authorSurname: this.authorSurname,
+              author2Name: this.author2Name,
+              author2Surname: this.author2Surname
+            },
+            work: {
+              workTitle: this.workTitle,
+              workSubtitle: this.workSubtitle,
+              presentationYear: this.presentationYear,
+              workImagesType: this.workImagesType,
+              totalPages: formattedTotalPages,
+              workType: this.workType
+            },
+            advicers: {
+              advicerName: this.advicerName,
+              advicerSurname: this.advicerSurname,
+              isFemaleAdvicer: this.isFemaleAdvicer,
+              advisorTitle: this.advisorTitle,
+              coadvicerName: this.coadvicerName,
+              coadvicerSurname: this.coadvicerSurname,
+              isFemaleCoadvicer: this.isFemaleCoadvicer,
+              coadvicerTitle: this.coadvicerTitle
+            },
+            academicDetails: {
+              acdUnity: this.selectedAcdUnity.name,
+              knArea: this.selectedKnArea.code
+            },
+            catalogFont: this.catalogFont
+          }
+        })
+        .then(response => {
+          this.knAreas = response.data
+        })
+        .catch()
+        .finally(() => (this.loading = false))
+    }
   }
 }
 </script>
