@@ -6,6 +6,7 @@
       [valid ? 'is-success' : 'is-danger']: dirty
     }"
   >
+    <slot name="addon"></slot>
     <b-input
       ref="ipt"
       v-model="iptValue"
@@ -18,6 +19,7 @@
       :required="properties.required"
       :aria-required="properties.ariaRequired"
       :rounded="properties.rounded"
+      :aria-errormessage="properties.invalidMessages"
       @blur="onBlur"
       @input="onChange"
     ></b-input>
@@ -49,6 +51,8 @@ export default {
   computed: {
     messageParams() {
       const obj = {}
+      this.properties.defaultMessage &&
+        (obj[this.properties.defaultMessage] = true)
       if (this.dirty) {
         if (this.valid) {
           this.properties.validMessage &&
@@ -58,9 +62,6 @@ export default {
             obj[msg] = this.dirty
           }
         }
-      } else {
-        this.properties.defaultMessage &&
-          (obj[this.properties.defaultMessage] = !this.dirty)
       }
       return obj
     },
