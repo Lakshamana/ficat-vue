@@ -34,7 +34,7 @@ Dados Internacionais de Catalogação na Publicação (CIP) de acordo com ISBD
 Sistema de Bibliotecas da Universidade Federal do Pará
 Gerada automaticamente pelo módulo Ficat, mediante os dados fornecidos pelo(a) autor(a)`
 
-  doc.font('Times-Bold', 10).text(header, {
+  doc.font('Default-Bold', 10).text(header, {
     align: 'center',
     continued: true
   })
@@ -50,7 +50,7 @@ Gerada automaticamente pelo módulo Ficat, mediante os dados fornecidos pelo(a) 
   drawLine(doc, 90, 425, 430)
 
   doc
-    .font('Times-Roman', 10)
+    .font('Default-Regular', 10)
     .text(cutter, -270, 450, {
       align: 'justify'
     })
