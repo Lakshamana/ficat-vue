@@ -4,19 +4,20 @@ const MessageCodes = require('../../shared/messageCodes')
 
 async function create(ctx) {
   const payload = ctx.request.body
-  const cutter = payload.cutter
-  const existingCatalogCard = await CatalogCard.where({ cutter }).fetch()
-  if (existingCatalogCard) {
-    ctx.throw(
-      HttpCodes.BAD_REQUEST,
-      MessageCodes.error.errEntityAlreadyExist('catalogCard')
-    )
-    return
-  }
   ctx.status = HttpCodes.OK
-  const newCatalogCard = await CatalogCard.forge(payload).save()
-  ctx.set('Location', `/api/catalogCards/${cutter}`)
-  ctx.body = newCatalogCard
+  try {
+    const newCatalogCard = await CatalogCard.forge(payload).save()
+    ctx.body = newCatalogCard
+    ctx.status = HttpCodes.OK
+    const id = newCatalogCard.id
+    ctx.set('Location', `/api/catalogCards/${id}`)
+  } catch (e) {
+    ctx.throw(HttpCodes.BAD_REQUEST, MessageCodes.error.errOnDbSave, {
+      error: {
+        rawErrorMessage: e
+      }
+    })
+  }
 }
 
 async function list(ctx) {
@@ -32,16 +33,16 @@ async function list(ctx) {
 }
 
 async function update(ctx) {
-  const cutter = ctx.params.cutter
+  const id = +ctx.params.id
   const payload = ctx.request.body
-  let catalogCard = await CatalogCard.where({ cutter }).fetch()
+  let catalogCard = await CatalogCard.where({ id }).fetch()
   if (catalogCard) {
     try {
-      catalogCard = await CatalogCard.where({ cutter }).save(payload, {
+      catalogCard = await CatalogCard.where({ id }).save(payload, {
         patch: true
       })
-      ctx.status = HttpCodes.OK
       ctx.body = catalogCard
+      ctx.status = HttpCodes.OK
     } catch (e) {
       ctx.throw(HttpCodes.INT_SRV_ERROR, MessageCodes.error.errOnDbSave, {
         error: {
@@ -52,7 +53,7 @@ async function update(ctx) {
   } else {
     ctx.throw(
       HttpCodes.BAD_REQUEST,
-      MessageCodes.error.errEntityDoesNotExist('catalogCard')
+      MessageCodes.error.errEntityDoesNotExist('CatalogCard')
     )
   }
 }
