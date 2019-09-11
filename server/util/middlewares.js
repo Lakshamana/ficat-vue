@@ -1,6 +1,6 @@
 const { validatePayload, select } = require('../../shared/utils')
 const HttpCodes = require('../httpCodes')
-const MessageCodes = require('../../shared/messageCodes')
+const { MessageCodes } = require('../../shared/messageCodes')
 const fields = require('../routeFieldsValidation')
 const { payloadErrors } = require('../util/utils')
 

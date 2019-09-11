@@ -1,6 +1,6 @@
 const KnowledgeArea = require('../models/KnowledgeArea')
 const HttpCodes = require('../httpCodes')
-const MessageCodes = require('../../shared/messageCodes')
+const { MessageCodes } = require('../../shared/messageCodes')
 const { paginateCtx } = require('../util/utils')
 
 async function create(ctx) {

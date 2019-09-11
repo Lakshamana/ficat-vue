@@ -29,4 +29,4 @@ const messages = {
   }
 }
 
-module.exports = messages
+this.MessageCodes = messages

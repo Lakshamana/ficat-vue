@@ -2,7 +2,7 @@ const PDFDocument = require('pdfkit')
 const CatalogCard = require('../models/CatalogCard')
 const KnowledgeArea = require('../models/KnowledgeArea')
 const HttpCodes = require('../httpCodes')
-const MessageCodes = require('../../shared/messageCodes')
+const { MessageCodes } = require('../../shared/messageCodes')
 const { validatePayload } = require('../../shared/utils')
 const catalogCardModel = require('../models/pdfdocs/catalogCard')
 
@@ -58,13 +58,13 @@ async function create(ctx) {
     }
   })
 
-  const cdd = await KnowledgeArea.where({
-    id: academicDetails.knArea.id
-  })
-    .fetch()
-    .get('code')
+  // Construir o PDF
+  const kna = await KnowledgeArea.where({
+    id: academicDetails.knArea
+  }).fetch()
 
-  // Criar o PDF
+  const cdd = kna.get('code')
+
   const doc = new PDFDocument()
   catalogCardModel(doc, catalogFont, {
     cutter: 'cutter',

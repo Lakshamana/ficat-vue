@@ -67,7 +67,7 @@
                           :properties="totalPagesProperties"
                         >
                           <template v-slot:addon>
-                            <b-select v-model="numberType" placeholder="XXI">
+                            <b-select v-model="numberType" rounded>
                               <option value="roman">Romanos</option>
                               <option value="arabic">Indo-arábicos</option>
                             </b-select>
@@ -280,7 +280,7 @@
                       recaptcha
                     </div>
                     <b-field>
-                      <b-button class="is-success" rounded expanded>
+                      <b-button class="is-success" rounded native-type="submit">
                         Gerar ficha catalográfica
                       </b-button>
                     </b-field>
@@ -301,11 +301,13 @@
 import { Hooper, Slide, Navigation, Pagination } from 'hooper'
 import { mapState } from 'vuex'
 import pDebounce from 'p-debounce'
-import codes from '@/shared/messageCodes'
 import { romanize } from '@/shared/frontUtils'
 
 import InputValidation from '@/components/InputValidation'
 import Card from '@/components/Card'
+const { MessageCodes } = require('../shared/messageCodes')
+
+const pattern = '[a-zA-Z\u00C0-\u017F ]'
 
 export default {
   name: 'Home',
@@ -353,10 +355,10 @@ export default {
       authorNameProperties: {
         placeholder: 'Nome do autor',
         invalidMessages: [
-          'Campo obrigatório e mínimo de 5 caracteres. Digite letras apenas'
+          'Campo obrigatório e mínimo de 3 caracteres. Digite letras apenas'
         ],
-        pattern: '[A-Za-z]+',
-        minlength: 5,
+        pattern: `${pattern}+`,
+        minlength: 3,
         required: true,
         rounded: true
       },
@@ -366,7 +368,7 @@ export default {
         invalidMessages: [
           'Campo obrigatório e mínimo de 5 caracteres. Digite letras apenas'
         ],
-        pattern: '[A-Za-z]+',
+        pattern: `${pattern}+`,
         minlength: 5,
         required: true,
         rounded: true
@@ -374,10 +376,10 @@ export default {
 
       author2NameProperties: {
         placeholder: 'Nome do 2º autor',
-        invalidMessages: ['Mínimo de 5 caracteres. Digite letras apenas'],
+        invalidMessages: ['Mínimo de 3 caracteres. Digite letras apenas'],
         defaultMessage: 'Campo opcional',
         valid: name => {
-          const re = /^[A-Za-z]{5,}$/
+          const re = /^[a-zA-Z\u00C0-\u017F ]{3,}$/
           return name === '' || re.test(name)
         },
         rounded: true
@@ -388,7 +390,7 @@ export default {
         invalidMessages: ['Mínimo de 5 caracteres. Digite letras apenas'],
         defaultMessage: 'Campo opcional',
         valid: name => {
-          const re = /^[A-Za-z]{5,}$/
+          const re = /^[a-zA-Z\u00C0-\u017F ]{5,}$/
           return name === '' || re.test(name)
         },
         rounded: true
@@ -407,7 +409,7 @@ export default {
         invalidMessages: ['Mínimo de 10 caracteres. Digite letras apenas'],
         defaultMessage: 'Campo opcional',
         valid: name => {
-          const re = /^[A-Za-z]{10,}$/
+          const re = /^[a-zA-Z\u00C0-\u017F ]{10,}$/
           return name === '' || re.test(name)
         },
         rounded: true
@@ -425,11 +427,11 @@ export default {
       advisorNameProperties: {
         placeholder: 'Nome do(a) orientador(a)',
         invalidMessages: [
-          'Campo obrigatório e somente letras. Mínimo de 5 caracteres'
+          'Campo obrigatório e somente letras. Mínimo de 3 caracteres'
         ],
         required: true,
-        minlength: 5,
-        pattern: '[A-Za-z]+',
+        minlength: 3,
+        pattern: `${pattern}+`,
         rounded: true
       },
 
@@ -438,16 +440,18 @@ export default {
         invalidMessages: ['Mínimo de 5 caracteres. Digite letras apenas'],
         required: true,
         minlength: 5,
-        pattern: '[A-Za-z]+',
+        pattern: `${pattern}+`,
         rounded: true
       },
 
       coadvisorNameProperties: {
         placeholder: 'Nome do coorientador',
-        invalidMessages: ['Somente letras. Mínimo de 5 caracteres'],
+        invalidMessages: ['Somente letras. Mínimo de 3 caracteres'],
         defaultMessage: 'Campo opcional',
-        minlength: 5,
-        pattern: '[A-Za-z]*',
+        valid: name => {
+          const re = /^[a-zA-Z\u00C0-\u017F ]{3,}$/
+          return name === '' || re.test(name)
+        },
         rounded: true
       },
 
@@ -455,8 +459,10 @@ export default {
         placeholder: 'Sobrenome do(a) orientador(a)',
         invalidMessages: ['Mínimo de 5 caracteres. Digite letras apenas'],
         defaultMessage: 'Campo opcional',
-        minlength: 5,
-        pattern: '[A-Za-z]*',
+        valid: name => {
+          const re = /^[a-zA-Z\u00C0-\u017F ]{5,}$/
+          return name === '' || re.test(name)
+        },
         rounded: true
       },
 
@@ -465,7 +471,7 @@ export default {
         invalidMessages: [this.getKwInvalidMessage],
         required: this.requiredKeyword,
         minlength: 10,
-        pattern: '[A-Za-z]+',
+        pattern: `${pattern}+`,
         rounded: true
       }
     }
@@ -478,12 +484,12 @@ export default {
 
     translations() {
       return {
-        authorTitle: this.$tr(this.lang, codes.layout.ltAbout)
+        authorTitle: this.$tr(this.lang, MessageCodes.layout.ltAbout)
       }
     },
 
     getKwInvalidMessage() {
-      const prefix = this.keywords.length === 1 ? 'Campo obrigatório. ' : ''
+      const prefix = this.keywords.length < 2 ? 'Campo obrigatório. ' : ''
       return `${prefix}Digite letras apenas. Mínimo de 10 caracteres`
     },
 
@@ -545,43 +551,41 @@ export default {
     onSubmit() {
       const formattedTotalPages =
         this.numberType === 'roman'
-          ? romanize(this.totalPages)
+          ? romanize(+this.totalPages)
           : this.totalPages
       this.$axios
-        .get('/api/knowledgeAreas', {
-          params: {
-            keywords: this.keywords,
-            authors: {
-              authorName: this.authorName,
-              authorSurname: this.authorSurname,
-              author2Name: this.author2Name,
-              author2Surname: this.author2Surname
-            },
-            work: {
-              workTitle: this.workTitle,
-              workSubtitle: this.workSubtitle,
-              presentationYear: this.presentationYear,
-              workImagesType: this.workImagesType,
-              totalPages: formattedTotalPages,
-              workType: this.workType
-            },
-            advisors: {
-              advisorName: this.advisorName,
-              advisorSurname: this.advisorSurname,
-              isFemaleAdvisor: this.isFemaleAdvisor,
-              advisorTitle: this.advisorTitle,
-              coadvisorName: this.coadvisorName,
-              coadvisorSurname: this.coadvisorSurname,
-              isFemaleCoadvisor: this.isFemaleCoadvisor,
-              coadvisorTitle: this.coadvisorTitle
-            },
-            academicDetails: {
-              acdUnity: this.selectedAcdUnity.id,
-              knArea: this.selectedKnArea.id,
-              course: 'course'
-            },
-            catalogFont: this.catalogFont
-          }
+        .post('/api/catalogCards', {
+          keywords: this.keywords.map(kw => kw.value),
+          authors: {
+            authorName: this.authorName,
+            authorSurname: this.authorSurname,
+            author2Name: this.author2Name,
+            author2Surname: this.author2Surname
+          },
+          work: {
+            workTitle: this.workTitle,
+            workSubtitle: this.workSubtitle,
+            presentationYear: this.presentationYear,
+            workImagesType: this.workImagesType,
+            totalPages: formattedTotalPages,
+            workType: this.workType
+          },
+          advisors: {
+            advisorName: this.advisorName,
+            advisorSurname: this.advisorSurname,
+            isFemaleAdvisor: this.isFemaleAdvisor,
+            advisorTitle: this.advisorTitle,
+            coadvisorName: this.coadvisorName,
+            coadvisorSurname: this.coadvisorSurname,
+            isFemaleCoadvisor: this.isFemaleCoadvisor,
+            coadvisorTitle: this.coadvisorTitle
+          },
+          academicDetails: {
+            acdUnity: this.selectedAcdUnity.id,
+            knArea: this.selectedKnArea.id,
+            course: 'course'
+          },
+          catalogFont: this.catalogFont
         })
         .then(response => {
           this.knAreas = response.data

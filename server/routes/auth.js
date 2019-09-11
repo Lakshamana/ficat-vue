@@ -1,5 +1,5 @@
 const User = require('../models/User')
-const MessageCodes = require('../../shared/messageCodes')
+const { MessageCodes } = require('../../shared/messageCodes')
 const HttpCodes = require('../httpCodes')
 const { tokenSign, tokenVerify } = require('../util/utils')
 

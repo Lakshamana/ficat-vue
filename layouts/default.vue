@@ -38,7 +38,7 @@
           >
             pt
           </a>
-          <a class="navbar-item is-paddingless">|</a>
+          <div class="navbar-item is-paddingless">|</div>
           <a
             class="navbar-item"
             exact-active-class="is-active"
@@ -57,7 +57,7 @@
 
 <script>
 import { mapState } from 'vuex'
-import codes from '@/shared/messageCodes'
+const { MessageCodes } = require('../shared/messageCodes')
 
 export default {
   computed: {
@@ -67,9 +67,9 @@ export default {
 
     paths() {
       return {
-        about: this.$tr(this.lang, codes.layout.ltAbout),
-        instructions: this.$tr(this.lang, codes.layout.ltInstructions),
-        talk: this.$tr(this.lang, codes.layout.ltTalkUs)
+        about: this.$tr(this.lang, MessageCodes.layout.ltAbout),
+        instructions: this.$tr(this.lang, MessageCodes.layout.ltInstructions),
+        talk: this.$tr(this.lang, MessageCodes.layout.ltTalkUs)
       }
     }
   },

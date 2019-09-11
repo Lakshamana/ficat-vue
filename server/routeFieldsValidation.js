@@ -45,6 +45,7 @@ module.exports = {
       'keywords',
       'work',
       'advisors',
+      'authors',
       'academicDetails',
       'catalogFont'
     ]

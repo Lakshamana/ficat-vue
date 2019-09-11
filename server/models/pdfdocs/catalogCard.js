@@ -39,9 +39,19 @@ function catalogCard(
   font,
   { cutter, authors, work, advisors, academicDetails, keywords, cdd }
 ) {
-  doc.moveDown(20)
+  doc.registerFont(
+    'Arial-Regular',
+    '../../../assets/fonts/LiberationSans-Regular.ttf'
+  )
+  doc.registerFont(
+    'Arial-Bold',
+    '../../../assets/fonts/LiberationSans-Bold.ttf'
+  )
 
   const defaultFont = `${font === 'times' ? 'Times' : 'Arial'}`
+  const regularSuffix = `${font === 'times' ? 'Roman' : 'Regular'}`
+
+  doc.moveDown(20)
 
   const header = `
 Dados Internacionais de Catalogação na Publicação (CIP) de acordo com ISBD
@@ -76,26 +86,48 @@ Gerada automaticamente pelo módulo Ficat, mediante os dados fornecidos pelo(a) 
   }
 
   doc
-    .font(`${defaultFont}-Regular`, 10)
+    .font(`${defaultFont}-${regularSuffix}`, 10)
     .text(cutter, -270, 450, {
       align: 'justify'
     })
-    .text(` ${authors.surname}, ${authors.name}`, 150, 450)
+    .text(` ${authors.authorSurname}, ${authors.authorName}`, 150, 450)
     .text(
       `  ${work.workTitle} ${subtitle} / ${authors.authorName} ${authors.authorSurname}${author2} — ${work.presentationYear}`
     )
     .text(` ${work.totalPages} f.${color[work.workImagesType]}`)
 
-  const advisorHeader = `Orientador(a): ${advisors.advisorTitle} ${advisors.advisorName} ${advisors.advisorSurname}`
+  // Títulos em masculino e feminino
+  const title = {
+    graduate: ['', ''],
+    expert: ['', ''],
+    master: ['M.e', 'M.ª'],
+    doctor: ['Dr.', 'Dra.']
+  }
+
+  const advisorHeader = `Orientador(a): ${title[advisors.advisorTitle]} ${
+    advisors.advisorName
+  } ${advisors.advisorSurname}`
   const coadvisorHeader = advisors.coadvisorName
-    ? `Coorientador(a): ${advisors.coadvisorTitle} ${advisors.coadvisorName} ${advisors.coadvisorSurname}`
+    ? `Coorientador(a): ${title[advisors.coadvisorTitle]} ${
+        advisors.coadvisorName
+      } ${advisors.coadvisorSurname}`
     : ''
 
-  const workHeader = `${work.workType} - ${academicDetails.course}, ${academicDetails.acdUnity}`
+  const workTypes = {
+    thesis: 'Tese',
+    dissertation: 'Dissertação',
+    tccExpert: 'TCC (Especialização)',
+    tccGraduation: 'TCC (Graduação)'
+  }
+
+  const workHeader = `${workTypes[work.workType]} - ${
+    academicDetails.course
+  }, ${academicDetails.acdUnity}`
 
   const localHeader = `${academicDetails.program}, Universidade Federal do Pará, Belém, 2019.`
 
   let kws = ''
+  console.log(keywords)
   for (const kn in keywords) {
     kws += `${kn + 1}. ${keywords[kn]}`
   }
@@ -116,7 +148,7 @@ Gerada automaticamente pelo módulo Ficat, mediante os dados fornecidos pelo(a) 
       width: 300
     })
 
-  doc.moveDown(1).text(cdd, 520 - cdd.length * 5.5)
+  doc.moveDown(1).text(`CDD ${cdd}`, 520 - cdd.length * 5.5)
 
   drawLine(doc, 90, 610, 430)
 }

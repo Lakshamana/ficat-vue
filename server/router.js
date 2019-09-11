@@ -2,7 +2,7 @@ const Router = require('koa-router')
 const BodyParser = require('koa-body')
 const unless = require('koa-unless')
 
-const messageCodes = require('../shared/messageCodes')
+const { MessageCodes } = require('../shared/messageCodes')
 const { validator, paginatedEntity, query } = require('./util/middlewares')
 const frontend = require('./routes/frontend')
 const HttpCodes = require('./httpCodes')
@@ -50,9 +50,16 @@ api.use(
 )
 
 /**
- * Catalog card
+ * Catalog cards
  */
-api.post('/catalog/', bodyParser, validator('catalog'), catalogRoutes.create)
+
+// create
+api.post(
+  '/catalogCards/',
+  bodyParser,
+  validator('catalogCard'),
+  catalogRoutes.create
+)
 
 /**
  * Users
@@ -158,7 +165,7 @@ api.del('/academicUnities/:id', acdUnitiesRoutes.del)
 // api not found
 api.use('/*', ctx => {
   ctx.status = HttpCodes.NOT_FOUND
-  ctx.body = messageCodes.error.errNotFound
+  ctx.body = MessageCodes.error.errNotFound
 })
 
 router.use(api.routes())
