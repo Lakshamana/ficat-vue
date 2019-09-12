@@ -55,7 +55,7 @@
                             aria-required="true"
                             rounded
                           >
-                            <option v-for="y in 10" :key="y" :value="y">
+                            <option v-for="y in 10" :key="y">
                               {{ getYear(y - 1) }}
                             </option>
                           </b-select>
@@ -120,7 +120,7 @@
                         rounded
                         icon="magnify"
                         @typing="getAcdUnities"
-                        @select="option => (selectedAcdUnity = option)"
+                        @select="onSelectedAcdUnity"
                       >
                         <template slot="empty">
                           Nenhum resultado encontrado
@@ -145,6 +145,21 @@
                           Nenhum resultado encontrado
                         </template>
                       </b-autocomplete>
+                    </b-field>
+                    <b-field v-if="selectedAcdUnity">
+                      <b-select
+                        v-model="selectedCourse"
+                        placeholder="Programa/Curso"
+                        aria-placeholder="Programa ou Curso"
+                        required
+                        aria-required="true"
+                        expanded
+                        rounded
+                      >
+                        <option v-for="course in courses" :key="course.id">
+                          {{ course.name }}
+                        </option>
+                      </b-select>
                     </b-field>
                   </div>
                 </div>
@@ -301,7 +316,7 @@
 import { Hooper, Slide, Navigation, Pagination } from 'hooper'
 import { mapState } from 'vuex'
 import pDebounce from 'p-debounce'
-import { romanize } from '@/shared/frontUtils'
+import { romanize, maybe } from '@/shared/frontUtils'
 
 import InputValidation from '@/components/InputValidation'
 import Card from '@/components/Card'
@@ -335,6 +350,7 @@ export default {
       workType: undefined,
       acdUnityPreviousSearch: '',
       knAreaPreviousSearch: '',
+      coursePreviousSearch: '',
       advisorName: '',
       advisorSurname: '',
       isFemaleAdvisor: false,
@@ -346,8 +362,10 @@ export default {
       catalogFont: undefined,
       selectedAcdUnity: undefined,
       selectedKnArea: undefined,
+      selectedCourse: undefined,
       academicUnities: [],
       knAreas: [],
+      courses: [],
       totalPages: undefined,
       loading: false,
       numberType: 'roman',
@@ -530,8 +548,16 @@ export default {
       }
     }, 500),
 
+    onSelectedAcdUnity(option) {
+      this.selectedAcdUnity = option
+      this.getCourses()
+    },
+
     getKnAreas: pDebounce(function(term) {
-      // Evitar que consultas iguais sejam repetidas
+      if (!term.length) {
+        this.knAreas = []
+        return
+      }
       if (term !== this.knAreaPreviousSearch) {
         this.knAreaPreviousSearch = term
         this.$axios
@@ -548,6 +574,20 @@ export default {
       }
     }, 500),
 
+    getCourses() {
+      this.$axios
+        .get('/api/courses', {
+          params: {
+            acdUnityId: this.selectedAcdUnity.id
+          }
+        })
+        .then(response => {
+          this.courses = response.data
+        })
+        .catch()
+        .finally(() => (this.loading = false))
+    },
+
     onSubmit() {
       const formattedTotalPages =
         this.numberType === 'roman'
@@ -559,12 +599,12 @@ export default {
           authors: {
             authorName: this.authorName,
             authorSurname: this.authorSurname,
-            author2Name: this.author2Name,
-            author2Surname: this.author2Surname
+            ...maybe('author2Name', this.author2Name),
+            ...maybe('author2Surname', this.author2Surname)
           },
           work: {
             workTitle: this.workTitle,
-            workSubtitle: this.workSubtitle,
+            ...maybe('workSubtitle', this.workSubtitle),
             presentationYear: this.presentationYear,
             workImagesType: this.workImagesType,
             totalPages: formattedTotalPages,
@@ -575,23 +615,40 @@ export default {
             advisorSurname: this.advisorSurname,
             isFemaleAdvisor: this.isFemaleAdvisor,
             advisorTitle: this.advisorTitle,
-            coadvisorName: this.coadvisorName,
-            coadvisorSurname: this.coadvisorSurname,
-            isFemaleCoadvisor: this.isFemaleCoadvisor,
-            coadvisorTitle: this.coadvisorTitle
+            ...maybe('coadvisorName', this.coadvisorName),
+            ...maybe('coadvisorSurname', this.coadvisorSurname),
+            ...maybe('isFemaleCoadvisor', this.isFemaleCoadvisor),
+            ...maybe('coadvisorTitle', this.coadvisorTitle)
           },
           academicDetails: {
-            acdUnity: this.selectedAcdUnity.id,
-            knArea: this.selectedKnArea.id,
-            course: 'course'
+            acdUnityId: this.selectedAcdUnity.id,
+            knAreaId: this.selectedKnArea.id,
+            courseId: this.selectedCourse.id
           },
           catalogFont: this.catalogFont
         })
         .then(response => {
-          this.knAreas = response.data
+          this.showFile(response.data)
         })
         .catch()
         .finally(() => (this.loading = false))
+    },
+
+    showFile(blob) {
+      const newBlob = new Blob([blob], { type: 'application/pdf' })
+      if (window.navigator && window.navigator.msSaveOrOpenBlob) {
+        window.navigator.msSaveOrOpenBlob(newBlob)
+        return
+      }
+
+      const data = window.URL.createObjectURL(newBlob)
+      const link = document.createElement('a')
+      link.href = data
+      link.download = 'ficha.pdf'
+      link.click()
+      setTimeout(() => {
+        window.URL.revokeObjectURL(data)
+      }, 100)
     }
   }
 }

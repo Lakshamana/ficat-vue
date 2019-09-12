@@ -1,32 +1,48 @@
 const PDFDocument = require('pdfkit')
 const CatalogCard = require('../models/CatalogCard')
 const KnowledgeArea = require('../models/KnowledgeArea')
+const Course = require('../models/Course')
+const AcademicUnity = require('../models/AcademicUnity')
 const HttpCodes = require('../httpCodes')
 const { MessageCodes } = require('../../shared/messageCodes')
 const { validatePayload } = require('../../shared/utils')
 const catalogCardModel = require('../models/pdfdocs/catalogCard')
 
 const fields = {
-  authors: ['authorName', 'authorSurname', 'authorSurname', 'author2Surname'],
-  work: [
-    'workTitle',
-    'workSubtitle',
-    'presentationYear',
-    'workImagesType',
-    'totalPages',
-    'workType'
-  ],
-  advisors: [
-    'advisorName',
-    'advisorSurname',
-    'isFemaleAdvisor',
-    'advisorTitle',
-    'coadvisorName',
-    'coadvisorSurname',
-    'isFemaleCoadvisor',
-    'coadvisorTitle'
-  ],
-  academicDetails: ['acdUnity', 'knArea'],
+  authors: {
+    mandatory: ['authorName', 'authorSurname', 'author2Name', 'author2Surname'],
+    optional: ['author2Name', 'author2Surname']
+  },
+  work: {
+    mandatory: [
+      'workTitle',
+      'workSubtitle',
+      'presentationYear',
+      'workImagesType',
+      'totalPages',
+      'workType'
+    ],
+    optional: ['workSubtitle']
+  },
+  advisors: {
+    mandatory: [
+      'advisorName',
+      'advisorSurname',
+      'isFemaleAdvisor',
+      'advisorTitle',
+      'coadvisorName',
+      'coadvisorSurname',
+      'isFemaleCoadvisor',
+      'coadvisorTitle'
+    ],
+    optional: [
+      'coadvisorName',
+      'coadvisorSurname',
+      'isFemaleCoadvisor',
+      'coadvisorTitle'
+    ]
+  },
+  academicDetails: ['acdUnityId', 'knAreaId', 'courseId'],
   fonts: ['times', 'arial']
 }
 
@@ -40,30 +56,50 @@ async function create(ctx) {
     academicDetails,
     catalogFont
   } = ctx.request.body
-  Promise.all([
-    validatePayload(authors, fields.authors),
-    validatePayload(work, fields.work),
-    validatePayload(advisors, fields.advisors),
+
+  const validations = [
+    validatePayload(authors, fields.authors.mandatory, fields.authors.optional),
+    validatePayload(work, fields.work.mandatory, fields.work.optional),
+    validatePayload(
+      advisors,
+      fields.advisors.mandatory,
+      fields.advisors.optional
+    ),
     validatePayload(academicDetails, fields.academicDetails)
-  ]).then(validations => {
-    if (
-      !validations.every(val => val.valid) ||
-      !fields.fonts.includes(catalogFont) ||
-      !keywords.length
-    ) {
-      ctx.throw(
-        HttpCodes.BAD_REQUEST,
-        MessageCodes.error.errInvalidCatalogFields
-      )
-    }
-  })
+  ]
+
+  if (
+    !validations.every(val => val.valid) ||
+    !fields.fonts.includes(catalogFont) ||
+    !keywords.length
+  ) {
+    ctx.throw(
+      HttpCodes.BAD_REQUEST,
+      MessageCodes.error.errInvalidCatalogFields,
+      {
+        fields: validations.filter(val => val && val.valid === false)
+      }
+    )
+  }
 
   // Construir o PDF
   const kna = await KnowledgeArea.where({
-    id: academicDetails.knArea
+    id: academicDetails.knAreaId
+  }).fetch()
+  const cdd = kna.get('code')
+
+  const course = await Course.where({
+    id: academicDetails.courseId
   }).fetch()
 
-  const cdd = kna.get('code')
+  const acdUnity = await AcademicUnity.where({
+    id: academicDetails.acdUnityId
+  }).fetch()
+
+  const academicDetailNames = {
+    programName: course.get('name'),
+    acdUnityName: acdUnity.get('name')
+  }
 
   const doc = new PDFDocument()
   catalogCardModel(doc, catalogFont, {
@@ -71,7 +107,7 @@ async function create(ctx) {
     authors,
     work,
     advisors,
-    academicDetails,
+    academicDetailNames,
     keywords,
     cdd
   })

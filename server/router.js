@@ -43,7 +43,8 @@ api.use(
         ctx.path.includes('auth') ||
         (ctx.path.includes('knowledgeAreas') && ctx.method === 'GET') ||
         (ctx.path.includes('academicUnities') && ctx.method === 'GET') ||
-        (ctx.path.includes('catalog') && ctx.method === 'POST')
+        (ctx.path.includes('catalog') && ctx.method === 'POST') ||
+        (ctx.path.includes('courses') && ctx.method === 'GET')
       )
     }
   })

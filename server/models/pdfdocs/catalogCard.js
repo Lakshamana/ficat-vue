@@ -28,16 +28,16 @@
       isFemaleCoadvisor: Boolean,
       coadvisorTitle: String
     },
-    academicDetails: {
-      program: String,
-      acdUnity: String
+    academicDetailNames: {
+      programName: String,
+      acdUnityName: String
     },
     cdd: String
  */
 function catalogCard(
   doc,
   font,
-  { cutter, authors, work, advisors, academicDetails, keywords, cdd }
+  { cutter, authors, work, advisors, academicDetailNames, keywords, cdd }
 ) {
   doc.registerFont(
     'Arial-Regular',
@@ -100,17 +100,15 @@ Gerada automaticamente pelo módulo Ficat, mediante os dados fornecidos pelo(a) 
   const title = {
     graduate: ['', ''],
     expert: ['', ''],
-    master: ['M.e', 'M.ª'],
-    doctor: ['Dr.', 'Dra.']
+    master: ['M.e ', 'M.ª '],
+    doctor: ['Dr. ', 'Dra. ']
   }
 
-  const advisorHeader = `Orientador(a): ${title[advisors.advisorTitle]} ${
-    advisors.advisorName
-  } ${advisors.advisorSurname}`
+  const femaleAdvisor = +advisors.isFemaleAdvisor
+  const femaleCoadvisor = +advisors.isFemaleCoadvisor
+  const advisorHeader = `Orientador(a): ${title[advisors.advisorTitle][femaleAdvisor]}${advisors.advisorName} ${advisors.advisorSurname}`
   const coadvisorHeader = advisors.coadvisorName
-    ? `Coorientador(a): ${title[advisors.coadvisorTitle]} ${
-        advisors.coadvisorName
-      } ${advisors.coadvisorSurname}`
+    ? `Coorientador(a): ${title[advisors.coadvisorTitle][femaleCoadvisor]} ${advisors.coadvisorName} ${advisors.coadvisorSurname}`
     : ''
 
   const workTypes = {
@@ -121,13 +119,12 @@ Gerada automaticamente pelo módulo Ficat, mediante os dados fornecidos pelo(a) 
   }
 
   const workHeader = `${workTypes[work.workType]} - ${
-    academicDetails.course
-  }, ${academicDetails.acdUnity}`
+    academicDetailNames.programName
+  }, ${academicDetailNames.acdUnityName}`
 
-  const localHeader = `${academicDetails.program}, Universidade Federal do Pará, Belém, 2019.`
+  const localHeader = `${academicDetailNames.programName}, Universidade Federal do Pará, Belém, 2019.`
 
   let kws = ''
-  console.log(keywords)
   for (const kn in keywords) {
     kws += `${kn + 1}. ${keywords[kn]}`
   }
