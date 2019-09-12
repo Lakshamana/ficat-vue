@@ -1,3 +1,4 @@
+const path = require('path')
 /**
  * Gera o modelo PDF baseado nos dados da
  * ficha catalográfica gerados pelo usuário final
@@ -41,11 +42,11 @@ function catalogCard(
 ) {
   doc.registerFont(
     'Arial-Regular',
-    '../../../assets/fonts/LiberationSans-Regular.ttf'
+    path.resolve(__dirname, '../../../assets/fonts/LiberationSans-Regular.ttf')
   )
   doc.registerFont(
     'Arial-Bold',
-    '../../../assets/fonts/LiberationSans-Bold.ttf'
+    path.resolve(__dirname, '../../../assets/fonts/LiberationSans-Bold.ttf')
   )
 
   const defaultFont = `${font === 'times' ? 'Times' : 'Arial'}`
@@ -122,7 +123,7 @@ Gerada automaticamente pelo módulo Ficat, mediante os dados fornecidos pelo(a) 
     academicDetailNames.programName
   }, ${academicDetailNames.acdUnityName}`
 
-  const localHeader = `${academicDetailNames.programName}, Universidade Federal do Pará, Belém, 2019.`
+  const localHeader = 'Universidade Federal do Pará, Belém, 2019.'
 
   let kws = ''
   for (const kn in keywords) {
