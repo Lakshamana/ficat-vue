@@ -1,4 +1,4 @@
-// const path = require('path')
+const path = require('path')
 /**
  * Gera o modelo PDF baseado nos dados da
  * ficha catalográfica gerados pelo usuário final
@@ -40,17 +40,17 @@ function catalogCard(
   font,
   { cutter, authors, work, advisors, academicDetailNames, keywords, cdd }
 ) {
-  // doc.registerFont(
-  //   'Arial-Regular',
-  //   path.resolve(__dirname, '../../../assets/fonts/LiberationSans-Regular.ttf')
-  // )
-  // doc.registerFont(
-  //   'Arial-Bold',
-  //   path.resolve(__dirname, '../../../assets/fonts/LiberationSans-Bold.ttf')
-  // )
+  doc.registerFont(
+    'Arial-Regular',
+    path.resolve(__dirname, '../../../assets/fonts/arimo.regular.ttf')
+  )
+  doc.registerFont(
+    'Arial-Bold',
+    path.resolve(__dirname, '../../../assets/fonts/arimo.bold.ttf')
+  )
 
-  const defaultFont = `${font === 'times' ? 'Times' : 'Helvetica'}`
-  const regularSuffix = `${font === 'times' ? '-Roman' : ''}`
+  const defaultFont = `${font === 'times' ? 'Times' : 'Arial'}`
+  const regularSuffix = `${font === 'times' ? '-Roman' : '-Regular'}`
   const fontSize = font === 'times' ? 10 : 9
 
   doc.moveDown(20)
