@@ -48,7 +48,7 @@ const obj = {
   },
 
   production: {
-    ...connection,
+    ...db,
     migrations,
     seeds,
     useNullAsDefault
