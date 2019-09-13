@@ -45,7 +45,7 @@
                       style="margin-bottom: 2.4em;"
                     ></input-validation>
                     <div class="columns">
-                      <div class="column is-3">
+                      <div class="column is-4">
                         <b-field>
                           <b-select
                             v-model="presentationYear"
@@ -61,7 +61,7 @@
                           </b-select>
                         </b-field>
                       </div>
-                      <div class="column is-9">
+                      <div class="column is-8">
                         <input-validation
                           v-model="totalPages"
                           :properties="totalPagesProperties"
