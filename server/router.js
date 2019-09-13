@@ -43,7 +43,8 @@ api.use(
         ctx.path.includes('auth') ||
         (ctx.path.includes('knowledgeAreas') && ctx.method === 'GET') ||
         (ctx.path.includes('academicUnities') && ctx.method === 'GET') ||
-        (ctx.path.includes('catalog') && ctx.method === 'POST') ||
+        (ctx.path.includes('catalogCards') && ctx.method === 'POST') ||
+        (ctx.path.includes('catalogCards/get') && ctx.method === 'GET') ||
         (ctx.path.includes('courses') && ctx.method === 'GET')
       )
     }
@@ -61,6 +62,9 @@ api.post(
   validator('catalogCard'),
   catalogRoutes.create
 )
+
+// get result
+api.get('/catalogCards/get/:id', catalogRoutes.getPdfResult)
 
 /**
  * Users

@@ -1,4 +1,4 @@
-const path = require('path')
+// const path = require('path')
 /**
  * Gera o modelo PDF baseado nos dados da
  * ficha catalográfica gerados pelo usuário final
@@ -40,17 +40,18 @@ function catalogCard(
   font,
   { cutter, authors, work, advisors, academicDetailNames, keywords, cdd }
 ) {
-  doc.registerFont(
-    'Arial-Regular',
-    path.resolve(__dirname, '../../../assets/fonts/LiberationSans-Regular.ttf')
-  )
-  doc.registerFont(
-    'Arial-Bold',
-    path.resolve(__dirname, '../../../assets/fonts/LiberationSans-Bold.ttf')
-  )
+  // doc.registerFont(
+  //   'Arial-Regular',
+  //   path.resolve(__dirname, '../../../assets/fonts/LiberationSans-Regular.ttf')
+  // )
+  // doc.registerFont(
+  //   'Arial-Bold',
+  //   path.resolve(__dirname, '../../../assets/fonts/LiberationSans-Bold.ttf')
+  // )
 
-  const defaultFont = `${font === 'times' ? 'Times' : 'Arial'}`
-  const regularSuffix = `${font === 'times' ? 'Roman' : 'Regular'}`
+  const defaultFont = `${font === 'times' ? 'Times' : 'Helvetica'}`
+  const regularSuffix = `${font === 'times' ? '-Roman' : ''}`
+  const fontSize = font === 'times' ? 10 : 9
 
   doc.moveDown(20)
 
@@ -59,7 +60,7 @@ Dados Internacionais de Catalogação na Publicação (CIP) de acordo com ISBD
 Sistema de Bibliotecas da Universidade Federal do Pará
 Gerada automaticamente pelo módulo Ficat, mediante os dados fornecidos pelo(a) autor(a)`
 
-  doc.font(`${defaultFont}-Bold`, 10).text(header, {
+  doc.font(`${defaultFont}-Bold`, fontSize).text(header, {
     align: 'center',
     continued: true
   })
@@ -87,10 +88,8 @@ Gerada automaticamente pelo módulo Ficat, mediante os dados fornecidos pelo(a) 
   }
 
   doc
-    .font(`${defaultFont}-${regularSuffix}`, 10)
-    .text(cutter, -270, 450, {
-      align: 'justify'
-    })
+    .font(`${defaultFont}${regularSuffix}`, fontSize)
+    .text(cutter, -300, 450)
     .text(` ${authors.authorSurname}, ${authors.authorName}`, 150, 450)
     .text(
       `  ${work.workTitle} ${subtitle} / ${authors.authorName} ${authors.authorSurname}${author2} — ${work.presentationYear}`
@@ -146,7 +145,7 @@ Gerada automaticamente pelo módulo Ficat, mediante os dados fornecidos pelo(a) 
       width: 300
     })
 
-  doc.moveDown(1).text(`CDD ${cdd}`, 520 - cdd.length * 5.5)
+  doc.moveDown(1).text(`CDD ${cdd}`, 500 - cdd.length * 7)
 
   drawLine(doc, 90, 610, 430)
 }

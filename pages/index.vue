@@ -148,7 +148,7 @@
                     </b-field>
                     <b-field v-if="selectedAcdUnity">
                       <b-select
-                        v-model="selectedCourse"
+                        v-model="selectedCourseId"
                         placeholder="Programa/Curso"
                         aria-placeholder="Programa ou Curso"
                         required
@@ -156,7 +156,11 @@
                         expanded
                         rounded
                       >
-                        <option v-for="course in courses" :key="course.id">
+                        <option
+                          v-for="course in courses"
+                          :key="course.id"
+                          :value="course.id"
+                        >
                           {{ course.name }}
                         </option>
                       </b-select>
@@ -362,7 +366,7 @@ export default {
       catalogFont: undefined,
       selectedAcdUnity: undefined,
       selectedKnArea: undefined,
-      selectedCourse: undefined,
+      selectedCourseId: undefined,
       academicUnities: [],
       knAreas: [],
       courses: [],
@@ -623,32 +627,21 @@ export default {
           academicDetails: {
             acdUnityId: this.selectedAcdUnity.id,
             knAreaId: this.selectedKnArea.id,
-            courseId: this.selectedCourse.id
+            courseId: this.selectedCourseId
           },
           catalogFont: this.catalogFont
         })
         .then(response => {
-          this.showFile(response.data)
+          const location = response.headers.location
+          const id = location.substr(location.lastIndexOf('/') + 1)
+          this.getPdfResult(id)
         })
         .catch()
         .finally(() => (this.loading = false))
     },
 
-    showFile(blob) {
-      const newBlob = new Blob([blob], { type: 'application/pdf' })
-      if (window.navigator && window.navigator.msSaveOrOpenBlob) {
-        window.navigator.msSaveOrOpenBlob(newBlob)
-        return
-      }
-
-      const data = window.URL.createObjectURL(newBlob)
-      const link = document.createElement('a')
-      link.href = data
-      link.download = 'ficha.pdf'
-      link.click()
-      setTimeout(() => {
-        window.URL.revokeObjectURL(data)
-      }, 100)
+    getPdfResult(id) {
+      window.open(`/api/catalogCards/get/${id}`, '_blank')
     }
   }
 }

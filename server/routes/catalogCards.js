@@ -46,6 +46,7 @@ const fields = {
   fonts: ['times', 'arial']
 }
 
+let pdfResult
 async function create(ctx) {
   // Validação interna do payload
   const {
@@ -122,10 +123,9 @@ async function create(ctx) {
       courseId: academicDetails.course
     }
     const newCatalogCard = await CatalogCard.forge(payload).save()
-    ctx.set('Content-Type', 'application/pdf')
-    ctx.set('Content-Disposition', `filename=${title}`)
-    ctx.body = doc
+    ctx.body = newCatalogCard
     ctx.status = HttpCodes.OK
+    pdfResult = doc
     const id = newCatalogCard.id
     ctx.set('Location', `/api/catalogCards/${id}`)
   } catch (e) {
@@ -135,6 +135,14 @@ async function create(ctx) {
       }
     })
   }
+}
+
+function getPdfResult(ctx) {
+  ctx.set('Content-Type', 'application/pdf')
+  ctx.set('Content-Disposition', `filename=${pdfResult.info.Title}`)
+  ctx.status = HttpCodes.OK
+  ctx.body = pdfResult
+  pdfResult = undefined
 }
 
 async function list(ctx) {
@@ -175,4 +183,4 @@ async function update(ctx) {
   }
 }
 
-module.exports = { create, list, update }
+module.exports = { create, list, update, getPdfResult }
