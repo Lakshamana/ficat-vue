@@ -126,9 +126,10 @@ Gerada automaticamente pelo módulo Ficat, mediante os dados fornecidos pelo(a) 
 
   let kws = ''
   for (const kn in keywords) {
-    kws += `${kn + 1}. ${keywords[kn]}`
+    kws += `${+kn + 1}. ${keywords[kn]} `
   }
-  const keywordHeader = `${kws} . I. ${work.workTitle}.`
+  kws = kws.substring(0, kws.length - 1)
+  const keywordHeader = `${kws}. I. ${work.workTitle}.`
 
   doc
     .moveDown(1)
