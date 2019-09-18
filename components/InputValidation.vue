@@ -20,7 +20,7 @@
       :aria-required="properties.ariaRequired"
       :aria-errormessage="ariaErrorMessages"
       :rounded="properties.rounded"
-      @blur="dirty = true"
+      @blur="onBlur"
       @input="onChange"
     ></b-input>
   </b-field>
@@ -93,6 +93,11 @@ export default {
   methods: {
     onChange(value) {
       this.$emit('input', value)
+    },
+
+    onBlur() {
+      this.dirty = true
+      this.$emit('blur')
     }
   }
 }

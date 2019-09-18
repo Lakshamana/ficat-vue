@@ -3,7 +3,7 @@
     <div class="columns is-centered is-mobile">
       <div class="column is-10">
         <form @submit.prevent="onSubmit">
-          <hooper class="hooper-fit">
+          <hooper ref="hooper" class="hooper-fit">
             <slide>
               <card title="Nome do autor">
                 <div class="columns">
@@ -12,6 +12,7 @@
                       v-model="authorName"
                       :properties="authorNameProperties"
                       class="mb"
+                      @focus="slideTo(0)"
                     ></input-validation>
                     <input-validation
                       v-model="authorSurname"
@@ -26,6 +27,7 @@
                     <input-validation
                       v-model="author2Surname"
                       :properties="author2SurnameProperties"
+                      @blur="slideTo(1)"
                     ></input-validation>
                   </div>
                 </div>
@@ -349,7 +351,7 @@ export default {
       author2Surname: '',
       workTitle: '',
       workSubtitle: '',
-      presentationYear: undefined,
+      presentationYear: '' + new Date(Date.now()).getFullYear(),
       workImagesType: undefined,
       workType: undefined,
       acdUnityPreviousSearch: '',
@@ -440,9 +442,11 @@ export default {
       totalPagesProperties: {
         type: 'number',
         placeholder: 'Páginas',
-        invalidMessages: ['Campo obrigatório e somente números'],
+        invalidMessages: [
+          'Campo obrigatório e somente números. Use números positivos'
+        ],
         required: true,
-        pattern: '[0-9]+',
+        valid: n => n > 0,
         rounded: true
       },
 
@@ -521,6 +525,12 @@ export default {
   },
 
   methods: {
+    slideTo(n) {
+      // this.$refs.hooper.slideTo(n)
+      console.log('sliding to ' + n)
+      // console.log(evt)
+    },
+
     newKeyword() {
       return { id: new Date().getTime(), value: '' }
     },

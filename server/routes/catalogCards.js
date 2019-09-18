@@ -137,6 +137,11 @@ async function create(ctx) {
   }
 }
 
+function catalogQueries(ctx) {
+  // let query = CatalogCard
+  // const queries = ctx.query
+}
+
 function getPdfResult(ctx) {
   ctx.set('Content-Type', 'application/pdf')
   ctx.set('Content-Disposition', `filename=${pdfResult.info.Title}`)
@@ -183,4 +188,4 @@ async function update(ctx) {
   }
 }
 
-module.exports = { create, list, update, getPdfResult }
+module.exports = { create, list, update, getPdfResult, catalogQueries }

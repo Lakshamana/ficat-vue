@@ -66,6 +66,13 @@ api.post(
 // get result
 api.get('/catalogCards/get/:id', catalogRoutes.getPdfResult)
 
+// get catalog queries
+api.get(
+  '/catalogCards/q/',
+  query(['name', 'period', 'year']),
+  catalogRoutes.catalogQueries
+)
+
 /**
  * Users
  */
