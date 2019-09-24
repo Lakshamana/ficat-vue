@@ -7,6 +7,7 @@ const HttpCodes = require('../httpCodes')
 const { MessageCodes } = require('../../shared/messageCodes')
 const { validatePayload } = require('../../shared/utils')
 const catalogCardModel = require('../models/pdfdocs/catalogCard')
+const { payloadErrors } = require('../util/utils')
 
 const fields = {
   authors: {
@@ -152,15 +153,18 @@ const querieFields = {
   }
 }
 
-// Parameters validation fn
-function _paramValidator(params, searchType) {
-  return {}
-}
-
 function catalogQueries(ctx) {
   // let query = CatalogCard
   const searchType = ctx.query.type
   const params = ctx.request.body
+
+  const { mandatory, optional } = querieFields[searchType]
+  const validation = validatePayload(params, mandatory, optional)
+  if (!validation.valid) {
+    payloadErrors(ctx, validation)
+  }
+
+  
 }
 
 function getPdfResult(ctx) {

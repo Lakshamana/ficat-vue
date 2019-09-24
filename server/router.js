@@ -3,9 +3,12 @@ const BodyParser = require('koa-body')
 const unless = require('koa-unless')
 
 const { MessageCodes } = require('../shared/messageCodes')
-const { validator, paginatedEntity, query } = require('./util/middlewares')
+const { paginatedEntity, query, routeValidate } = require('./util/middlewares')
 const frontend = require('./routes/frontend')
 const HttpCodes = require('./httpCodes')
+
+// Route validation object
+// const fields = require('./routeFieldsValidation')
 
 // Entities routes
 const userRoutes = require('./routes/users')
@@ -21,13 +24,12 @@ const router = new Router()
 const api = new Router({ prefix: '/api' })
 const bodyParser = BodyParser()
 
-// api middlewares
-
 /**
- * Authentication
+ * api middlewares
  */
 
-api.post('/auth', bodyParser, validator('auth'), auth)
+// Authentication
+api.post('/auth', bodyParser, routeValidate('auth'), auth)
 
 /**
  * Use middleware de autorização (authz) em todas as
@@ -59,26 +61,29 @@ api.use(
 api.post(
   '/catalogCards/',
   bodyParser,
-  validator('catalogCard'),
+  routeValidate('catalogCard'),
   catalogRoutes.create
 )
 
 // get result
 api.get('/catalogCards/get/:id', catalogRoutes.getPdfResult)
 
+api.get('/catalogCards/', catalogRoutes.list)
+
 // get catalog queries
-api.get(
-  '/catalogCards/q/',
-  query(['name', 'period', 'year']),
-  catalogRoutes.catalogQueries
-)
+api.post('/catalogCards/q/', query(['type']), catalogRoutes.catalogQueries)
 
 /**
  * Users
  */
 
 // create
-api.post('/users/', bodyParser, validator('users', 'create'), userRoutes.create)
+api.post(
+  '/users/',
+  bodyParser,
+  routeValidate('users', 'create'),
+  userRoutes.create
+)
 
 // list
 api.get('/users/', userRoutes.list)
@@ -87,7 +92,7 @@ api.get('/users/', userRoutes.list)
 api.put(
   '/users/:username',
   bodyParser,
-  validator('users', 'update'),
+  routeValidate('users', 'update'),
   userRoutes.update
 )
 
@@ -99,7 +104,7 @@ api.put(
 api.post(
   '/knowledgeAreas/',
   bodyParser,
-  validator('knowledgeAreas', 'create'),
+  routeValidate('knowledgeAreas', 'create'),
   kaRoutes.create
 )
 
@@ -115,7 +120,7 @@ api.get(
 api.put(
   '/knowledgeAreas/:id',
   bodyParser,
-  validator('knowledgeAreas', 'update'),
+  routeValidate('knowledgeAreas', 'update'),
   kaRoutes.update
 )
 
@@ -130,7 +135,7 @@ api.del('/knowledgeAreas/:id', kaRoutes.del)
 api.post(
   '/courses/',
   bodyParser,
-  validator('courses', 'create'),
+  routeValidate('courses', 'create'),
   courseRoutes.create
 )
 
@@ -141,7 +146,7 @@ api.get('/courses/', query(['acdUnityId']), courseRoutes.list)
 api.put(
   '/courses/:id',
   bodyParser,
-  validator('courses', 'update'),
+  routeValidate('courses', 'update'),
   courseRoutes.update
 )
 
@@ -156,7 +161,7 @@ api.del('/courses/:id', courseRoutes.del)
 api.post(
   '/academicUnities/',
   bodyParser,
-  validator('academicUnities', 'create'),
+  routeValidate('academicUnities', 'create'),
   acdUnitiesRoutes.create
 )
 
@@ -167,7 +172,7 @@ api.get('/academicUnities/', query(['name']), acdUnitiesRoutes.list)
 api.put(
   '/academicUnities/:id',
   bodyParser,
-  validator('academicUnities', 'update'),
+  routeValidate('academicUnities', 'update'),
   acdUnitiesRoutes.update
 )
 

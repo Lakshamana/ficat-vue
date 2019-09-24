@@ -7,7 +7,7 @@ exports.up = function(knex) {
       .defaultTo('')
     table.string('program', 10).nullable()
     table
-      .enum('type', ['graduation', 'master', 'doctorate'])
+      .enum('type', ['graduation', 'specialization', 'master', 'doctorate'])
       .notNullable()
       .defaultTo('graduation')
     table.integer('unityId').unsigned()

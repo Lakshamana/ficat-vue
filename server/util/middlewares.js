@@ -4,13 +4,20 @@ const { MessageCodes } = require('../../shared/messageCodes')
 const fields = require('../routeFieldsValidation')
 const { payloadErrors } = require('../util/utils')
 
-// Requer middleware bodyParser
-function validator(entityName, operationType) {
-  const setting =
+// Route validation function
+function routeValidate(entityName, operationType) {
+  const settings =
     (operationType && fields[entityName][operationType]) || fields[entityName]
+  return validator(settings)
+}
+
+// Requer middleware bodyParser
+function validator(validateObj) {
+  const { mandatory, optional } = validateObj
   return (ctx, next) => {
-    const mandatory = setting.mandatory
-    const optional = setting.optional
+    if (!mandatory) {
+      ctx.throw(HttpCodes.INT_SRV_ERROR, 'Mandatory fields not valid!')
+    }
     const validation = validatePayload(ctx.request.body, mandatory, optional)
     if (!validation) {
       // Validação vazia (undefined)
@@ -64,4 +71,10 @@ function errorHandler(ctx, next) {
   })
 }
 
-module.exports = { errorHandler, query, validator, paginatedEntity }
+module.exports = {
+  errorHandler,
+  query,
+  validator,
+  paginatedEntity,
+  routeValidate
+}

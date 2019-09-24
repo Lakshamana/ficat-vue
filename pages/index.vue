@@ -322,10 +322,10 @@
 import { Hooper, Slide, Navigation, Pagination } from 'hooper'
 import { mapState } from 'vuex'
 import pDebounce from 'p-debounce'
-import { romanize, maybe } from '@/shared/frontUtils'
 
 import InputValidation from '@/components/InputValidation'
 import Card from '@/components/Card'
+const { romanize, maybe } = require('../shared/utils')
 const { MessageCodes } = require('../shared/messageCodes')
 
 const pattern = '[a-zA-Z\u00C0-\u017F ]'

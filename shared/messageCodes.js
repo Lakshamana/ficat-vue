@@ -1,5 +1,7 @@
 const messages = {
-  info: {},
+  info: {
+    infAlreadyDownloadedPdf: 'infAlreadyDownloadedPdf'
+  },
   message: {},
   error: {
     errEntityAlreadyExist(entityName) {
