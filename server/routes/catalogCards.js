@@ -170,7 +170,8 @@ function getPdfResult(ctx) {
   ctx.set('Content-Disposition', `filename=${pdfResult.info.Title}`)
   if (!pdfResult) {
     ctx.status = HttpCodes.NOT_FOUND
-    ctx.body = MessageCodes.info.infAlreadyDownloadedPdf
+    ctx.body = 'PDF already downloaded, please close this window.'
+    return
   }
   ctx.status = HttpCodes.OK
   ctx.body = pdfResult
