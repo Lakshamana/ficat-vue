@@ -137,14 +137,39 @@ async function create(ctx) {
   }
 }
 
+const querieFields = {
+  monthly: {
+    mandatory: ['year', 'month', 'acdUnity', 'type', 'program'],
+    optional: ['acdUnity', 'type', 'program']
+  },
+  semiannually: {
+    mandatory: ['year', 'semester', 'acdUnity', 'type', 'program'],
+    optional: ['acdUnity', 'type', 'program']
+  },
+  anually: {
+    mandatory: ['year', 'acdUnity', 'type', 'program'],
+    optional: ['acdUnity', 'type', 'program']
+  }
+}
+
+// Parameters validation fn
+function _paramValidator(params, searchType) {
+  return {}
+}
+
 function catalogQueries(ctx) {
   // let query = CatalogCard
-  // const queries = ctx.query
+  const searchType = ctx.query.type
+  const params = ctx.request.body
 }
 
 function getPdfResult(ctx) {
   ctx.set('Content-Type', 'application/pdf')
   ctx.set('Content-Disposition', `filename=${pdfResult.info.Title}`)
+  if (!pdfResult) {
+    ctx.status = HttpCodes.NOT_FOUND
+    ctx.body = MessageCodes.info.infAlreadyDownloadedPdf
+  }
   ctx.status = HttpCodes.OK
   ctx.body = pdfResult
   pdfResult = undefined
