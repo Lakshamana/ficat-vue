@@ -163,8 +163,6 @@ function catalogQueries(ctx) {
   if (!validation.valid) {
     payloadErrors(ctx, validation)
   }
-
-  
 }
 
 function getPdfResult(ctx) {
