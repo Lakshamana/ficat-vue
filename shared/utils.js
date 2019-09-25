@@ -130,26 +130,23 @@ function romanize(n, uppercase = false) {
   return uppercase ? r.toUpperCase() : r
 }
 
-function _chunck(list, chunckSize = 2, acc = []) {
-  if (!list.length) return
-  const chk = list.slice(0, chunckSize)
-  list = list.filter(i => !chk.includes(i))
-  acc.push(_chunck(list, chunckSize, acc), chk)
-}
-
 /**
+ * Separate array in array of arrays (size = chunkSize)
  *
- * @param {Array} list
- * @param {Number} chunckSize
+ * @param   {Array} xs - Elements
+ * @param   {number} chunkSize - Size of nested array
+ * @returns {Array}
  */
-function chunck(list, chunckSize) {
-  const acc = []
-  _chunck(list, chunckSize, acc)
-  return acc.filter(i => i)
+function chunks(xs, chunkSize) {
+  const length = Math.ceil(xs.length / chunkSize)
+
+  return Array.from({ length }, (_, i) =>
+    xs.slice(i * chunkSize, i * chunkSize + chunkSize)
+  )
 }
 
 exports.validatePayload = validatePayload
 exports.select = select
 exports.maybe = maybe
 exports.romanize = romanize
-exports.chunck = chunck
+exports.chunks = chunks
