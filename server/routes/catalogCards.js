@@ -140,16 +140,16 @@ async function create(ctx) {
 
 const querieFields = {
   monthly: {
-    mandatory: ['year', 'month', 'acdUnity', 'type', 'program'],
-    optional: ['acdUnity', 'type', 'program']
+    mandatory: ['year', 'month', 'unityId', 'type', 'program'],
+    optional: ['unityId', 'type', 'program']
   },
   semiannually: {
-    mandatory: ['year', 'semester', 'acdUnity', 'type', 'program'],
-    optional: ['acdUnity', 'type', 'program']
+    mandatory: ['year', 'semester', 'unityId', 'type', 'program'],
+    optional: ['unityId', 'type', 'program']
   },
   anually: {
-    mandatory: ['year', 'acdUnity', 'type', 'program'],
-    optional: ['acdUnity', 'type', 'program']
+    mandatory: ['year', 'unityId', 'type', 'program'],
+    optional: ['unityId', 'type', 'program']
   }
 }
 
@@ -162,6 +162,20 @@ function catalogQueries(ctx) {
   const validation = validatePayload(params, mandatory, optional)
   if (!validation.valid) {
     payloadErrors(ctx, validation)
+  }
+
+  const { year, month, semester, unityId, type, program } = params
+  if (year) {
+  }
+  if (month) {
+  }
+  if (semester) {
+  }
+  if (unityId) {
+  }
+  if (type) {
+  }
+  if (program) {
   }
 }
 

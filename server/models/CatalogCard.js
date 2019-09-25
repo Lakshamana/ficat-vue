@@ -1,5 +1,6 @@
 const { bookshelf } = require('../db')
 
 module.exports = bookshelf.Model.extend({
-  tableName: 'catalogCards'
+  tableName: 'catalogCards',
+  hasTimestamps: true
 })

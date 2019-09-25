@@ -71,7 +71,11 @@ api.get('/catalogCards/get/:id', catalogRoutes.getPdfResult)
 api.get('/catalogCards/', catalogRoutes.list)
 
 // get catalog queries
-api.post('/catalogCards/q/', query(['type']), catalogRoutes.catalogQueries)
+api.post(
+  '/catalogCards/q/',
+  query(['searchType']),
+  catalogRoutes.catalogQueries
+)
 
 /**
  * Users
