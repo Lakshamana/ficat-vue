@@ -205,22 +205,20 @@ async function catalogQueries(ctx) {
   const groupedMonths = chunks(months, chunkSizeConvert[searchType])
   if (month) {
     console.log(1)
-    responseObj.count = await getMonthCount(query, year, +month)
+    responseObj.count = await getMonthCount(query, year, month)
   } else if (semester) {
     console.log(2)
     responseObj.count = await getMonthGroupCount(
       query,
       year,
-      groupedMonths[+semester]
+      groupedMonths[semester]
     )
   } else {
     console.log(3)
     responseObj.count = {}
-    // console.log(groupedMonths)
+    console.log(groupedMonths)
     for (const groupIdx in groupedMonths) {
-      // console.log(groupedMonths[groupIdx])
       const f = await getMonthGroupCount(query, year, groupedMonths[groupIdx])
-      // console.log(f)
       responseObj.count[groupIdx] = f
     }
   }
@@ -237,12 +235,12 @@ async function catalogQueries(ctx) {
  * @returns {number} contagem de ocorrências de fichas catalográficas
  */
 async function getMonthGroupCount(model, year, monthList) {
+  console.log(monthList)
   const r = await monthList.reduce(
     async (m1, m2) =>
       (await getMonthCount(model, year, m1)) +
       (await getMonthCount(model, year, m2))
   )
-  console.log('Total of ' + monthList + ' months: ' + r)
   return r
 }
 
@@ -253,13 +251,21 @@ async function getMonthGroupCount(model, year, monthList) {
  * @param {number} month: número entre 0 e 11
  * @returns {Promise<Number>}
  */
-function getMonthCount(model, year, month) {
+async function getMonthCount(model, year, month) {
+  console.log(year, month)
   const monthInitialDay = new Date(year, month, 1)
   const monthFinalDay = new Date(year, month + 1, 0)
-  return model
-    .where('datetime', '>', monthInitialDay)
-    .where('datetime', '<', monthFinalDay)
+  console.log(monthInitialDay, monthFinalDay)
+  const t = await model
+    .query(qb => {
+      qb.where('datetime', '>=', monthInitialDay).andWhere(
+        'datetime',
+        '<=',
+        monthFinalDay
+      )
+    })
     .count()
+  return t
 }
 
 function getPdfResult(ctx) {
