@@ -5,7 +5,7 @@ const Course = require('../models/Course')
 const AcademicUnity = require('../models/AcademicUnity')
 const HttpCodes = require('../httpCodes')
 const { MessageCodes } = require('../../shared/messageCodes')
-const { validatePayload } = require('../../shared/utils')
+const { validatePayload, chunks } = require('../../shared/utils')
 const catalogCardModel = require('../models/pdfdocs/catalogCard')
 const { payloadErrors } = require('../util/utils')
 
@@ -138,25 +138,27 @@ async function create(ctx) {
   }
 }
 
+// Períodos requisitáveis: (mensal, semestral ou anual)
 const querieFields = {
   monthly: {
-    mandatory: ['year', 'month', 'unityId', 'type', 'program'],
-    optional: ['unityId', 'type', 'program']
+    mandatory: ['year', 'month', 'unityId', 'type', 'courseId'],
+    optional: ['month', 'unityId', 'type', 'courseId']
   },
   semiannually: {
-    mandatory: ['year', 'semester', 'unityId', 'type', 'program'],
-    optional: ['unityId', 'type', 'program']
+    mandatory: ['year', 'semester', 'unityId', 'type', 'courseId'],
+    optional: ['semester', 'unityId', 'type', 'courseId']
   },
-  anually: {
-    mandatory: ['year', 'unityId', 'type', 'program'],
-    optional: ['unityId', 'type', 'program']
+  annually: {
+    mandatory: ['year', 'unityId', 'type', 'courseId'],
+    optional: ['unityId', 'type', 'courseId']
   }
 }
 
-function catalogQueries(ctx) {
-  // let query = CatalogCard
-  const searchType = ctx.query.type
+async function catalogQueries(ctx) {
+  let query = CatalogCard
+  const searchType = ctx.query.searchType
   const params = ctx.request.body
+  console.log(params)
 
   const { mandatory, optional } = querieFields[searchType]
   const validation = validatePayload(params, mandatory, optional)
@@ -164,19 +166,100 @@ function catalogQueries(ctx) {
     payloadErrors(ctx, validation)
   }
 
-  const { year, month, semester, unityId, type, program } = params
-  if (year) {
-  }
-  if (month) {
-  }
-  if (semester) {
-  }
+  // ano é obrigatório (ex: 2019 (number))
+  // semester = 0 ou 1 (1º ou 2º semestre, respectivamente)
+  // month = número em [0, ..., 11]
+  const { year, month, semester, unityId, type, courseId } = params
+
+  // Primeiro filtrar por tipo, programa ou unidade acadêmica
   if (unityId) {
+    query = query.where({ unityId })
   }
   if (type) {
+    query = query.where({ type })
   }
-  if (program) {
+  if (courseId) {
+    query = query.where({ courseId })
   }
+
+  // Construção do filtro temporal, comece pelo ano
+  // const yearInitialDay = new Date(year, 0)
+  // const yearFinalDay = new Date(year, 11, 31, 23, 59)
+  // query = query
+  //   .where('datetime', '>', yearInitialDay)
+  //   .where('datetime', '<', yearFinalDay)
+
+  // months = [0, ..., 11]
+  const months = Array.from({ length: 12 }, (_, i) => i)
+  const chunkSizeConvert = {
+    monthly: 1,
+    semiannually: 6,
+    annually: 12
+  }
+
+  const responseObj = {}
+  /* Filtre e conte por mês, semestre ou ano inteiro.
+   * Em caso de ano inteiro, conte os registros e os
+   * agrupe pelo período requisitado.
+   */
+  const groupedMonths = chunks(months, chunkSizeConvert[searchType])
+  if (month) {
+    console.log(1)
+    responseObj.count = await getMonthCount(query, year, +month)
+  } else if (semester) {
+    console.log(2)
+    responseObj.count = await getMonthGroupCount(
+      query,
+      year,
+      groupedMonths[+semester]
+    )
+  } else {
+    console.log(3)
+    responseObj.count = {}
+    // console.log(groupedMonths)
+    for (const groupIdx in groupedMonths) {
+      // console.log(groupedMonths[groupIdx])
+      const f = await getMonthGroupCount(query, year, groupedMonths[groupIdx])
+      // console.log(f)
+      responseObj.count[groupIdx] = f
+    }
+  }
+
+  ctx.status = HttpCodes.OK
+  ctx.body = responseObj
+}
+
+/**
+ *
+ * @param {CatalogCard} model
+ * @param {number} year
+ * @param {Number[]} monthList
+ * @returns {number} contagem de ocorrências de fichas catalográficas
+ */
+async function getMonthGroupCount(model, year, monthList) {
+  const r = await monthList.reduce(
+    async (m1, m2) =>
+      (await getMonthCount(model, year, m1)) +
+      (await getMonthCount(model, year, m2))
+  )
+  console.log('Total of ' + monthList + ' months: ' + r)
+  return r
+}
+
+/**
+ *
+ * @param {CatalogCard} model
+ * @param {number} year
+ * @param {number} month: número entre 0 e 11
+ * @returns {Promise<Number>}
+ */
+function getMonthCount(model, year, month) {
+  const monthInitialDay = new Date(year, month, 1)
+  const monthFinalDay = new Date(year, month + 1, 0)
+  return model
+    .where('datetime', '>', monthInitialDay)
+    .where('datetime', '<', monthFinalDay)
+    .count()
 }
 
 function getPdfResult(ctx) {

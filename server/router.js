@@ -73,6 +73,7 @@ api.get('/catalogCards/', catalogRoutes.list)
 // get catalog queries
 api.post(
   '/catalogCards/q/',
+  bodyParser,
   query(['searchType']),
   catalogRoutes.catalogQueries
 )

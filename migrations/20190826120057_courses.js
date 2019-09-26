@@ -5,7 +5,10 @@ exports.up = function(knex) {
       .string('name', 120)
       .notNullable()
       .defaultTo('')
-    table.string('program', 10).nullable()
+    table
+      .string('program', 10)
+      .notNullable()
+      .unique()
     table
       .enum('type', ['graduation', 'specialization', 'master', 'doctorate'])
       .notNullable()

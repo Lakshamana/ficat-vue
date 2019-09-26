@@ -133,15 +133,18 @@ function romanize(n, uppercase = false) {
 /**
  * Separate array in array of arrays (size = chunkSize)
  *
- * @param   {Array} xs - Elements
+ * @param   {Array} list - Elements
  * @param   {number} chunkSize - Size of nested array
  * @returns {Array}
+ *
+ * @example const xs = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+ *          chunks(xs, 3) // [[1, 2, 3], [4, 5, 6], [7, 8, 9], [10]]
  */
-function chunks(xs, chunkSize) {
-  const length = Math.ceil(xs.length / chunkSize)
+function chunks(list, chunkSize) {
+  const length = Math.ceil(list.length / chunkSize)
 
   return Array.from({ length }, (_, i) =>
-    xs.slice(i * chunkSize, i * chunkSize + chunkSize)
+    list.slice(i * chunkSize, i * chunkSize + chunkSize)
   )
 }
 
