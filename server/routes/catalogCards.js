@@ -158,7 +158,6 @@ async function catalogQueries(ctx) {
   let query = CatalogCard
   const searchType = ctx.query.searchType
   const params = ctx.request.body
-  console.log(params)
 
   const { mandatory, optional } = querieFields[searchType]
   const validation = validatePayload(params, mandatory, optional)
@@ -204,19 +203,15 @@ async function catalogQueries(ctx) {
    */
   const groupedMonths = chunks(months, chunkSizeConvert[searchType])
   if (month) {
-    console.log(1)
     responseObj.count = await getMonthCount(query, year, month)
   } else if (semester) {
-    console.log(2)
     responseObj.count = await getMonthGroupCount(
       query,
       year,
       groupedMonths[semester]
     )
   } else {
-    console.log(3)
     responseObj.count = {}
-    console.log(groupedMonths)
     for (const groupIdx in groupedMonths) {
       const f = await getMonthGroupCount(query, year, groupedMonths[groupIdx])
       responseObj.count[groupIdx] = f
@@ -235,13 +230,17 @@ async function catalogQueries(ctx) {
  * @returns {number} contagem de ocorrências de fichas catalográficas
  */
 async function getMonthGroupCount(model, year, monthList) {
-  console.log(monthList)
-  const r = await monthList.reduce(
-    async (m1, m2) =>
-      (await getMonthCount(model, year, m1)) +
-      (await getMonthCount(model, year, m2))
-  )
-  return r
+  let s = 0
+  for (const i in monthList) {
+    const [t1, t2] = await Promise.all([
+      getMonthCount(model, year, monthList[i]),
+      monthList[i + 1]
+        ? getMonthCount(model, year, monthList[i + 1])
+        : Promise.resolve(0)
+    ])
+    s += t1 + t2
+  }
+  return s
 }
 
 /**
@@ -252,20 +251,15 @@ async function getMonthGroupCount(model, year, monthList) {
  * @returns {Promise<Number>}
  */
 async function getMonthCount(model, year, month) {
-  console.log(year, month)
-  const monthInitialDay = new Date(year, month, 1)
-  const monthFinalDay = new Date(year, month + 1, 0)
-  console.log(monthInitialDay, monthFinalDay)
-  const t = await model
-    .query(qb => {
-      qb.where('datetime', '>=', monthInitialDay).andWhere(
-        'datetime',
-        '<=',
-        monthFinalDay
-      )
-    })
-    .count()
-  return t
+  month = +month
+  const monthInitialDay = new Date(year, month).toISOString()
+  const monthFinalDay = new Date(year, month + 1, 0).toISOString()
+  try {
+    return await model
+      .where('datetime', '>=', monthInitialDay)
+      .where('datetime', '<=', monthFinalDay)
+      .count()
+  } catch (e) {}
 }
 
 function getPdfResult(ctx) {
