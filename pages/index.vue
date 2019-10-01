@@ -325,7 +325,7 @@ import pDebounce from 'p-debounce'
 
 import InputValidation from '@/components/InputValidation'
 import Card from '@/components/Card'
-const { romanize, maybe } = require('../shared/utils')
+const { romanize, maybe } = require('../shared/frontUtils')
 const { MessageCodes } = require('../shared/messageCodes')
 
 const pattern = '[a-zA-Z\u00C0-\u017F ]'
