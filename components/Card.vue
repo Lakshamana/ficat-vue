@@ -1,11 +1,13 @@
 <template>
   <div class="column">
     <div class="card rounded">
-      <header class="card-header">
-        <p class="card-header-title has-text-grey">
-          {{ title }}
-        </p>
-      </header>
+      <template v-if="title">
+        <header class="card-header">
+          <p class="card-header-title has-text-grey">
+            {{ title }}
+          </p>
+        </header>
+      </template>
       <div class="card-content">
         <div class="content has-text-centered">
           <span>

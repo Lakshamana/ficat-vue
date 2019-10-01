@@ -1,6 +1,6 @@
 const Koa = require('koa')
-
 const consola = require('consola')
+const cors = require('@koa/cors')
 
 const config = require('./config')
 const { errorHandler } = require('./util/middlewares')
@@ -14,6 +14,7 @@ config.dev = app.env !== 'production'
 const host = config.HOST
 const port = config.PORT
 
+// app.use(cors({origin: }))
 app.use(errorHandler)
 app.use(router.routes())
 

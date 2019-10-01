@@ -11,6 +11,10 @@
       ref="ipt"
       v-model="iptValue"
       :type="properties.type"
+      :icon="properties.icon"
+      :password-reveal="
+        properties.type === 'password' && properties.passwordReveal
+      "
       :placeholder="properties.placeholder"
       :aria-placeholder="ariaPlaceholder"
       :pattern="properties.pattern"

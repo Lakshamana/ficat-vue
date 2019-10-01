@@ -22,6 +22,7 @@
     "ci": "npm test && npm run lint"
   },
   "dependencies": {
+    "@koa/cors": "^3.0.0",
     "@nuxtjs/axios": "^5.3.6",
     "bookshelf": "^0.15.1",
     "bookshelf-secure-password": "^4.0.0",
