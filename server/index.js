@@ -14,7 +14,7 @@ config.dev = app.env !== 'production'
 const host = config.HOST
 const port = config.PORT
 
-// app.use(cors({origin: }))
+app.use(cors({ origin: host }))
 app.use(errorHandler)
 app.use(router.routes())
 

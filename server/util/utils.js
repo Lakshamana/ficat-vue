@@ -1,4 +1,5 @@
 const { sign, verify, decode } = require('jsonwebtoken')
+const bcrypt = require('bcrypt')
 
 const HttpCodes = require('../httpCodes')
 const { MessageCodes } = require('../../shared/messageCodes')
@@ -42,4 +43,20 @@ function paginateCtx(ctx, pagination) {
   ctx.set('Pagination-Page-Size', pagination.pageSize)
 }
 
-module.exports = { paginateCtx, tokenSign, tokenVerify, payloadErrors }
+function rand(min, max) {
+  return min + Math.ceil(Math.random() * (max - min))
+}
+
+async function hash(data) {
+  const result = await bcrypt.hash(data, 12)
+  return result
+}
+
+module.exports = {
+  paginateCtx,
+  tokenSign,
+  tokenVerify,
+  payloadErrors,
+  rand,
+  hash
+}

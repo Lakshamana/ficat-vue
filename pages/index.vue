@@ -5,7 +5,7 @@
         <form @submit.prevent="onSubmit">
           <hooper ref="hooper" class="hooper-fit">
             <slide>
-              <card title="Nome do autor">
+              <card title="Dados de autoria">
                 <div class="columns">
                   <div class="column is-half">
                     <input-validation

@@ -1,7 +1,7 @@
 const User = require('../models/User')
 const { MessageCodes } = require('../../shared/messageCodes')
 const HttpCodes = require('../httpCodes')
-const { tokenSign, tokenVerify } = require('../util/utils')
+const { tokenSign, tokenVerify, hash } = require('../util/utils')
 
 // Autenticação - Receber token
 async function auth(ctx) {
@@ -20,7 +20,12 @@ async function auth(ctx) {
   if (user) {
     try {
       await user.authenticate(password)
-      const token = tokenSign(user.toJSON(), rememberMe)
+      const signature = tokenSign(user, rememberMe)
+      const xsrf = await hash(signature)
+      const token = {
+        accessToken: signature,
+        xsrfToken: xsrf
+      }
       ctx.status = HttpCodes.OK
       ctx.body = { user, token }
     } catch (e) {
