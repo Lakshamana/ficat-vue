@@ -20,15 +20,20 @@ async function auth(ctx) {
   if (user) {
     try {
       await user.authenticate(password)
-      const signature = tokenSign(user, rememberMe)
-      const xsrf = await hash(signature)
-      const token = {
-        accessToken: signature,
-        xsrfToken: xsrf
-      }
+      const accessToken = tokenSign(user, rememberMe)
+      const xsrfToken = await hash(accessToken)
       ctx.status = HttpCodes.OK
-      ctx.body = { user, token }
+      ctx.cookies.set('accessToken', accessToken, {
+        domain: process.env.HOST,
+        secure: false,
+        httpOnly: true
+      })
+      ctx.cookies.set('xsrfToken', xsrfToken, {
+        domain: process.env.HOST,
+        secure: false
+      })
     } catch (e) {
+      console.log(e)
       ctx.throw(HttpCodes.BAD_REQUEST, MessageCodes.error.errPasswordMismatch)
     }
   } else {
