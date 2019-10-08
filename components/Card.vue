@@ -24,7 +24,7 @@ export default {
   props: {
     title: {
       type: String,
-      required: true
+      default: ''
     }
   }
 }
@@ -36,6 +36,6 @@ export default {
 }
 
 .card {
-  height: 50vh;
+  min-height: 50vh;
 }
 </style>

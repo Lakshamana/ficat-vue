@@ -45,11 +45,12 @@ const pattern = '[a-zA-Z\u00C0-\u017F]'
 export default {
   name: 'Login',
   layout: 'empty',
-  middleware: 'auth',
+
   components: {
     Card,
     InputValidation
   },
+
   data() {
     return {
       username: '',
@@ -72,7 +73,7 @@ export default {
           'Campo obrigatório e mínimo de 8 caracteres. Digite letras apenas'
         ],
         pattern: `${pattern}+`,
-        minlength: 8,
+        minlength: 5,
         required: true,
         rounded: true,
         passwordReveal: true
@@ -82,11 +83,16 @@ export default {
 
   methods: {
     onSubmit() {
-      this.$axios.post('/api/users', {
-        username: this.username,
-        password: this.password,
-        rememberMe: this.rememberMe
-      })
+      this.$axios
+        .post('/api/auth', {
+          username: this.username,
+          password: this.password,
+          rememberMe: this.rememberMe
+        })
+        .then(async ({ data }) => {
+          await this.$store.dispatch('auth/login', this.username)
+          this.$router.push(atob(this.$route.query))
+        })
     }
   }
 }

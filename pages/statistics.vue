@@ -131,6 +131,7 @@ import pDebounce from 'p-debounce'
 export default {
   name: 'Statistics',
   layout: 'empty',
+  middleware: 'auth',
 
   data() {
     return {
