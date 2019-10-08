@@ -41,7 +41,7 @@ async function list(ctx) {
   } catch (e) {
     ctx.throw(HttpCodes.BAD_REQUEST, MessageCodes.error.errOnDbFetch, {
       error: {
-        rawErrorMessage: e
+        rawErrorMessage: e.stack
       }
     })
   }

@@ -132,7 +132,7 @@ async function create(ctx) {
   } catch (e) {
     ctx.throw(HttpCodes.BAD_REQUEST, MessageCodes.error.errOnDbSave, {
       error: {
-        rawErrorMessage: e
+        rawErrorMessage: e.stack
       }
     })
   }
@@ -277,11 +277,13 @@ function getPdfResult(ctx) {
 
 async function list(ctx) {
   try {
-    ctx.body = await CatalogCard.fetchAll()
+    ctx.body = await CatalogCard.forge()
+      .orderBy('datetime', 'ASC')
+      .fetchAll()
   } catch (e) {
     ctx.throw(HttpCodes.BAD_REQUEST, MessageCodes.error.errOnDbFetch, {
       error: {
-        rawErrorMessage: e
+        rawErrorMessage: e.stack
       }
     })
   }
@@ -301,7 +303,7 @@ async function update(ctx) {
     } catch (e) {
       ctx.throw(HttpCodes.INT_SRV_ERROR, MessageCodes.error.errOnDbSave, {
         error: {
-          rawErrorMessage: e
+          rawErrorMessage: e.stack
         }
       })
     }
@@ -313,4 +315,29 @@ async function update(ctx) {
   }
 }
 
-module.exports = { create, list, update, getPdfResult, catalogQueries }
+async function getFirstCatalogCardYear(ctx) {
+  try {
+    const resultCollection = await CatalogCard.forge()
+      .orderBy('datetime', 'ASC')
+      .fetchAll()
+    const oldest = resultCollection.first()
+    ctx.body = {
+      year: new Date(oldest.get('datetime')).getFullYear()
+    }
+  } catch (e) {
+    ctx.throw(HttpCodes.BAD_REQUEST, MessageCodes.error.errOnDbFetch, {
+      error: {
+        rawErrorMessage: e.stack
+      }
+    })
+  }
+}
+
+module.exports = {
+  create,
+  list,
+  update,
+  getPdfResult,
+  catalogQueries,
+  getFirstCatalogCardYear
+}

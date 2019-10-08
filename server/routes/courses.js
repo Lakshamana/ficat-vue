@@ -14,7 +14,7 @@ async function create(ctx) {
   } catch (e) {
     ctx.throw(HttpCodes.BAD_REQUEST, MessageCodes.error.errOnDbSave, {
       error: {
-        rawErrorMessage: e
+        rawErrorMessage: e.stack
       }
     })
   }
@@ -31,7 +31,7 @@ async function list(ctx) {
   } catch (e) {
     ctx.throw(HttpCodes.BAD_REQUEST, MessageCodes.error.errOnDbFetch, {
       error: {
-        rawErrorMessage: e
+        rawErrorMessage: e.stack
       }
     })
   }
@@ -51,7 +51,7 @@ async function update(ctx) {
     } catch (e) {
       ctx.throw(HttpCodes.INT_SRV_ERROR, MessageCodes.error.errOnDbSave, {
         error: {
-          rawErrorMessage: e
+          rawErrorMessage: e.stack
         }
       })
     }

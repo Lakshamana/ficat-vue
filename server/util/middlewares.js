@@ -48,7 +48,7 @@ function query(fields) {
 }
 
 // Requer middleware query
-function paginatedEntity(ctx, next) {
+function pageableEntity(ctx, next) {
   const query = ctx.query
   const params = Object.keys(query)
   // Se existe uma query
@@ -75,6 +75,6 @@ module.exports = {
   errorHandler,
   query,
   validator,
-  paginatedEntity,
+  pageableEntity,
   routeValidate
 }

@@ -3,7 +3,7 @@ const BodyParser = require('koa-body')
 const unless = require('koa-unless')
 
 const { MessageCodes } = require('../shared/messageCodes')
-const { paginatedEntity, query, routeValidate } = require('./util/middlewares')
+const { pageableEntity, query, routeValidate } = require('./util/middlewares')
 const frontend = require('./routes/frontend')
 const HttpCodes = require('./httpCodes')
 
@@ -37,6 +37,7 @@ api.post('/auth', bodyParser, routeValidate('auth'), auth)
  * GET /academicUnities e criação de registro
  * de ficha catalográfica (usuários finais)
  */
+
 authz.unless = unless
 api.use(
   authz.unless({
@@ -47,6 +48,7 @@ api.use(
         (ctx.path.includes('academicUnities') && ctx.method === 'GET') ||
         (ctx.path.includes('catalogCards') && ctx.method === 'POST') ||
         (ctx.path.includes('catalogCards/get') && ctx.method === 'GET') ||
+        (ctx.path.includes('catalogCards/oldest') && ctx.method === 'GET') ||
         (ctx.path.includes('courses') && ctx.method === 'GET')
       )
     }
@@ -69,6 +71,9 @@ api.post(
 api.get('/catalogCards/get/:id', catalogRoutes.getPdfResult)
 
 api.get('/catalogCards/', catalogRoutes.list)
+
+// get oldest card year
+api.get('/catalogCards/oldest', catalogRoutes.getFirstCatalogCardYear)
 
 // get catalog queries
 api.post(
@@ -117,7 +122,7 @@ api.post(
 api.get(
   '/knowledgeAreas/',
   query(['page', 'size', 'description']),
-  paginatedEntity,
+  pageableEntity,
   kaRoutes.list
 )
 
