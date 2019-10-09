@@ -1,7 +1,7 @@
 <template>
-  <div class="container is-fullwidth">
-    <section class="section columns">
-      <aside class="column is-3">
+  <div class="container">
+    <section class="columns is-full-page">
+      <aside class="section column is-3">
         <p class="menu-label title is-hidden-touch has-text-left">
           Filtros
         </p>
@@ -18,7 +18,7 @@
               rounded
               size="is-small"
             >
-              <option v-for="y in years" :key="y" value="y">
+              <option v-for="y in years" :key="y" :value="y">
                 {{ y }}
               </option>
             </b-select>
@@ -32,7 +32,7 @@
               <b-radio
                 v-model="searchPeriod"
                 size="is-small"
-                native-value="mensal"
+                native-value="monthly"
               >
                 Mensal
               </b-radio>
@@ -41,7 +41,7 @@
               <b-radio
                 v-model="searchPeriod"
                 size="is-small"
-                native-value="semestral"
+                native-value="semiannually"
               >
                 Semestral
               </b-radio>
@@ -50,7 +50,7 @@
               <b-radio
                 v-model="searchPeriod"
                 size="is-small"
-                native-value="anual"
+                native-value="annually"
               >
                 Anual
               </b-radio>
@@ -103,6 +103,29 @@
             </div>
           </div>
           <br />
+          <!-- <p class="menu-label is-capitalized">
+            Curso
+          </p>
+          <b-field v-if="selectedAcdUnity">
+            <b-select
+              v-model="selectedCourseId"
+              placeholder="Selecione"
+              aria-placeholder="Selecione"
+              required
+              aria-required="true"
+              expanded
+              rounded
+            >
+              <option
+                v-for="course in courses"
+                :key="course.id"
+                :value="course.id"
+              >
+                {{ course.name }}
+              </option>
+            </b-select>
+          </b-field>
+          <br /> -->
           <div class="columns is-centered">
             <div class="column is-10">
               <b-button class="is-info" native-type="submit" @click="send">
@@ -112,12 +135,10 @@
           </div>
         </form>
       </aside>
-      <div class="column is-9 is-right border-red">
-        <div class="columns is-centered">
-          <div class="column is-12">
-            <div class="d-table">
-              <div class="d-cell border-black">I am the Statistics page</div>
-            </div>
+      <div class="column is-9 border-red graphics is-fullheight">
+        <div class="d-table">
+          <div class="d-cell border-black">
+            <canvas ref="canvas"></canvas>
           </div>
         </div>
       </div>
@@ -127,6 +148,7 @@
 
 <script>
 import pDebounce from 'p-debounce'
+import { maybe } from '@/shared/frontUtils'
 
 export default {
   name: 'Statistics',
@@ -137,13 +159,17 @@ export default {
     return {
       currentYear: '' + new Date().getFullYear(),
       years: [],
+      // courses: [],
       searchYear: undefined,
       searchPeriod: 'mensal',
       searchCourseType: undefined,
       loading: false,
       acdUnityPreviousSearch: '',
       academicUnities: [],
+      month: '',
+      semester: '',
       selectedAcdUnity: undefined
+      // selectedCourse: undefined
     }
   },
 
@@ -154,8 +180,8 @@ export default {
   methods: {
     getYears() {
       this.$axios.get('/api/catalogCards/oldest').then(({ data }) => {
-        const length = +this.currentYear - data.year + 1
-        this.years = Array.from({ length }, (v, i) => +this.currentYear - i)
+        const length = this.currentYear - data.year + 1
+        this.years = Array.from({ length }, (v, i) => this.currentYear - i)
       })
     },
 
@@ -183,7 +209,25 @@ export default {
       }
     }, 500),
 
-    send() {}
+    send() {
+      this.$axios.post(
+        '/api/catalogCards/q',
+        {
+          year: +this.searchYear,
+          ...maybe('month', this.month),
+          ...maybe('semester', this.semester),
+          ...maybe('unityId', this.selectedAcdUnity.id),
+          // ...maybe('courseId', this.selectedCourse.id),
+          ...maybe('type', this.searchCourseType)
+        },
+        null,
+        {
+          params: {
+            searchType: this.searchPeriod
+          }
+        }
+      )
+    }
   }
 }
 </script>
@@ -206,5 +250,9 @@ export default {
 
 .border-black {
   border: 1px solid black;
+}
+
+.graphics {
+  background-color: #ccc9c994;
 }
 </style>
