@@ -7,23 +7,28 @@ export const state = () => ({
 
 export const mutations = {
   setUser(state, username) {
-    persist('user', username)
-    state.username = username
+    persist('user', username, {
+      domain: process.env.HOST,
+      path: '/'
+    })
+    state.user = username
   },
 
   setXsrfToken(state, xsrfToken) {
-    persist('xsrfToken', xsrfToken)
+    persist('xsrfToken', xsrfToken, {
+      domain: process.env.HOST,
+      path: '/'
+    })
     state.xsrfToken = xsrfToken
   }
 }
 
 export const actions = {
   login({ commit }, username) {
-    console.log('set username:', username)
     commit('setUser', username)
   },
 
   logout({ commit }, username) {
-    commit('setUser', undefined)
+    commit('setUser', false)
   }
 }

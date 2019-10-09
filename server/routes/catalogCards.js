@@ -5,7 +5,7 @@ const Course = require('../models/Course')
 const AcademicUnity = require('../models/AcademicUnity')
 const HttpCodes = require('../httpCodes')
 const { MessageCodes } = require('../../shared/messageCodes')
-const { validatePayload, chunks } = require('../../shared/serverUtils')
+const { validatePayload, chunks } = require('../../shared/utils')
 const catalogCardModel = require('../models/pdfdocs/catalogCard')
 const { payloadErrors } = require('../util/utils')
 

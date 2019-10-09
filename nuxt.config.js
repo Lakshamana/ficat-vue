@@ -18,6 +18,11 @@ module.exports = {
     ],
     link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }]
   },
+
+  env: {
+    ...config
+  },
+
   /*
    ** Customize the progress-bar color
    */
@@ -29,7 +34,7 @@ module.exports = {
   /*
    ** Plugins to load before mounting the App
    */
-  plugins: ['~/plugins/lang.js'],
+  plugins: ['~/plugins/lang.js', '~/plugins/vue-cookies.js'],
   /*
    ** Nuxt.js dev-modules
    */
@@ -53,11 +58,6 @@ module.exports = {
   axios: {
     baseUrl: '/'
   },
-
-  env: {
-    ...config
-  },
-
   /*
    ** Build configuration
    */

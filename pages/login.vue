@@ -38,6 +38,7 @@
 </template>
 
 <script>
+// import { decode } from '@/shared/frontUtils'
 import Card from '@/components/Card'
 import InputValidation from '@/components/InputValidation'
 const pattern = '[a-zA-Z\u00C0-\u017F]'
@@ -89,9 +90,9 @@ export default {
           password: this.password,
           rememberMe: this.rememberMe
         })
-        .then(async ({ data }) => {
-          await this.$store.dispatch('auth/login', this.username)
-          this.$router.push(atob(this.$route.query))
+        .then(({ data }) => {
+          this.$store.dispatch('auth/login', this.username)
+          this.$router.push(atob(this.$route.query.to))
         })
     }
   }

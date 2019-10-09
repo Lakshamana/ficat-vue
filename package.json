@@ -42,7 +42,8 @@
     "nuxt-fontawesome": "^0.4.0",
     "p-debounce": "^2.1.0",
     "pdfkit": "^0.10.0",
-    "sqlite3": "^4.1.0"
+    "sqlite3": "^4.1.0",
+    "vue-cookies": "^1.5.13"
   },
   "devDependencies": {
     "@nuxtjs/eslint-config": "^1.0.1",

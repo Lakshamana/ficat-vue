@@ -155,7 +155,7 @@ export default {
     getYears() {
       this.$axios.get('/api/catalogCards/oldest').then(({ data }) => {
         const length = +this.currentYear - data.year + 1
-        this.years = Array.from({ length }, (v, i) => data.year + i)
+        this.years = Array.from({ length }, (v, i) => +this.currentYear - i)
       })
     },
 

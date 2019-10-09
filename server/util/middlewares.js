@@ -71,10 +71,8 @@ function errorHandler(ctx, next) {
   })
 }
 
-module.exports = {
-  errorHandler,
-  query,
-  validator,
-  pageableEntity,
-  routeValidate
-}
+exports.errorHandler = errorHandler
+exports.query = query
+exports.validator = validator
+exports.pageableEntity = pageableEntity
+exports.routeValidate = routeValidate
