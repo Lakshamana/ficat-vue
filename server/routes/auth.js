@@ -26,12 +26,14 @@ async function auth(ctx) {
       ctx.cookies.set('accessToken', accessToken, {
         domain: process.env.HOST,
         secure: false,
-        httpOnly: true
+        httpOnly: true,
+        sameSite: 'strict'
       })
       ctx.cookies.set('xsrfToken', xsrfToken, {
         domain: process.env.HOST,
         secure: false,
-        httpOnly: false
+        httpOnly: false,
+        sameSite: 'strict'
       })
     } catch (e) {
       console.log(e)
