@@ -196,25 +196,20 @@ async function catalogQueries(ctx) {
     annually: 12
   }
 
-  const responseObj = {}
+  let responseObj = {}
   /* Filtre e conte por mês, semestre ou ano inteiro.
    * Em caso de ano inteiro, conte os registros e os
    * agrupe pelo período requisitado.
    */
   const groupedMonths = chunks(months, chunkSizeConvert[searchType])
   if (month) {
-    responseObj.count = await getMonthCount(query, year, month)
+    responseObj = await getMonthCount(query, year, month)
   } else if (semester) {
-    responseObj.count = await getMonthGroupCount(
-      query,
-      year,
-      groupedMonths[semester]
-    )
+    responseObj = await getMonthGroupCount(query, year, groupedMonths[semester])
   } else {
-    responseObj.count = {}
     for (const groupIdx in groupedMonths) {
       const f = await getMonthGroupCount(query, year, groupedMonths[groupIdx])
-      responseObj.count[groupIdx] = f
+      responseObj[groupIdx] = f
     }
   }
 

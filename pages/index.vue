@@ -564,7 +564,7 @@ export default {
 
     onSelectedAcdUnity(option) {
       this.selectedAcdUnity = option
-      this.getCourses()
+      this.getCoursesByAcdUnity(this.selectedAcdUnity.id)
     },
 
     getKnAreas: pDebounce(function(term) {
@@ -588,11 +588,11 @@ export default {
       }
     }, 500),
 
-    getCourses() {
+    getCoursesByAcdUnity(acdUnityId) {
       this.$axios
         .get('/api/courses', {
           params: {
-            acdUnityId: this.selectedAcdUnity.id
+            acdUnityId
           }
         })
         .then(response => {

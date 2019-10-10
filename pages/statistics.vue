@@ -14,7 +14,7 @@
             <b-select
               v-model="searchYear"
               :placeholder="currentYear"
-              aria-placeholder="Selecione"
+              aria-placeholder="Selecionar ano"
               rounded
               size="is-small"
             >
@@ -88,12 +88,10 @@
                   aria-placeholder="Buscar"
                   :loading="loading"
                   rounded
-                  required
-                  aria-required="true"
                   icon="magnify"
                   size="is-small"
                   @typing="getAcdUnities"
-                  @select="option => (selectedAcdUnity = option)"
+                  @select="onSelectedAcdUnity"
                 >
                   <template slot="empty">
                     Nenhum resultado encontrado
@@ -102,33 +100,32 @@
               </b-field>
             </div>
           </div>
-          <br />
-          <p class="menu-label is-capitalized">
-            Curso
-          </p>
-          <b-field v-if="selectedAcdUnity">
-            <b-select
-              v-model="selectedCourseId"
-              placeholder="Selecione"
-              aria-placeholder="Selecione"
-              required
-              aria-required="true"
-              expanded
-              rounded
-            >
-              <option
-                v-for="course in courses"
-                :key="course.id"
-                :value="course.id"
+          <template v-if="selectedAcdUnity">
+            <p class="menu-label is-capitalized">
+              Curso
+            </p>
+            <b-field>
+              <b-select
+                v-model="selectedCourse"
+                placeholder="Selecione"
+                aria-placeholder="Selecione"
+                size="is-small"
+                rounded
               >
-                {{ course.name }}
-              </option>
-            </b-select>
-          </b-field>
+                <option
+                  v-for="course in courses"
+                  :key="course.id"
+                  :value="course.id"
+                >
+                  {{ course.name }}
+                </option>
+              </b-select>
+            </b-field>
+          </template>
           <br />
           <div class="columns is-centered">
             <div class="column is-10">
-              <b-button class="is-info" native-type="submit" @click="send">
+              <b-button class="is-info" native-type="submit">
                 Buscar
               </b-button>
             </div>
@@ -138,7 +135,7 @@
       <div class="column is-9 graphics is-fullheight">
         <div class="d-table">
           <div class="d-cell">
-            <canvas ref="canvas"></canvas>
+            <canvas id="canvas" ref="canvas"></canvas>
           </div>
         </div>
       </div>
@@ -147,8 +144,24 @@
 </template>
 
 <script>
+import Chart from 'chartjs'
 import pDebounce from 'p-debounce'
 import { maybe } from '@/shared/frontUtils'
+
+const months = [
+  'Janeiro',
+  'Fevereiro',
+  'Março',
+  'Abril',
+  'Maio',
+  'Junho',
+  'Julho',
+  'Agosto',
+  'Setembro',
+  'Outubro',
+  'Novembro',
+  'Dezembro'
+]
 
 export default {
   name: 'Statistics',
@@ -170,7 +183,23 @@ export default {
       semester: '',
       selectedAcdUnity: undefined,
       selectedCourse: undefined,
-      dataset: []
+      dataset: [],
+      chart: undefined
+    }
+  },
+
+  computed: {
+    ctx() {
+      return this.$refs.canvas.getContext('2d')
+    }
+  },
+
+  watch: {
+    dataset: {
+      handler(newDataset) {
+        this.chart = this.createNewChart(newDataset)
+      },
+      deep: true
     }
   },
 
@@ -180,6 +209,29 @@ export default {
   },
 
   methods: {
+    createNewChart(dataset) {
+      const that = this
+      const x = new Chart(that.ctx, {
+        type: 'bar',
+        data: {
+          labels: that.getLabels() || Object.keys(dataset),
+          datasets: [
+            {
+              label: 'Nº de fichas registradas',
+              data: Object.values(dataset),
+              borderWidth: 1
+            }
+          ]
+        }
+      })
+      console.log(x)
+      return x
+    },
+
+    getLabels() {
+      return this.searchPeriod === 'monthly' && months
+    },
+
     getYears() {
       this.$axios.get('/api/catalogCards/oldest').then(({ data }) => {
         const length = this.currentYear - data.year + 1
@@ -211,11 +263,11 @@ export default {
       }
     }, 500),
 
-    getCourses() {
+    getCoursesByAcdUnity(acdUnityId) {
       this.$axios
         .get('/api/courses', {
           params: {
-            acdUnityId: this.selectedAcdUnity.id
+            acdUnityId
           }
         })
         .then(({ data }) => {
@@ -223,6 +275,11 @@ export default {
         })
         .catch(err => console.log(err))
         .finally(() => (this.loading = false))
+    },
+
+    onSelectedAcdUnity(option) {
+      this.selectedAcdUnity = option
+      this.getCoursesByAcdUnity(this.selectedAcdUnity.id)
     },
 
     onSubmit() {
@@ -233,7 +290,10 @@ export default {
             year: +this.searchYear,
             ...maybe('month', this.month),
             ...maybe('semester', this.semester),
-            ...maybe('unityId', this.selectedAcdUnity.id),
+            ...maybe(
+              'unityId',
+              this.selectedAcdUnity && this.selectedAcdUnity.id
+            ),
             // ...maybe('courseId', this.selectedCourse.id),
             ...maybe('type', this.searchCourseType)
           },
@@ -271,5 +331,11 @@ export default {
 
 .graphics {
   background-color: #ccc9c994;
+}
+
+#canvas {
+  width: 100%;
+  height: 50vh;
+  border: 1px solid blue;
 }
 </style>
