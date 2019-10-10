@@ -1,7 +1,7 @@
 const User = require('../models/User')
 const { MessageCodes } = require('../../shared/messageCodes')
 const HttpCodes = require('../httpCodes')
-const { tokenSign, tokenVerify, hash } = require('../util/utils')
+const { tokenSign, tokenVerify } = require('../util/utils')
 
 // Autenticação - Receber token
 async function auth(ctx) {
@@ -20,8 +20,7 @@ async function auth(ctx) {
   if (user) {
     try {
       await user.authenticate(password)
-      const accessToken = tokenSign(user, rememberMe)
-      const xsrfToken = await hash(accessToken)
+      const { accessToken, xsrfToken } = await tokenSign(user, rememberMe)
       ctx.status = HttpCodes.OK
       ctx.cookies.set('accessToken', accessToken, {
         domain: process.env.HOST,
@@ -49,13 +48,13 @@ async function auth(ctx) {
 
 // Autorização - Obter acesso a recursos da API
 function authz(ctx, next) {
-  const authorization = ctx.headers.authorization
-  if (!authorization) {
+  const token = ctx.cookies.get('accessToken')
+  const xsrfToken = ctx.headers['x-xsrf-token']
+  if (!token || !xsrfToken) {
     ctx.throw(HttpCodes.BAD_REQUEST, MessageCodes.error.errNotAuthorized)
   }
-  const token = authorization.split(' ')[1]
   try {
-    tokenVerify(token)
+    tokenVerify(token, xsrfToken)
     return next()
   } catch (e) {
     ctx.throw(HttpCodes.BAD_REQUEST, MessageCodes.error.errOnAuthz)

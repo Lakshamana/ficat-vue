@@ -42,14 +42,14 @@ authz.unless = unless
 api.use(
   authz.unless({
     custom: ctx => {
+      console.log(ctx.path)
       return (
-        ctx.path.includes('auth') ||
+        ctx.path === '/api/auth' ||
         (ctx.path.includes('knowledgeAreas') && ctx.method === 'GET') ||
         (ctx.path.includes('academicUnities') && ctx.method === 'GET') ||
-        (ctx.path.includes('catalogCards') && ctx.method === 'POST') ||
-        (ctx.path.includes('catalogCards/get') && ctx.method === 'GET') ||
-        (ctx.path.includes('catalogCards/oldest') && ctx.method === 'GET') ||
-        (ctx.path.includes('courses') && ctx.method === 'GET')
+        (ctx.path === '/api/catalogCards' && ctx.method === 'POST') ||
+        (ctx.path === '/api/catalogCards/get' && ctx.method === 'GET') ||
+        (ctx.path === '/api/courses' && ctx.method === 'GET')
       )
     }
   })

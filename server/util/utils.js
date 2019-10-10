@@ -7,16 +7,27 @@ const { MessageCodes } = require('../../shared/messageCodes')
 // Default exp = 4h
 const TIMEOUT = 60 * 60 * 4
 
-function tokenSign(user, rememberMe, expiresIn = TIMEOUT) {
+async function tokenSign(user, rememberMe, expiresIn = TIMEOUT) {
   const exp = Math.floor(Date.now() / 1000) + expiresIn
-  const s = sign({ user, exp, rmb: !!rememberMe }, process.env.JWT_SECRET)
-  return s
+  const xsrfToken = await hash(JSON.stringify(user))
+  return {
+    accessToken: sign(
+      { user, exp, rmb: !!rememberMe, xsrfToken },
+      process.env.JWT_SECRET
+    ),
+    xsrfToken
+  }
 }
 
-// RememberMe prolonga a expiração para 24h (default)
-function tokenVerify(token, rememberMeFactor = 8) {
+/* RememberMe prolonga a expiração para 24h (default)
+ * Verificar o token recebido no header contra o xsrfToken no JWT
+ */
+function tokenVerify(token, xsrfToken, rememberMeFactor = 6) {
   const tokenPayload = decode(token, { json: true })
   const maxAge = tokenPayload.rmb ? TIMEOUT * rememberMeFactor : TIMEOUT
+  if (!tokenPayload.xsrfToken === xsrfToken) {
+    throw new Error('invalid xsrf token')
+  }
   return verify(token, process.env.JWT_SECRET, { maxAge })
 }
 
@@ -43,10 +54,6 @@ function paginateCtx(ctx, pagination) {
   ctx.set('Pagination-Page-Size', pagination.pageSize)
 }
 
-function rand(min, max) {
-  return min + Math.ceil(Math.random() * (max - min))
-}
-
 async function hash(data) {
   const result = await bcrypt.hash(data, 12)
   return result
@@ -57,6 +64,5 @@ module.exports = {
   tokenSign,
   tokenVerify,
   payloadErrors,
-  rand,
   hash
 }
