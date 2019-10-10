@@ -12,23 +12,17 @@ export const mutations = {
       path: '/'
     })
     state.user = username
-  },
-
-  setXsrfToken(state, xsrfToken) {
-    persist('xsrfToken', xsrfToken, {
-      domain: process.env.HOST,
-      path: '/'
-    })
-    state.xsrfToken = xsrfToken
   }
 }
 
 export const actions = {
   login({ commit }, username) {
+    console.log(username)
     commit('setUser', username)
   },
 
-  logout({ commit }, username) {
+  logout({ commit }) {
     commit('setUser', false)
+    commit('setXsrfToken', false)
   }
 }

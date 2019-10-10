@@ -59,10 +59,10 @@ export default {
       usernameProperties: {
         placeholder: 'Nome de usuário',
         invalidMessages: [
-          'Campo obrigatório e mínimo de 3 caracteres. Digite letras apenas'
+          'Campo obrigatório e mínimo de 5 caracteres. Digite letras apenas'
         ],
         pattern: `${pattern}+`,
-        minlength: 3,
+        minlength: 5,
         required: true,
         rounded: true
       },
@@ -70,7 +70,7 @@ export default {
         type: 'password',
         placeholder: 'Senha',
         invalidMessages: [
-          'Campo obrigatório e mínimo de 8 caracteres. Digite letras apenas'
+          'Campo obrigatório e mínimo de 5 caracteres. Digite letras apenas'
         ],
         pattern: `${pattern}+`,
         minlength: 5,
@@ -83,15 +83,18 @@ export default {
 
   methods: {
     onSubmit() {
+      // eslint-disable-next-line no-debugger
+      // debugger
       this.$axios
         .post('/api/auth', {
           username: this.username,
           password: this.password,
           rememberMe: this.rememberMe
         })
-        .then(({ data }) => {
+        .then(response => {
           this.$store.dispatch('auth/login', this.username)
-          this.$router.push(atob(this.$route.query.to))
+          const to = this.$route.query.to ? atob(this.$route.query.to) : '/'
+          this.$router.push(to)
         })
     }
   }
