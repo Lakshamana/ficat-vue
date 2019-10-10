@@ -13,7 +13,6 @@
           <b-field>
             <b-select
               v-model="searchYear"
-              :placeholder="currentYear"
               aria-placeholder="Selecionar ano"
               rounded
               size="is-small"
@@ -68,6 +67,7 @@
               size="is-small"
               rounded
             >
+              <option value="">Todos</option>
               <option value="tccGraduation">Graduação</option>
               <option value="tccExpert">Especialização</option>
               <option value="dissertation">Mestrado</option>
@@ -170,11 +170,10 @@ export default {
 
   data() {
     return {
-      currentYear: '' + new Date().getFullYear(),
       years: [],
       courses: [],
-      searchYear: undefined,
-      searchPeriod: 'mensal',
+      searchYear: new Date().getFullYear(),
+      searchPeriod: 'monthly',
       searchCourseType: undefined,
       loading: false,
       acdUnityPreviousSearch: '',
@@ -183,21 +182,20 @@ export default {
       semester: '',
       selectedAcdUnity: undefined,
       selectedCourse: undefined,
-      dataset: [],
-      chart: undefined
+      dataset: []
     }
   },
 
   computed: {
     ctx() {
-      return this.$refs.canvas.getContext('2d')
+      return document.getElementById('canvas').getContext('2d')
     }
   },
 
   watch: {
     dataset: {
-      handler(newDataset) {
-        this.chart = this.createNewChart(newDataset)
+      handler(newData) {
+        this.createChart(newData)
       },
       deep: true
     }
@@ -209,9 +207,10 @@ export default {
   },
 
   methods: {
-    createNewChart(dataset) {
+    createChart(dataset) {
       const that = this
-      const x = new Chart(that.ctx, {
+      console.log(dataset, Object.entries(dataset))
+      return new Chart(this.ctx, {
         type: 'bar',
         data: {
           labels: that.getLabels() || Object.keys(dataset),
@@ -222,10 +221,22 @@ export default {
               borderWidth: 1
             }
           ]
+        },
+        options: {
+          responsive: true,
+          lineTension: 1,
+          scales: {
+            yAxes: [
+              {
+                ticks: {
+                  beginAtZero: true,
+                  padding: 25
+                }
+              }
+            ]
+          }
         }
       })
-      console.log(x)
-      return x
     },
 
     getLabels() {
@@ -234,8 +245,8 @@ export default {
 
     getYears() {
       this.$axios.get('/api/catalogCards/oldest').then(({ data }) => {
-        const length = this.currentYear - data.year + 1
-        this.years = Array.from({ length }, (v, i) => this.currentYear - i)
+        const length = this.searchYear - data.year + 1
+        this.years = Array.from({ length }, (v, i) => this.searchYear - i)
       })
     },
 
