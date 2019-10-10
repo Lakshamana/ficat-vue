@@ -1,7 +1,7 @@
 <template>
   <div class="container">
-    <section class="columns is-full-page">
-      <aside class="section column is-3">
+    <section class="section columns is-full-page">
+      <aside class="column is-3">
         <p class="menu-label title is-hidden-touch has-text-left">
           Filtros
         </p>
@@ -103,7 +103,7 @@
             </div>
           </div>
           <br />
-          <!-- <p class="menu-label is-capitalized">
+          <p class="menu-label is-capitalized">
             Curso
           </p>
           <b-field v-if="selectedAcdUnity">
@@ -125,7 +125,7 @@
               </option>
             </b-select>
           </b-field>
-          <br /> -->
+          <br />
           <div class="columns is-centered">
             <div class="column is-10">
               <b-button class="is-info" native-type="submit" @click="send">
@@ -135,9 +135,9 @@
           </div>
         </form>
       </aside>
-      <div class="column is-9 border-red graphics is-fullheight">
+      <div class="column is-9 graphics is-fullheight">
         <div class="d-table">
-          <div class="d-cell border-black">
+          <div class="d-cell">
             <canvas ref="canvas"></canvas>
           </div>
         </div>
@@ -159,7 +159,7 @@ export default {
     return {
       currentYear: '' + new Date().getFullYear(),
       years: [],
-      // courses: [],
+      courses: [],
       searchYear: undefined,
       searchPeriod: 'mensal',
       searchCourseType: undefined,
@@ -168,12 +168,14 @@ export default {
       academicUnities: [],
       month: '',
       semester: '',
-      selectedAcdUnity: undefined
-      // selectedCourse: undefined
+      selectedAcdUnity: undefined,
+      selectedCourse: undefined,
+      dataset: []
     }
   },
 
   mounted() {
+    this.$axios.setHeader('x-xsrf-token', this.$cookies.get('xsrfToken'))
     this.getYears()
   },
 
@@ -209,24 +211,39 @@ export default {
       }
     }, 500),
 
-    send() {
-      this.$axios.post(
-        '/api/catalogCards/q',
-        {
-          year: +this.searchYear,
-          ...maybe('month', this.month),
-          ...maybe('semester', this.semester),
-          ...maybe('unityId', this.selectedAcdUnity.id),
-          // ...maybe('courseId', this.selectedCourse.id),
-          ...maybe('type', this.searchCourseType)
-        },
-        null,
-        {
+    getCourses() {
+      this.$axios
+        .get('/api/courses', {
           params: {
-            searchType: this.searchPeriod
+            acdUnityId: this.selectedAcdUnity.id
           }
-        }
-      )
+        })
+        .then(({ data }) => {
+          this.courses = data
+        })
+        .catch(err => console.log(err))
+        .finally(() => (this.loading = false))
+    },
+
+    onSubmit() {
+      this.$axios
+        .post(
+          '/api/catalogCards/q',
+          {
+            year: +this.searchYear,
+            ...maybe('month', this.month),
+            ...maybe('semester', this.semester),
+            ...maybe('unityId', this.selectedAcdUnity.id),
+            // ...maybe('courseId', this.selectedCourse.id),
+            ...maybe('type', this.searchCourseType)
+          },
+          {
+            params: {
+              searchType: this.searchPeriod
+            }
+          }
+        )
+        .then(({ data }) => (this.dataset = data))
     }
   }
 }
