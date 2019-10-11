@@ -135,7 +135,10 @@
       <div class="column is-9 graphics is-fullheight">
         <div class="d-table">
           <div class="d-cell">
-            <canvas id="chart"></canvas>
+            <graphic
+              :input-dataset="dataset"
+              :input-search-type="searchPeriod"
+            ></graphic>
           </div>
         </div>
       </div>
@@ -144,14 +147,18 @@
 </template>
 
 <script>
-import Chart from 'chart.js'
 import pDebounce from 'p-debounce'
-import { maybe, rand } from '@/shared/frontUtils'
+import Graphic from '@/components/Graphic'
+import { maybe } from '@/shared/frontUtils'
 
 export default {
   name: 'Statistics',
   layout: 'empty',
   middleware: 'auth',
+
+  components: {
+    Graphic
+  },
 
   data() {
     return {
@@ -167,58 +174,16 @@ export default {
       semester: '',
       selectedAcdUnity: undefined,
       selectedCourse: undefined,
-      dataset: []
+      dataset: {}
     }
   },
 
   mounted() {
     this.$axios.setHeader('x-xsrf-token', this.$cookies.get('xsrfToken'))
     this.getYears()
-    this.createChart()
   },
 
   methods: {
-    randColor() {
-      const alpha = rand(0, 100) / 100
-      return `rgba(${rand(0, 255)}, ${rand(0, 255)}, ${rand(0, 255)}, ${alpha})`
-    },
-
-    createChart() {
-      // const ctx = this.$refs.chart
-      const ctx = document.getElementById('chart')
-      console.log(ctx)
-      const x = new Chart(ctx, {
-        // The type of chart we want to create
-        type: 'line',
-
-        // The data for our dataset
-        data: {
-          labels: [
-            'January',
-            'February',
-            'March',
-            'April',
-            'May',
-            'June',
-            'July'
-          ],
-          datasets: [
-            {
-              label: 'My First dataset',
-              backgroundColor: 'rgb(255, 99, 132)',
-              borderColor: 'rgb(255, 99, 132)',
-              data: [0, 10, 5, 2, 20, 30, 45]
-            }
-          ]
-        },
-
-        // Configuration options go here
-        options: {}
-      })
-
-      console.log(x)
-    },
-
     getYears() {
       this.$axios.get('/api/catalogCards/oldest').then(({ data }) => {
         const length = this.searchYear - data.year + 1
@@ -290,10 +255,7 @@ export default {
             }
           }
         )
-        .then(({ data }) => {
-          this.dataset = data
-          this.createChart()
-        })
+        .then(({ data }) => (this.dataset = data))
     }
   }
 }
