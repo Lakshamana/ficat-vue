@@ -27,7 +27,7 @@
     "bcrypt": "^3.0.6",
     "bookshelf": "^0.15.1",
     "bookshelf-secure-password": "^4.0.0",
-    "chartjs": "^0.3.24",
+    "chart.js": "^2.8.0",
     "cross-env": "^5.2.0",
     "dotenv": "^8.0.0",
     "hooper": "^0.3.4",

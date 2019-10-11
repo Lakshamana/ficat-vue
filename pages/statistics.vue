@@ -135,7 +135,7 @@
       <div class="column is-9 graphics is-fullheight">
         <div class="d-table">
           <div class="d-cell">
-            <canvas id="chart" ref="chart" height="500" width="800"></canvas>
+            <canvas id="chart"></canvas>
           </div>
         </div>
       </div>
@@ -144,24 +144,9 @@
 </template>
 
 <script>
-import Chart from 'chartjs'
+import Chart from 'chart.js'
 import pDebounce from 'p-debounce'
 import { maybe, rand } from '@/shared/frontUtils'
-
-const months = [
-  'Janeiro',
-  'Fevereiro',
-  'Março',
-  'Abril',
-  'Maio',
-  'Junho',
-  'Julho',
-  'Agosto',
-  'Setembro',
-  'Outubro',
-  'Novembro',
-  'Dezembro'
-]
 
 export default {
   name: 'Statistics',
@@ -186,57 +171,52 @@ export default {
     }
   },
 
-  computed: {
-    ctx() {
-      return this.$refs && this.$refs.chart
-    }
-  },
-
   mounted() {
     this.$axios.setHeader('x-xsrf-token', this.$cookies.get('xsrfToken'))
     this.getYears()
+    this.createChart()
   },
 
   methods: {
-    createChart() {
-      const that = this
-      const length = this.dataset.length
-      console.log(that.getLabels() || Object.keys(this.dataset))
-      return new Chart(this.ctx, {
-        type: 'bar',
-        data: {
-          labels: that.getLabels() || Object.keys(this.dataset),
-          datasets: [
-            {
-              label: 'Nº de fichas registradas',
-              data: Object.values(this.dataset),
-              backgroundColor: Array.from({ length }, () => this.randColor()),
-              borderColor: Array.from({ length }, () => this.randColor()),
-              borderWidth: 1
-            }
-          ]
-        },
-        options: {
-          scales: {
-            yAxes: [
-              {
-                ticks: {
-                  beginAtZero: true
-                }
-              }
-            ]
-          }
-        }
-      })
-    },
-
     randColor() {
       const alpha = rand(0, 100) / 100
       return `rgba(${rand(0, 255)}, ${rand(0, 255)}, ${rand(0, 255)}, ${alpha})`
     },
 
-    getLabels() {
-      return this.searchPeriod === 'monthly' && months
+    createChart() {
+      // const ctx = this.$refs.chart
+      const ctx = document.getElementById('chart')
+      console.log(ctx)
+      const x = new Chart(ctx, {
+        // The type of chart we want to create
+        type: 'line',
+
+        // The data for our dataset
+        data: {
+          labels: [
+            'January',
+            'February',
+            'March',
+            'April',
+            'May',
+            'June',
+            'July'
+          ],
+          datasets: [
+            {
+              label: 'My First dataset',
+              backgroundColor: 'rgb(255, 99, 132)',
+              borderColor: 'rgb(255, 99, 132)',
+              data: [0, 10, 5, 2, 20, 30, 45]
+            }
+          ]
+        },
+
+        // Configuration options go here
+        options: {}
+      })
+
+      console.log(x)
     },
 
     getYears() {
@@ -310,7 +290,10 @@ export default {
             }
           }
         )
-        .then(({ data }) => (this.dataset = data))
+        .then(({ data }) => {
+          this.dataset = data
+          this.createChart()
+        })
     }
   }
 }
@@ -338,9 +321,5 @@ export default {
 
 .graphics {
   background-color: #ccc9c994;
-}
-
-#chart {
-  border: 1px solid blue;
 }
 </style>
