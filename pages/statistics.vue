@@ -135,7 +135,7 @@
       <div class="column is-9 graphics is-fullheight">
         <div class="d-table">
           <div class="d-cell">
-            <canvas id="canvas" ref="canvas"></canvas>
+            <canvas id="chart" ref="chart" height="500" width="800"></canvas>
           </div>
         </div>
       </div>
@@ -146,7 +146,7 @@
 <script>
 import Chart from 'chartjs'
 import pDebounce from 'p-debounce'
-import { maybe } from '@/shared/frontUtils'
+import { maybe, rand } from '@/shared/frontUtils'
 
 const months = [
   'Janeiro',
@@ -188,16 +188,7 @@ export default {
 
   computed: {
     ctx() {
-      return document.getElementById('canvas').getContext('2d')
-    }
-  },
-
-  watch: {
-    dataset: {
-      handler(newData) {
-        this.createChart(newData)
-      },
-      deep: true
+      return this.$refs && this.$refs.chart
     }
   },
 
@@ -207,36 +198,41 @@ export default {
   },
 
   methods: {
-    createChart(dataset) {
+    createChart() {
       const that = this
-      console.log(dataset, Object.entries(dataset))
+      const length = this.dataset.length
+      console.log(that.getLabels() || Object.keys(this.dataset))
       return new Chart(this.ctx, {
         type: 'bar',
         data: {
-          labels: that.getLabels() || Object.keys(dataset),
+          labels: that.getLabels() || Object.keys(this.dataset),
           datasets: [
             {
               label: 'Nº de fichas registradas',
-              data: Object.values(dataset),
+              data: Object.values(this.dataset),
+              backgroundColor: Array.from({ length }, () => this.randColor()),
+              borderColor: Array.from({ length }, () => this.randColor()),
               borderWidth: 1
             }
           ]
         },
         options: {
-          responsive: true,
-          lineTension: 1,
           scales: {
             yAxes: [
               {
                 ticks: {
-                  beginAtZero: true,
-                  padding: 25
+                  beginAtZero: true
                 }
               }
             ]
           }
         }
       })
+    },
+
+    randColor() {
+      const alpha = rand(0, 100) / 100
+      return `rgba(${rand(0, 255)}, ${rand(0, 255)}, ${rand(0, 255)}, ${alpha})`
     },
 
     getLabels() {
@@ -344,9 +340,7 @@ export default {
   background-color: #ccc9c994;
 }
 
-#canvas {
-  width: 100%;
-  height: 50vh;
+#chart {
   border: 1px solid blue;
 }
 </style>

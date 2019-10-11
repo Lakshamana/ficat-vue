@@ -81,10 +81,6 @@ export function romanize(n, uppercase = false) {
   return uppercase ? r.toUpperCase() : r
 }
 
-export function encode(str) {
-  return btoa(unescape(encodeURIComponent(str)))
-}
-
-export function decode(str) {
-  return decodeURIComponent(escape(window.atob(str)))
+export function rand(min, max) {
+  return min + Math.ceil(Math.random() * (max - min))
 }
