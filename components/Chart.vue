@@ -64,28 +64,24 @@ export default {
 
     ctx() {
       return this.$refs && this.$refs.canvas.getContext('2d')
-    },
-
-    updateChart() {
-      return this.createChart()
     }
   },
 
   mounted() {
-    this.createChart()
+    this.createChart(this.dataset)
   },
 
   methods: {
-    createChart() {
-      const length = Object.keys(this.dataset).length
+    createChart(dataset) {
+      const length = Object.keys(dataset).length
       return new Chart(this.ctx, {
         type: 'bar',
         data: {
-          labels: this.getLabels || Object.keys(this.dataset),
+          labels: this.getLabels || Object.keys(dataset),
           datasets: [
             {
               label: 'Nº de fichas registradas',
-              data: Object.values(this.dataset),
+              data: Object.values(dataset),
               backgroundColor: randColors(length),
               borderColor: randColors(length),
               borderWidth: 1

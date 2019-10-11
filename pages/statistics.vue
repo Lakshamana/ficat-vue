@@ -135,7 +135,11 @@
       <div class="column is-9 charts is-fullheight">
         <div class="d-table">
           <div class="d-cell">
-            <chart :dataset="dataset" :search-type="searchPeriod"></chart>
+            <chart
+              ref="chart"
+              :dataset="dataset"
+              :search-type="searchPeriod"
+            ></chart>
           </div>
         </div>
       </div>
@@ -253,7 +257,10 @@ export default {
             }
           }
         )
-        .then(({ data }) => (this.dataset = data))
+        .then(({ data }) => {
+          // this.dataset = data
+          this.$refs.chart.createChart(data)
+        })
     }
   }
 }
