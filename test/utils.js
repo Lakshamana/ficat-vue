@@ -10,8 +10,8 @@ const { tokenSign } = require('../server/util/utils')
  */
 async function user(username, rememberMe) {
   const user = await User.where({ username }).fetch()
-  const token = tokenSign(user, rememberMe)
-  return { user, token }
+  const tokens = await tokenSign(user, rememberMe)
+  return { user, tokens }
 }
 
 const models = {
