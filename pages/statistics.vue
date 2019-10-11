@@ -132,13 +132,10 @@
           </div>
         </form>
       </aside>
-      <div class="column is-9 graphics is-fullheight">
+      <div class="column is-9 charts is-fullheight">
         <div class="d-table">
           <div class="d-cell">
-            <graphic
-              :input-dataset="dataset"
-              :input-search-type="searchPeriod"
-            ></graphic>
+            <chart :dataset="dataset" :search-type="searchPeriod"></chart>
           </div>
         </div>
       </div>
@@ -148,7 +145,7 @@
 
 <script>
 import pDebounce from 'p-debounce'
-import Graphic from '@/components/Graphic'
+import Chart from '@/components/Chart'
 import { maybe } from '@/shared/frontUtils'
 
 export default {
@@ -157,7 +154,7 @@ export default {
   middleware: 'auth',
 
   components: {
-    Graphic
+    Chart
   },
 
   data() {
@@ -174,7 +171,8 @@ export default {
       semester: '',
       selectedAcdUnity: undefined,
       selectedCourse: undefined,
-      dataset: {}
+      dataset: {},
+      searchId: 0
     }
   },
 
@@ -281,7 +279,7 @@ export default {
   border: 1px solid black;
 }
 
-.graphics {
+.charts {
   background-color: #ccc9c994;
 }
 </style>
