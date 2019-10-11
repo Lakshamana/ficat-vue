@@ -62,18 +62,11 @@ export default {
 
     hasDataset() {
       return Object.keys(this.dataset).length > 0
-    }
-  },
+    },
 
-  mounted() {
-    this.createChart(this.dataset)
-  },
-
-  methods: {
     createChart(dataset) {
       const ctx = this.$refs.chart
-      // eslint-disable-next-line no-new
-      new Chart(ctx, {
+      return new Chart(ctx, {
         type: 'bar',
         data: {
           labels: this.getLabels || Object.keys(dataset),

@@ -1,5 +1,6 @@
 export default function({ store, redirect, route }) {
-  if (!store.state.auth.user) {
+  const auth = store.state.auth
+  if (!auth.user || !auth.xsrfToken) {
     redirect(`/login?to=${btoa(route.path)}`)
   }
 }

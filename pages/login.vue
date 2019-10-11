@@ -92,7 +92,10 @@ export default {
           rememberMe: this.rememberMe
         })
         .then(response => {
-          this.$store.dispatch('auth/login', this.username)
+          this.$store.dispatch('auth/login', {
+            username: this.username,
+            xsrfToken: this.$cookies.get('xsrfToken')
+          })
           const to = this.$route.query.to ? atob(this.$route.query.to) : '/'
           this.$router.push(to)
         })
