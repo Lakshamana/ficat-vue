@@ -1,9 +1,9 @@
 <template>
   <div>
-    <canvas ref="canvas" :key="searchId" width="965" height="400"></canvas>
-    <!-- <div style="text-align:center;">
+    <canvas v-show="searchId > 0" ref="canvas"></canvas>
+    <div v-show="!searchId" style="text-align:center;">
       <p>Use os controles ao lado para pesquisar</p>
-    </div> -->
+    </div>
   </div>
 </template>
 
@@ -37,11 +37,6 @@ function randColors(length) {
 export default {
   name: 'Chart',
   props: {
-    dataset: {
-      type: Object,
-      default: () => ({})
-    },
-
     searchType: {
       type: String,
       default: ''
@@ -54,10 +49,6 @@ export default {
   },
 
   computed: {
-    hasDataset() {
-      return Object.keys(this.dataset).length > 0
-    },
-
     getLabels() {
       return this.searchType === 'monthly' && months
     },
@@ -68,7 +59,7 @@ export default {
   },
 
   mounted() {
-    this.createChart(this.dataset)
+    this.createChart({})
   },
 
   methods: {
