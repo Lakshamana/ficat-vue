@@ -137,6 +137,7 @@
           <div class="d-cell">
             <chart
               ref="chart"
+              :dataset="dataset"
               :search-id="searchId"
               :search-type="searchPeriod"
             ></chart>
@@ -258,7 +259,7 @@ export default {
           }
         )
         .then(({ data }) => {
-          // this.dataset = data
+          this.dataset = data
           this.searchId++
           this.$refs.chart.createChart(data)
         })

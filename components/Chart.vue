@@ -1,6 +1,16 @@
 <template>
   <div>
-    <canvas v-show="searchId > 0" ref="canvas"></canvas>
+    <div v-show="searchId > 0">
+      <canvas ref="canvas"></canvas>
+      <br />
+      <div class="level">
+        <div class="level-left"></div>
+        <div class="level-right">
+          <b-button icon-right="download" @click="downloadImage" />
+          <b-button icon-right="file-pdf" @click="submitData" />
+        </div>
+      </div>
+    </div>
     <div v-show="!searchId" style="text-align:center;">
       <p>Use os controles ao lado para pesquisar</p>
     </div>
@@ -45,6 +55,17 @@ export default {
     searchId: {
       type: Number,
       default: 0
+    },
+
+    dataset: {
+      type: Object,
+      default: () => ({})
+    }
+  },
+
+  data() {
+    return {
+      chart: undefined
     }
   },
 
@@ -59,7 +80,7 @@ export default {
   },
 
   mounted() {
-    this.createChart({})
+    this.chart = this.createChart(this.dataset)
   },
 
   methods: {
@@ -81,7 +102,18 @@ export default {
         },
         options: {}
       })
-    }
+    },
+
+    downloadImage() {
+      const link = document.createElement('a')
+      link.setAttribute('download', 'image.png')
+      link.setAttribute('href', this.chart.toBase64Image())
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+    },
+
+    submitData() {}
   }
 }
 </script>
