@@ -1,7 +1,7 @@
 <template>
   <div>
     <div v-show="searchId > 0">
-      <canvas ref="canvas"></canvas>
+      <canvas id="canvas" ref="canvas"></canvas>
       <br />
       <div class="level">
         <div class="level-left"></div>
@@ -21,23 +21,27 @@
 import Chart from 'chart.js'
 import { rand } from '@/shared/frontUtils'
 
-const months = [
-  'Janeiro',
-  'Fevereiro',
-  'Março',
-  'Abril',
-  'Maio',
-  'Junho',
-  'Julho',
-  'Agosto',
-  'Setembro',
-  'Outubro',
-  'Novembro',
-  'Dezembro'
-]
+const labels = {
+  monthly: [
+    'Janeiro',
+    'Fevereiro',
+    'Março',
+    'Abril',
+    'Maio',
+    'Junho',
+    'Julho',
+    'Agosto',
+    'Setembro',
+    'Outubro',
+    'Novembro',
+    'Dezembro'
+  ],
+  semiannually: ['1º semestre', '2º semestre'],
+  annually: ''
+}
 
 function randColors(length) {
-  const alpha = rand(0, 100) / 100
+  const alpha = rand(50, 100) / 100
   return Array.from(
     { length },
     () => `rgba(${rand(0, 85)}, ${rand(85, 170)}, ${rand(170, 255)}, ${alpha})`
@@ -71,11 +75,11 @@ export default {
 
   computed: {
     getLabels() {
-      return this.searchType === 'monthly' && months
+      return labels[this.searchType]
     },
 
     ctx() {
-      return this.$refs && this.$refs.canvas.getContext('2d')
+      return this.$refs && this.$refs.canvas
     }
   },
 
@@ -89,7 +93,7 @@ export default {
       return new Chart(this.ctx, {
         type: 'bar',
         data: {
-          labels: this.getLabels || Object.keys(dataset),
+          labels: this.getLabels,
           datasets: [
             {
               label: 'Nº de fichas registradas',
@@ -105,8 +109,15 @@ export default {
     },
 
     downloadImage() {
+      const ctx = this.$refs.canvas.getContext('2d')
+      ctx.save()
+      ctx.globalCompositeOperation = 'destination-over'
+      ctx.fillStyle = '#ccc9c9'
+      ctx.fillRect(0, 0, this.$refs.canvas.width, this.$refs.canvas.height)
+      ctx.restore()
+
       const link = document.createElement('a')
-      link.setAttribute('download', 'image.png')
+      link.setAttribute('download', 'gráfico.png')
       link.setAttribute('href', this.chart.toBase64Image())
       document.body.appendChild(link)
       link.click()
@@ -117,3 +128,10 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+#canvas {
+  max-width: 100%;
+  max-height: 75vh;
+}
+</style>
