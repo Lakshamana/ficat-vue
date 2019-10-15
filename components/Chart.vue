@@ -6,8 +6,16 @@
       <div class="level">
         <div class="level-left"></div>
         <div class="level-right">
-          <b-button icon-right="download" @click="downloadImage" />
-          <b-button icon-right="file-pdf" @click="submitData" />
+          <b-button
+            class="btn-margin"
+            icon-right="download"
+            @click="downloadImage"
+          />
+          <b-button
+            class="btn-margin"
+            icon-right="file-pdf"
+            @click="submitData"
+          />
         </div>
       </div>
     </div>
@@ -104,7 +112,10 @@ export default {
             }
           ]
         },
-        options: {}
+        options: {
+          hover: { mode: null },
+          tooltips: { enabled: true }
+        }
       })
     },
 
@@ -133,5 +144,9 @@ export default {
 #canvas {
   max-width: 100%;
   max-height: 75vh;
+}
+
+.btn-margin {
+  margin: 5px;
 }
 </style>
