@@ -109,12 +109,12 @@ export default {
     },
 
     downloadImage() {
-      const ctx = this.$refs.canvas.getContext('2d')
-      ctx.save()
-      ctx.globalCompositeOperation = 'destination-over'
-      ctx.fillStyle = '#ccc9c9'
-      ctx.fillRect(0, 0, this.$refs.canvas.width, this.$refs.canvas.height)
-      ctx.restore()
+      // const ctx = this.$refs.canvas.getContext('2d')
+      // ctx.save()
+      // ctx.globalCompositeOperation = 'destination-over'
+      // ctx.fillStyle = '#ccc9c9'
+      // ctx.fillRect(0, 0, this.$refs.canvas.width, this.$refs.canvas.height)
+      // ctx.restore()
 
       const link = document.createElement('a')
       link.setAttribute('download', 'gráfico.png')
