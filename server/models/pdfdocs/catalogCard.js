@@ -80,6 +80,7 @@ Gerada automaticamente pelo módulo Ficat, mediante os dados fornecidos pelo(a) 
     pb: ' : il. pb'
   }
 
+  console.log(cutter)
   doc
     .font(`${defaultFont}${regularSuffix}`, fontSize)
     .text(cutter, -300, 450)

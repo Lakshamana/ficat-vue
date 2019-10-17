@@ -108,7 +108,7 @@ const stopwords = [
  * @param {String} surname
  * @returns {Promise<String>} cutter code
  */
-function cutter(surname, workTitle) {
+function cutterFetch(surname, workTitle) {
   // Fatiar por espaços
   const chunks = surname.split(' ')
   let s
@@ -129,19 +129,24 @@ function cutter(surname, workTitle) {
    * retire a letra final e repita o processo.
    * Caso contrário, resolva a promise passando o valor encontrado
    */
-  return new Promise(resolve => {
+  return new Promise((resolve, reject) => {
     while (true) {
       // grep -w: exact match
-      const code = execSync(`cat ${file} | grep -w ${s} | awk '{print $1}'`, {
-        encoding: 'utf-8'
-      })
+      const code = execSync(
+        `cat ${file} | grep -w ${s} | awk '{print $1}' | tr -d "\n"`,
+        {
+          encoding: 'utf-8'
+        }
+      )
       if (code) {
         // e.g. 'S' + 677 + 't', para surname = 'Sobrenome' e workTitle = 'Trabalho'
         const result = s[0].toUpperCase() + code + workTitle[0].toLowerCase()
+        console.log('worktitle: ' + workTitle)
         resolve(result)
         break
       } else s = s.substring(0, s.length - 1)
     }
+    reject(new Error('No cutter code found'))
   })
 }
 
@@ -151,5 +156,5 @@ module.exports = {
   tokenVerify,
   payloadErrors,
   hash,
-  cutter
+  cutterFetch
 }
