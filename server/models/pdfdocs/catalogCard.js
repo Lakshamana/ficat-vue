@@ -1,4 +1,5 @@
 const path = require('path')
+
 /**
  * Gera o modelo PDF baseado nos dados da
  * ficha catalográfica gerados pelo usuário final
@@ -65,14 +66,6 @@ Gerada automaticamente pelo módulo Ficat, mediante os dados fornecidos pelo(a) 
     continued: true
   })
 
-  function drawLine(doc, x, y, length) {
-    doc
-      .lineWidth(2)
-      .moveTo(x, y)
-      .lineTo(x + length, y)
-      .stroke()
-  }
-
   drawLine(doc, 90, 425, 430)
 
   const subtitle = work.workSubtitle ? `: ${work.workSubtitle}` : ''
@@ -122,7 +115,10 @@ Gerada automaticamente pelo módulo Ficat, mediante os dados fornecidos pelo(a) 
     academicDetailNames.programName
   }, ${academicDetailNames.acdUnityName}`
 
-  const localHeader = 'Universidade Federal do Pará, Belém, 2019.'
+  const local = academicDetailNames.acdUnityName.includes('Campus')
+    ? getLocal(academicDetailNames.acdUnityName)
+    : 'Belém'
+  const localHeader = `Universidade Federal do Pará, ${local}, 2019.`
 
   let kws = ''
   for (const kn in keywords) {
@@ -149,6 +145,19 @@ Gerada automaticamente pelo módulo Ficat, mediante os dados fornecidos pelo(a) 
   doc.moveDown(1).text(`CDD ${cdd}`, 500 - cdd.length * 7)
 
   drawLine(doc, 90, 610, 430)
+}
+
+function getLocal(acdUnityName) {
+  const arr = acdUnityName.split('')
+  return arr[arr.length - 1]
+}
+
+function drawLine(doc, x, y, length) {
+  doc
+    .lineWidth(2)
+    .moveTo(x, y)
+    .lineTo(x + length, y)
+    .stroke()
 }
 
 module.exports = catalogCard

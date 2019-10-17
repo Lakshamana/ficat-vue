@@ -6,6 +6,7 @@ const AcademicUnity = require('../models/AcademicUnity')
 const HttpCodes = require('../httpCodes')
 const { MessageCodes } = require('../../shared/messageCodes')
 const { validatePayload, chunks } = require('../../shared/utils')
+const { cutter } = require('../util/utils')
 const catalogCardModel = require('../models/pdfdocs/catalogCard')
 const { payloadErrors } = require('../util/utils')
 
@@ -103,9 +104,10 @@ async function create(ctx) {
     acdUnityName: acdUnity.get('name')
   }
 
+  const cttr = cutter(authors.authorSurname)
   const doc = new PDFDocument()
   catalogCardModel(doc, catalogFont, {
-    cutter: 'cutter',
+    cttr,
     authors,
     work,
     advisors,

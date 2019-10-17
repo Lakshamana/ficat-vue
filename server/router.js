@@ -46,7 +46,7 @@ api.use(
       (ctx.path.includes('knowledgeAreas') && ctx.method === 'GET') ||
       (ctx.path.includes('academicUnities') && ctx.method === 'GET') ||
       (ctx.path === '/api/catalogCards' && ctx.method === 'POST') ||
-      (ctx.path === '/api/catalogCards/get' && ctx.method === 'GET') ||
+      (/\/api\/catalogCards\/get/.test(ctx.path) && ctx.method === 'GET') ||
       (ctx.path === '/api/courses' && ctx.method === 'GET')
   })
 )

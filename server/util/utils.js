@@ -1,3 +1,5 @@
+const path = require('path')
+const { execSync } = require('child_process')
 const { sign, verify, decode } = require('jsonwebtoken')
 const bcrypt = require('bcrypt')
 
@@ -59,10 +61,95 @@ async function hash(data) {
   return result
 }
 
+const stopwords = [
+  'o',
+  "'",
+  '"',
+  'a',
+  'os',
+  'as',
+  'um',
+  'uns',
+  'uma',
+  'umas',
+  'de',
+  'do',
+  'da',
+  'dos',
+  'das',
+  'no',
+  'na',
+  'nos',
+  'nas',
+  'ao',
+  'aos',
+  'à',
+  'às',
+  'pelo',
+  'pela',
+  'pelos',
+  'pelas',
+  'duma',
+  'dumas',
+  'dum',
+  'duns',
+  'num',
+  'numa',
+  'nuns',
+  'numas',
+  'com',
+  'por',
+  'em'
+]
+
+/**
+ * Dado um sobrenome, busca na tabela cutter o sobrenome
+ * e retorna o código cutter
+ * @param {String} surname
+ * @returns {Promise<String>} cutter code
+ */
+function cutter(surname, workTitle) {
+  // Fatiar por espaços
+  const chunks = surname.split(' ')
+  let s
+
+  // Obter o primeiro componente do sobrenome
+  // que não for uma stopword
+  for (const c of chunks) {
+    if (!stopwords.includes(c)) {
+      s = c
+      break
+    }
+  }
+
+  const file = path.resolve(__dirname, '../../static/cutter.txt')
+
+  /**
+   * Caso o código para o componente do sobrenome não tenha um código,
+   * retire a letra final e repita o processo.
+   * Caso contrário, resolva a promise passando o valor encontrado
+   */
+  return new Promise(resolve => {
+    while (true) {
+      // grep -w: exact match
+      const code = execSync(`cat ${file} | grep -w ${s} | awk '{print $1}'`, {
+        encoding: 'utf-8'
+      })
+      if (code) {
+        // e.g. 'S' + 677 + 't', para surname = 'Sobrenome' e workTitle = 'Trabalho'
+        const result = s[0].toUpperCase() + code + workTitle[0].toLowerCase()
+        resolve(result)
+        break
+      } else s = s.substring(0, s.length - 1)
+    }
+  })
+}
+
 module.exports = {
   paginateCtx,
   tokenSign,
   tokenVerify,
   payloadErrors,
-  hash
+  hash,
+  cutter
 }

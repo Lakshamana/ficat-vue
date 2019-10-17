@@ -1,4 +1,4 @@
-const { validatePayload, select } = require('../../shared/serverUtils')
+const { validatePayload, select } = require('../../shared/utils')
 const HttpCodes = require('../httpCodes')
 const { MessageCodes } = require('../../shared/messageCodes')
 const fields = require('../routeFieldsValidation')
