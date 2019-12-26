@@ -14,17 +14,17 @@ function generateReport(doc) {
   row(doc, 190)
   row(doc, 210)
 
-  textInRowFirst(doc, 'Nombre o razón social', 100)
-  textInRowFirst(doc, 'RUT', 120)
-  textInRowFirst(doc, 'Dirección', 140)
-  textInRowFirst(doc, 'Comuna', 160)
-  textInRowFirst(doc, 'Ciudad', 180)
-  textInRowFirst(doc, 'Telefono', 200)
-  textInRowFirst(doc, 'e-mail', 220)
+  rowText(doc, 'Nombre o razón social', 100)
+  rowText(doc, 'RUT', 120)
+  rowText(doc, 'Dirección', 140)
+  rowText(doc, 'Comuna', 160)
+  rowText(doc, 'Ciudad', 180)
+  rowText(doc, 'Telefono', 200)
+  rowText(doc, 'e-mail', 220)
 
-  function textInRowFirst(doc, text, heigth) {
-    doc.y = heigth
-    doc.x = 30
+  function rowText(doc, text, heigth, col) {
+    doc.y = heigth - 5
+    doc.x = col * 180 || 30
     doc.fillColor('black')
     doc.text(text, {
       paragraphGap: 5,

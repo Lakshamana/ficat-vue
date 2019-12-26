@@ -199,20 +199,23 @@ async function catalogQueries(ctx) {
   }
 
   let responseObj = {}
-  /* Filtre e conte por mês, semestre ou ano inteiro.
-   * Em caso de ano inteiro, conte os registros e os
-   * agrupe pelo período requisitado.
-   */
+  // Filtre e conte por mês, semestre ou ano inteiro.
   const groupedMonths = chunks(months, chunkSizeConvert[searchType])
   if (month) {
-    responseObj = await getMonthCount(query, year, month)
+    responseObj = await fetchMonthCount(query, year, month)
   } else if (semester) {
-    responseObj = await getMonthGroupCount(query, year, groupedMonths[semester])
-  } else {
+    responseObj = await fetchMonthGroupCount(
+      query,
+      year,
+      groupedMonths[semester]
+    )
+  } else if (unityId)
     for (const groupIdx in groupedMonths) {
-      const f = await getMonthGroupCount(query, year, groupedMonths[groupIdx])
+      const f = await fetchMonthGroupCount(query, year, groupedMonths[groupIdx])
       responseObj[groupIdx] = f
     }
+  else {
+    responseObj = await fetchAllGroupByAcdUnity()
   }
 
   ctx.status = HttpCodes.OK
@@ -226,13 +229,13 @@ async function catalogQueries(ctx) {
  * @param {Number[]} monthList
  * @returns {number} contagem de ocorrências de fichas catalográficas
  */
-async function getMonthGroupCount(model, year, monthList) {
+async function fetchMonthGroupCount(model, year, monthList) {
   let s = 0
   for (const i in monthList) {
     const [t1, t2] = await Promise.all([
-      getMonthCount(model, year, monthList[i]),
+      fetchMonthCount(model, year, monthList[i]),
       monthList[i + 1]
-        ? getMonthCount(model, year, monthList[i + 1])
+        ? fetchMonthCount(model, year, monthList[i + 1])
         : Promise.resolve(0)
     ])
     s += t1 + t2
@@ -247,7 +250,7 @@ async function getMonthGroupCount(model, year, monthList) {
  * @param {number} month: número entre 0 e 11
  * @returns {Promise<Number>}
  */
-async function getMonthCount(model, year, month) {
+async function fetchMonthCount(model, year, month) {
   month = +month
   const monthInitialDay = new Date(year, month).toISOString()
   const monthFinalDay = new Date(year, month + 1, 0).toISOString()
@@ -257,6 +260,17 @@ async function getMonthCount(model, year, month) {
       .where('datetime', '<=', monthFinalDay)
       .count()
   } catch (e) {}
+}
+
+async function fetchAllGroupByAcdUnity() {
+  const group = await CatalogCard.forge()
+    .fetchAll()
+    .groupBy('unityId')
+  const payload = {}
+  for (const g in group) {
+    payload[g] = group[g].length
+  }
+  return payload
 }
 
 function getPdfResult(ctx) {
