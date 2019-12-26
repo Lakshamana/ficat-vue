@@ -12,7 +12,6 @@
                       v-model="authorName"
                       :properties="authorNameProperties"
                       class="mb"
-                      @focus="slideTo(0)"
                     ></input-validation>
                     <input-validation
                       v-model="authorSurname"
@@ -27,7 +26,6 @@
                     <input-validation
                       v-model="author2Surname"
                       :properties="author2SurnameProperties"
-                      @blur="slideTo(1)"
                     ></input-validation>
                   </div>
                 </div>
@@ -526,9 +524,13 @@ export default {
 
   methods: {
     slideTo(n) {
-      // this.$refs.hooper.slideTo(n)
+      this.$refs.hooper.slideTo(n)
       console.log('sliding to ' + n)
       // console.log(evt)
+    },
+
+    onAfterSlide(p) {
+      console.log(p)
     },
 
     newKeyword() {

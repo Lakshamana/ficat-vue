@@ -102,6 +102,14 @@ const stopwords = [
   'em'
 ]
 
+const diacritics = {
+  a: 'áàãẫâåäæ',
+  e: 'éèẽêë',
+  i: 'îíìĩï',
+  o: 'óòõôöø',
+  u: 'úùûü'
+}
+
 /**
  * Dado um sobrenome, busca na tabela cutter o sobrenome
  * e retorna o código cutter
@@ -109,6 +117,16 @@ const stopwords = [
  * @returns {Promise<String>} cutter code
  */
 function cutterFetch(surname, workTitle) {
+  // Substituir caracteres unicode por ascii
+  ;[surname, workTitle] = [surname, workTitle].map(word => {
+    const lower = word[0].toLowerCase()
+    for (const group in diacritics) {
+      if (diacritics[group].includes(lower))
+        return group.toUpperCase() + word.substring(1)
+    }
+    return word
+  })
+
   // Fatiar por espaços
   const chunks = surname.split(' ')
   let s
@@ -129,25 +147,21 @@ function cutterFetch(surname, workTitle) {
    * retire a letra final e repita o processo.
    * Caso contrário, resolva a promise passando o valor encontrado
    */
-  return new Promise((resolve, reject) => {
-    while (true) {
-      // grep -w: exact match
-      const code = execSync(
-        `cat ${file} | grep -w ${s} | awk '{print $1}' | tr -d "\n"`,
-        {
-          encoding: 'utf-8'
-        }
-      )
-      if (code) {
-        // e.g. 'S' + 677 + 't', para surname = 'Sobrenome' e workTitle = 'Trabalho'
-        const result = s[0].toUpperCase() + code + workTitle[0].toLowerCase()
-        console.log('worktitle: ' + workTitle)
-        resolve(result)
-        break
-      } else s = s.substring(0, s.length - 1)
-    }
-    reject(new Error('No cutter code found'))
-  })
+  while (true) {
+    // grep -w: exact match
+    const code = execSync(
+      `cat ${file} | grep -w ${s} | awk '{print $1}' | tr -d "\n"`,
+      {
+        encoding: 'utf-8'
+      }
+    )
+    if (code) {
+      // e.g. 'S' + 677 + 't', para surname = 'Sobrenome' e workTitle = 'Trabalho'
+      const result = s[0].toUpperCase() + code + workTitle[0].toLowerCase()
+      console.log('worktitle: ' + workTitle)
+      return result
+    } else s = s.substring(0, s.length - 1)
+  }
 }
 
 module.exports = {

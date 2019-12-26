@@ -104,7 +104,7 @@ async function create(ctx) {
     acdUnityName: acdUnity.get('name')
   }
 
-  const cutter = await cutterFetch(authors.authorSurname, work.workTitle)
+  const cutter = cutterFetch(authors.authorSurname, work.workTitle)
   const doc = new PDFDocument()
   catalogCardModel(doc, catalogFont, {
     cutter,
