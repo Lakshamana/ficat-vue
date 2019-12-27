@@ -142,6 +142,7 @@
               :dataset="dataset"
               :search-id="searchId"
               :search-type="searchPeriod"
+              :acd-unities="academicUnities"
             ></chart>
           </div>
         </div>
@@ -178,7 +179,6 @@ export default {
       semester: '',
       selectedAcdUnity: undefined,
       selectedCourse: undefined,
-      dataset: {},
       searchId: 0
     }
   },
@@ -262,7 +262,6 @@ export default {
           }
         )
         .then(({ data }) => {
-          this.dataset = data
           this.searchId++
           this.$refs.chart.createChart(data)
         })

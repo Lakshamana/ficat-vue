@@ -14,7 +14,8 @@
           <b-button
             class="btn-margin"
             icon-right="file-pdf"
-            @click="submitData"
+            :disabled="searchId <= 0"
+            @click="getReport"
           />
         </div>
       </div>
@@ -28,25 +29,6 @@
 <script>
 import Chart from 'chart.js'
 import { rand } from '@/shared/frontUtils'
-
-const labels = {
-  monthly: [
-    'Janeiro',
-    'Fevereiro',
-    'Março',
-    'Abril',
-    'Maio',
-    'Junho',
-    'Julho',
-    'Agosto',
-    'Setembro',
-    'Outubro',
-    'Novembro',
-    'Dezembro'
-  ],
-  semiannually: ['1º semestre', '2º semestre'],
-  annually: ''
-}
 
 function randColors(length) {
   const alpha = rand(50, 100) / 100
@@ -64,14 +46,14 @@ export default {
       default: ''
     },
 
+    acdUnities: {
+      type: Array,
+      default: () => []
+    },
+
     searchId: {
       type: Number,
       default: 0
-    },
-
-    dataset: {
-      type: Object,
-      default: () => ({})
     }
   },
 
@@ -83,11 +65,37 @@ export default {
 
   computed: {
     getLabels() {
-      return labels[this.searchType]
+      return this.labelMap[this.searchType]
     },
 
     ctx() {
       return this.$refs && this.$refs.canvas
+    },
+
+    acdUnitiesNames() {
+      console.log(this.acdUnities.map(unity => unity.name))
+      return this.acdUnities.map(unity => unity.name)
+    },
+
+    labelMap() {
+      return {
+        monthly: [
+          'Janeiro',
+          'Fevereiro',
+          'Março',
+          'Abril',
+          'Maio',
+          'Junho',
+          'Julho',
+          'Agosto',
+          'Setembro',
+          'Outubro',
+          'Novembro',
+          'Dezembro'
+        ],
+        semiannually: ['1º semestre', '2º semestre'],
+        annually: this.acdUnities.length > 0 ? this.acdUnitiesNames : ''
+      }
     }
   },
 
@@ -136,7 +144,9 @@ export default {
       document.body.removeChild(link)
     },
 
-    submitData() {}
+    getReport(id) {
+      window.open('/api/catalogCards/report/', '_blank')
+    }
   }
 }
 </script>
