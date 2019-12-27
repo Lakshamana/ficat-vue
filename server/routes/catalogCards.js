@@ -270,6 +270,7 @@ async function fetchAllGroupByAcdUnity(query) {
   for (const g in group) {
     payload[g] = group[g].length
   }
+  payload.null && delete payload.null
   return payload
 }
 
