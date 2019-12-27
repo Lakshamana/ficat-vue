@@ -201,21 +201,23 @@ async function catalogQueries(ctx) {
   let responseObj = {}
   // Filtre e conte por mês, semestre ou ano inteiro.
   const groupedMonths = chunks(months, chunkSizeConvert[searchType])
-  if (month) {
+  if (!isNaN(month)) {
+    console.log('have a month')
     responseObj = await fetchMonthCount(query, year, month)
-  } else if (semester) {
+  } else if (!isNaN(semester)) {
+    console.log('have a semester')
     responseObj = await fetchMonthGroupCount(
       query,
       year,
       groupedMonths[semester]
     )
-  } else if (unityId)
+  } else if (!isNaN(unityId))
     for (const groupIdx in groupedMonths) {
       const f = await fetchMonthGroupCount(query, year, groupedMonths[groupIdx])
       responseObj[groupIdx] = f
     }
   else {
-    responseObj = await fetchAllGroupByAcdUnity()
+    responseObj = await fetchAllGroupByAcdUnity(query)
   }
 
   ctx.status = HttpCodes.OK
@@ -245,27 +247,25 @@ async function fetchMonthGroupCount(model, year, monthList) {
 
 /**
  *
- * @param {CatalogCard} model
+ * @param {CatalogCard} query
  * @param {number} year
  * @param {number} month: número entre 0 e 11
  * @returns {Promise<Number>}
  */
-async function fetchMonthCount(model, year, month) {
+function fetchMonthCount(query, year, month) {
   month = +month
   const monthInitialDay = new Date(year, month).toISOString()
   const monthFinalDay = new Date(year, month + 1, 0).toISOString()
-  try {
-    return await model
-      .where('datetime', '>=', monthInitialDay)
-      .where('datetime', '<=', monthFinalDay)
-      .count()
-  } catch (e) {}
+  console.log(monthInitialDay, monthFinalDay)
+  return query
+    .where('datetime', '>=', monthInitialDay)
+    .where('datetime', '<=', monthFinalDay)
+    .count()
 }
 
-async function fetchAllGroupByAcdUnity() {
-  const group = await CatalogCard.forge()
-    .fetchAll()
-    .groupBy('unityId')
+async function fetchAllGroupByAcdUnity(query) {
+  const all = await query.fetchAll()
+  const group = all.groupBy('unityId')
   const payload = {}
   for (const g in group) {
     payload[g] = group[g].length
