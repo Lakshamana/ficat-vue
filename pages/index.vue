@@ -566,7 +566,8 @@ export default {
 
     onSelectedAcdUnity(option) {
       this.selectedAcdUnity = option
-      this.getCoursesByAcdUnity(this.selectedAcdUnity.id)
+      if (this.selectedAcdUnity)
+        this.getCoursesByAcdUnity(this.selectedAcdUnity.id)
     },
 
     getKnAreas: pDebounce(function(term) {

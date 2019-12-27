@@ -32,6 +32,7 @@
                 v-model="searchPeriod"
                 size="is-small"
                 native-value="monthly"
+                :disabled="!selectedAcdUnity"
               >
                 Mensal
               </b-radio>
@@ -41,6 +42,7 @@
                 v-model="searchPeriod"
                 size="is-small"
                 native-value="semiannually"
+                :disabled="!selectedAcdUnity"
               >
                 Semestral
               </b-radio>
@@ -167,7 +169,7 @@ export default {
       years: [],
       courses: [],
       searchYear: new Date().getFullYear(),
-      searchPeriod: 'monthly',
+      searchPeriod: 'annually',
       searchCourseType: undefined,
       loading: false,
       acdUnityPreviousSearch: '',
@@ -234,7 +236,8 @@ export default {
 
     onSelectedAcdUnity(option) {
       this.selectedAcdUnity = option
-      this.getCoursesByAcdUnity(this.selectedAcdUnity.id)
+      if (this.selectedAcdUnity)
+        this.getCoursesByAcdUnity(this.selectedAcdUnity.id)
     },
 
     onSubmit() {
