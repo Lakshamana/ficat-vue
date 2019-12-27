@@ -1,9 +1,27 @@
-function generateReport(doc) {
+/**
+ * Generates report's PDF
+ * @param {PDFKit.PDFDocument} doc
+ * @param {Object} queryData = {
+    searchType: (String) ['monthly' || 'semiannualy' || 'annually'],
+    params: (Object) {
+      year,
+      month,
+      semester,
+      unityId,
+      type,
+      courseId
+    },
+    data: (String|Object) query result
+  }
+*/
+function generateReport(doc, queryData) {
   // line to the middle
   doc
     .lineCap('butt')
-    .moveTo(270, 90)
-    .lineTo(270, 230)
+    .moveTo(180, 90)
+    .lineTo(180, 230)
+    .moveTo(360, 90)
+    .lineTo(360, 230)
     .stroke()
 
   row(doc, 90)
@@ -21,27 +39,27 @@ function generateReport(doc) {
   rowText(doc, 'Ciudad', 180)
   rowText(doc, 'Telefono', 200)
   rowText(doc, 'e-mail', 220)
+}
 
-  function rowText(doc, text, heigth, col) {
-    doc.y = heigth - 5
-    doc.x = col * 180 || 30
-    doc.fillColor('black')
-    doc.text(text, {
-      paragraphGap: 5,
-      indent: 5,
-      align: 'justify',
-      columns: 1
-    })
-    return doc
-  }
+function rowText(doc, text, heigth, col) {
+  doc.y = heigth - 5
+  doc.x = col * 180 || 30
+  doc.fillColor('black')
+  doc.text(text, {
+    paragraphGap: 5,
+    indent: 5,
+    align: 'justify',
+    columns: 1
+  })
+  return doc
+}
 
-  function row(doc, heigth) {
-    doc
-      .lineJoin('miter')
-      .rect(30, heigth, 500, 20)
-      .stroke()
-    return doc
-  }
+function row(doc, heigth) {
+  doc
+    .lineJoin('miter')
+    .rect(30, heigth, 500, 20)
+    .stroke()
+  return doc
 }
 
 module.exports = generateReport

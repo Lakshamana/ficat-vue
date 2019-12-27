@@ -79,6 +79,8 @@ api.post(
   catalogRoutes.catalogQueries
 )
 
+api.get('/catalogCards/report', catalogRoutes.getReportPdf)
+
 /**
  * Users
  */

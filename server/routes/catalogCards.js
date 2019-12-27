@@ -13,6 +13,7 @@ const { MessageCodes } = require('../../shared/messageCodes')
 const { catalogFields, querieFields } = require('../routeFieldsValidation')
 
 const catalogCardModel = require('../models/pdfdocs/catalogCard')
+const generateReport = require('../models/pdfdocs/report')
 
 let pdfResult
 async function create(ctx) {
@@ -85,8 +86,7 @@ async function create(ctx) {
     keywords,
     cdd
   })
-  const title = 'ficha.pdf'
-  doc.info.Title = title
+  doc.info.Title = 'ficha.pdf'
   await doc.end()
 
   try {
@@ -110,6 +110,7 @@ async function create(ctx) {
   }
 }
 
+let queryResult
 async function catalogQueries(ctx) {
   let query = CatalogCard
   const searchType = ctx.query.searchType
@@ -169,6 +170,8 @@ async function catalogQueries(ctx) {
   }
 
   ctx.status = HttpCodes.OK
+  queryResult = { params, searchType }
+  queryResult.data = responseObj
   ctx.body = responseObj
 }
 
@@ -293,11 +296,26 @@ async function getFirstCatalogCardYear(ctx) {
   }
 }
 
+async function getReportPdf(ctx) {
+  if (!queryResult) {
+    ctx.body = 'No data to for you to see here, close this window...'
+    ctx.status = HttpCodes.BAD_REQUEST
+  }
+
+  const doc = new PDFDocument()
+  generateReport(doc, queryResult)
+  doc.info.Title = 'relatório.pdf'
+  ctx.body = doc
+  ctx.status = HttpCodes.OK
+  await doc.end()
+}
+
 module.exports = {
   create,
   list,
   update,
   getPdfResult,
   catalogQueries,
-  getFirstCatalogCardYear
+  getFirstCatalogCardYear,
+  getReportPdf
 }

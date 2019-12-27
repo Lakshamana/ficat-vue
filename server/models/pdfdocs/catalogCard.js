@@ -4,6 +4,7 @@ const path = require('path')
  * Gera o modelo PDF baseado nos dados da
  * ficha catalográfica gerados pelo usuário final
  * @param {PDFKit.PDFDocument} doc
+ * @param {String} font
  * @param {Object} {
  *  cutter: String
  *  authors: {
