@@ -1,52 +1,18 @@
 const PDFDocument = require('pdfkit')
+
 const CatalogCard = require('../models/CatalogCard')
 const KnowledgeArea = require('../models/KnowledgeArea')
 const Course = require('../models/Course')
 const AcademicUnity = require('../models/AcademicUnity')
+
+const { validatePayload, chunks } = require('../../shared/utils')
+const { cutterFetch, payloadErrors } = require('../util/utils')
+
 const HttpCodes = require('../httpCodes')
 const { MessageCodes } = require('../../shared/messageCodes')
-const { validatePayload, chunks } = require('../../shared/utils')
-const { cutterFetch } = require('../util/utils')
-const catalogCardModel = require('../models/pdfdocs/catalogCard')
-const { payloadErrors } = require('../util/utils')
+const { catalogFields, querieFields } = require('../routeFieldsValidation')
 
-const fields = {
-  authors: {
-    mandatory: ['authorName', 'authorSurname', 'author2Name', 'author2Surname'],
-    optional: ['author2Name', 'author2Surname']
-  },
-  work: {
-    mandatory: [
-      'workTitle',
-      'workSubtitle',
-      'presentationYear',
-      'workImagesType',
-      'totalPages',
-      'workType'
-    ],
-    optional: ['workSubtitle']
-  },
-  advisors: {
-    mandatory: [
-      'advisorName',
-      'advisorSurname',
-      'isFemaleAdvisor',
-      'advisorTitle',
-      'coadvisorName',
-      'coadvisorSurname',
-      'isFemaleCoadvisor',
-      'coadvisorTitle'
-    ],
-    optional: [
-      'coadvisorName',
-      'coadvisorSurname',
-      'isFemaleCoadvisor',
-      'coadvisorTitle'
-    ]
-  },
-  academicDetails: ['acdUnityId', 'knAreaId', 'courseId'],
-  fonts: ['times', 'arial']
-}
+const catalogCardModel = require('../models/pdfdocs/catalogCard')
 
 let pdfResult
 async function create(ctx) {
@@ -61,28 +27,32 @@ async function create(ctx) {
   } = ctx.request.body
 
   const validations = [
-    validatePayload(authors, fields.authors.mandatory, fields.authors.optional),
-    validatePayload(work, fields.work.mandatory, fields.work.optional),
+    validatePayload(
+      authors,
+      catalogFields.authors.mandatory,
+      catalogFields.authors.optional
+    ),
+    validatePayload(
+      work,
+      catalogFields.work.mandatory,
+      catalogFields.work.optional
+    ),
     validatePayload(
       advisors,
-      fields.advisors.mandatory,
-      fields.advisors.optional
+      catalogFields.advisors.mandatory,
+      catalogFields.advisors.optional
     ),
-    validatePayload(academicDetails, fields.academicDetails)
+    validatePayload(academicDetails, catalogFields.academicDetails)
   ]
 
   if (
     !validations.every(val => val.valid) ||
-    !fields.fonts.includes(catalogFont) ||
+    !catalogFields.fonts.includes(catalogFont) ||
     !keywords.length
   ) {
-    ctx.throw(
-      HttpCodes.BAD_REQUEST,
-      MessageCodes.error.errInvalidCatalogFields,
-      {
-        fields: validations.filter(val => val && val.valid === false)
-      }
-    )
+    ctx.throw(HttpCodes.BAD_REQUEST, MessageCodes.error.errInvalidFields, {
+      fields: validations.filter(val => val && val.valid === false)
+    })
   }
 
   // Construir o PDF
@@ -140,22 +110,6 @@ async function create(ctx) {
   }
 }
 
-// Períodos requisitáveis: (mensal, semestral ou anual)
-const querieFields = {
-  monthly: {
-    mandatory: ['year', 'month', 'unityId', 'type', 'courseId'],
-    optional: ['month', 'unityId', 'type', 'courseId']
-  },
-  semiannually: {
-    mandatory: ['year', 'semester', 'unityId', 'type', 'courseId'],
-    optional: ['semester', 'unityId', 'type', 'courseId']
-  },
-  annually: {
-    mandatory: ['year', 'unityId', 'type', 'courseId'],
-    optional: ['unityId', 'type', 'courseId']
-  }
-}
-
 async function catalogQueries(ctx) {
   let query = CatalogCard
   const searchType = ctx.query.searchType
@@ -183,15 +137,9 @@ async function catalogQueries(ctx) {
     query = query.where({ courseId })
   }
 
-  // Construção do filtro temporal, comece pelo ano
-  // const yearInitialDay = new Date(year, 0)
-  // const yearFinalDay = new Date(year, 11, 31, 23, 59)
-  // query = query
-  //   .where('datetime', '>', yearInitialDay)
-  //   .where('datetime', '<', yearFinalDay)
-
   // months = [0, ..., 11]
   const months = Array.from({ length: 12 }, (_, i) => i)
+  // Períodos requisitáveis: (mensal, semestral ou anual)
   const chunkSizeConvert = {
     monthly: 1,
     semiannually: 6,

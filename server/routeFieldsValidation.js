@@ -1,4 +1,60 @@
 module.exports = {
+  catalogFields: {
+    authors: {
+      mandatory: [
+        'authorName',
+        'authorSurname',
+        'author2Name',
+        'author2Surname'
+      ],
+      optional: ['author2Name', 'author2Surname']
+    },
+    work: {
+      mandatory: [
+        'workTitle',
+        'workSubtitle',
+        'presentationYear',
+        'workImagesType',
+        'totalPages',
+        'workType'
+      ],
+      optional: ['workSubtitle']
+    },
+    advisors: {
+      mandatory: [
+        'advisorName',
+        'advisorSurname',
+        'isFemaleAdvisor',
+        'advisorTitle',
+        'coadvisorName',
+        'coadvisorSurname',
+        'isFemaleCoadvisor',
+        'coadvisorTitle'
+      ],
+      optional: [
+        'coadvisorName',
+        'coadvisorSurname',
+        'isFemaleCoadvisor',
+        'coadvisorTitle'
+      ]
+    },
+    academicDetails: ['acdUnityId', 'knAreaId', 'courseId'],
+    fonts: ['times', 'arial']
+  },
+  querieFields: {
+    monthly: {
+      mandatory: ['year', 'month', 'unityId', 'type', 'courseId'],
+      optional: ['month', 'unityId', 'type', 'courseId']
+    },
+    semiannually: {
+      mandatory: ['year', 'semester', 'unityId', 'type', 'courseId'],
+      optional: ['semester', 'unityId', 'type', 'courseId']
+    },
+    annually: {
+      mandatory: ['year', 'unityId', 'type', 'courseId'],
+      optional: ['unityId', 'type', 'courseId']
+    }
+  },
   users: {
     create: {
       mandatory: ['username', 'password', 'active']
