@@ -92,7 +92,7 @@
                   rounded
                   icon="magnify"
                   size="is-small"
-                  @typing="getAcdUnities"
+                  @typing="getAcdUnitiesByTerm"
                   @select="onSelectedAcdUnity"
                 >
                   <template slot="empty">
@@ -174,6 +174,7 @@ export default {
       searchCourseType: undefined,
       loading: false,
       acdUnityPreviousSearch: '',
+      totalAcademicUnities: [],
       academicUnities: [],
       month: '',
       semester: '',
@@ -197,26 +198,19 @@ export default {
     },
 
     // TODO: Criar uma função apenas para o pDebounce
-    getAcdUnities: pDebounce(function(term) {
+    getAcdUnitiesByTerm: pDebounce(function(term) {
       if (!term.length) {
         this.academicUnities = []
         return
       }
-      // Evitar que consultas iguais sejam repetidas
+      // Evitar que consultas iguais sejam repetidas consecutivamente
       if (term !== this.acdUnityPreviousSearch) {
         this.loading = true
         this.acdUnityPreviousSearch = term
-        this.$axios
-          .get('/api/academicUnities', {
-            params: {
-              name: term
-            }
-          })
-          .then(response => {
-            this.academicUnities = response.data
-          })
-          .catch()
-          .finally(() => (this.loading = false))
+        this.academicUnities = this.totalAcademicUnities.filter(({ name }) =>
+          /term/.test(name)
+        )
+        this.loading = false
       }
     }, 500),
 
