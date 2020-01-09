@@ -46,9 +46,9 @@ export default {
       default: ''
     },
 
-    acdUnities: {
-      type: Array,
-      default: () => []
+    acdUnitySelected: {
+      type: Boolean,
+      default: false
     },
 
     searchId: {
@@ -59,7 +59,8 @@ export default {
 
   data() {
     return {
-      chart: undefined
+      chart: undefined,
+      acdUnitiesNames: []
     }
   },
 
@@ -70,11 +71,6 @@ export default {
 
     ctx() {
       return this.$refs && this.$refs.canvas
-    },
-
-    acdUnitiesNames() {
-      console.log(this.acdUnities.map(unity => unity.name))
-      return this.acdUnities.map(unity => unity.name)
     },
 
     labelMap() {
@@ -94,14 +90,14 @@ export default {
           'Dezembro'
         ],
         semiannually: ['1º semestre', '2º semestre'],
-        annually: this.acdUnities.length > 0 ? this.acdUnitiesNames : ''
+        annually: !this.acdUnitySelected ? this.acdUnitiesNames : ''
       }
     }
   },
 
-  // mounted() {
-  //   this.chart = this.createChart(this.dataset)
-  // },
+  mounted() {
+    !this.acdUnitySelected && this.getAcdUnitiesNames()
+  },
 
   methods: {
     createChart(dataset) {
@@ -123,7 +119,21 @@ export default {
         },
         options: {
           hover: { mode: null },
-          tooltips: { enabled: true }
+          tooltips: {
+            enabled: true,
+            callbacks: {
+              title: items => items[0].xLabel
+            }
+          },
+          scales: {
+            yAxes: [
+              {
+                ticks: {
+                  beginAtZero: true
+                }
+              }
+            ]
+          }
         }
       })
     },
@@ -146,6 +156,12 @@ export default {
 
     getReport(id) {
       window.open('/api/catalogCards/report/', '_blank')
+    },
+
+    getAcdUnitiesNames() {
+      this.$axios.get('/api/academicUnities').then(({ data }) => {
+        this.acdUnitiesNames = data.map(({ name }) => name)
+      })
     }
   }
 }
