@@ -104,7 +104,7 @@ export default {
       this.chart && this.chart.destroy()
       const length = Object.keys(dataset).length
       this.chart = new Chart(this.ctx, {
-        type: 'bar',
+        type: 'bar', // !this.acdUnitySelected ? 'polarArea' : 'bar',
         data: {
           labels: this.getLabels,
           datasets: [
@@ -122,7 +122,10 @@ export default {
           tooltips: {
             enabled: true,
             callbacks: {
-              title: items => items[0].xLabel
+              title: (items, data) => {
+                console.log(items, data)
+                return items[0].xLabel
+              }
             }
           },
           scales: {
