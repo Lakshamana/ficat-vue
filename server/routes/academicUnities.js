@@ -22,9 +22,15 @@ async function create(ctx) {
 
 async function list(ctx) {
   let query = AcademicUnity
-  const name = ctx.query.name
-  if (name) {
-    query = query.where('name', 'like', `%${name}%`)
+  const { term } = ctx.query
+  if (term) {
+    query = query.query(qb => {
+      qb.where('name', 'like', `%${term}%`).orWhere(
+        'acronym',
+        'like',
+        `%${term}%`
+      )
+    })
   }
   try {
     ctx.body = await query.fetchAll()
