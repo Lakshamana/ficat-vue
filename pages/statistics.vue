@@ -83,22 +83,29 @@
           <div class="columns">
             <div class="column is-half">
               <b-field>
-                <b-autocomplete
-                  :data="academicUnities"
-                  field="name"
-                  placeholder="Buscar"
-                  aria-placeholder="Buscar"
-                  :loading="loading"
-                  rounded
-                  icon="magnify"
-                  size="is-small"
-                  @typing="getAcdUnitiesByTerm"
-                  @select="onSelectedAcdUnity"
-                >
-                  <template slot="empty">
-                    Nenhum resultado encontrado
-                  </template>
-                </b-autocomplete>
+                <b-tooltip position="is-right" :label="tooltip">
+                  <b-autocomplete
+                    :data="academicUnities"
+                    field="acronym"
+                    placeholder="Buscar"
+                    aria-placeholder="Buscar"
+                    :loading="loading"
+                    rounded
+                    icon="magnify"
+                    size="is-small"
+                    @typing="getAcdUnitiesByTerm"
+                    @select="onSelectedAcdUnity"
+                  >
+                    <template slot-scope="{ option }">
+                      <span @mouseover="showAcdUnityName(option.name)">
+                        {{ option.acronym }}
+                      </span>
+                    </template>
+                    <template slot="empty">
+                      Nenhum resultado encontrado
+                    </template>
+                  </b-autocomplete>
+                </b-tooltip>
               </b-field>
             </div>
           </div>
@@ -139,10 +146,10 @@
           <div class="d-cell">
             <chart
               ref="chart"
-              :dataset="dataset"
               :search-id="searchId"
               :search-type="searchPeriod"
               :acd-unities="academicUnities"
+              :acd-unity-selected="!!selectedAcdUnity"
             ></chart>
           </div>
         </div>
@@ -174,13 +181,13 @@ export default {
       searchCourseType: undefined,
       loading: false,
       acdUnityPreviousSearch: '',
-      totalAcademicUnities: [],
       academicUnities: [],
       month: '',
       semester: '',
       selectedAcdUnity: undefined,
       selectedCourse: undefined,
-      searchId: 0
+      searchId: 0,
+      tooltip: ''
     }
   },
 
@@ -190,6 +197,10 @@ export default {
   },
 
   methods: {
+    showAcdUnityName(name) {
+      this.tooltip = name
+    },
+
     getYears() {
       this.$axios.get('/api/catalogCards/oldest').then(({ data }) => {
         const length = this.searchYear - data.year + 1
@@ -207,10 +218,17 @@ export default {
       if (term !== this.acdUnityPreviousSearch) {
         this.loading = true
         this.acdUnityPreviousSearch = term
-        this.academicUnities = this.totalAcademicUnities.filter(({ name }) =>
-          /term/.test(name)
-        )
-        this.loading = false
+        this.$axios
+          .get('/api/academicUnities', {
+            params: {
+              name: term
+            }
+          })
+          .then(response => {
+            this.academicUnities = response.data
+          })
+          .catch()
+          .finally(() => (this.loading = false))
       }
     }, 500),
 
