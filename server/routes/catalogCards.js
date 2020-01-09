@@ -112,7 +112,7 @@ async function create(ctx) {
 
 let queryResult
 async function catalogQueries(ctx) {
-  let query = CatalogCard
+  const query = CatalogCard
   const searchType = ctx.query.searchType
   const params = ctx.request.body
 
@@ -128,14 +128,10 @@ async function catalogQueries(ctx) {
   const { year, month, semester, unityId, type, courseId } = params
 
   // Primeiro filtrar por tipo, programa ou unidade acadêmica
-  if (unityId) {
-    query = query.where({ unityId })
-  }
-  if (type) {
-    query = query.where({ type })
-  }
-  if (courseId) {
-    query = query.where({ courseId })
+  const optionalFilters = {
+    ...(unityId && { unityId }),
+    ...(type && { type }),
+    ...(courseId && { courseId })
   }
 
   // months = [0, ..., 11]
@@ -149,24 +145,31 @@ async function catalogQueries(ctx) {
 
   let responseObj = {}
   // Filtre e conte por mês, semestre ou ano inteiro.
-  const groupedMonths = chunks(months, chunkSizeConvert[searchType])
   if (!isNaN(month)) {
     console.log('have a month')
-    responseObj = await fetchMonthCount(query, year, month)
+    responseObj = await fetchMonthCount(query, year, month, optionalFilters)
   } else if (!isNaN(semester)) {
     console.log('have a semester')
+    const groupedMonths = chunks(months, chunkSizeConvert[searchType])
     responseObj = await fetchMonthGroupCount(
       query,
       year,
-      groupedMonths[semester]
+      groupedMonths[semester],
+      optionalFilters
     )
-  } else if (!isNaN(unityId))
+  } else if (!isNaN(unityId)) {
+    const groupedMonths = chunks(months, chunkSizeConvert[searchType])
     for (const groupIdx in groupedMonths) {
-      const f = await fetchMonthGroupCount(query, year, groupedMonths[groupIdx])
+      const f = await fetchMonthGroupCount(
+        query,
+        year,
+        groupedMonths[groupIdx],
+        optionalFilters
+      )
       responseObj[groupIdx] = f
     }
-  else {
-    responseObj = await fetchAllGroupByAcdUnity(query)
+  } else {
+    responseObj = await fetchAllGroupByAcdUnity(query, year, optionalFilters)
   }
 
   ctx.status = HttpCodes.OK
@@ -177,21 +180,16 @@ async function catalogQueries(ctx) {
 
 /**
  *
- * @param {CatalogCard} model
+ * @param {CatalogCard} query
  * @param {number} year
  * @param {Number[]} monthList
  * @returns {number} contagem de ocorrências de fichas catalográficas
  */
-async function fetchMonthGroupCount(model, year, monthList) {
+async function fetchMonthGroupCount(query, year, monthList, filters) {
   let s = 0
-  for (const i in monthList) {
-    const [t1, t2] = await Promise.all([
-      fetchMonthCount(model, year, monthList[i]),
-      monthList[i + 1]
-        ? fetchMonthCount(model, year, monthList[i + 1])
-        : Promise.resolve(0)
-    ])
-    s += t1 + t2
+  for (let i = 0; i < monthList.length; i++) {
+    const t = await fetchMonthCount(query, year, monthList[i], filters)
+    s += t
   }
   return s
 }
@@ -203,19 +201,25 @@ async function fetchMonthGroupCount(model, year, monthList) {
  * @param {number} month: número entre 0 e 11
  * @returns {Promise<Number>}
  */
-function fetchMonthCount(query, year, month) {
+function fetchMonthCount(query, year, month, filters) {
   month = +month
   const monthInitialDay = new Date(year, month).toISOString()
   const monthFinalDay = new Date(year, month + 1, 0).toISOString()
-  console.log(monthInitialDay, monthFinalDay)
   return query
+    .where({ ...filters })
     .where('datetime', '>=', monthInitialDay)
     .where('datetime', '<=', monthFinalDay)
-    .count()
+    .count({ debug: false })
 }
 
-async function fetchAllGroupByAcdUnity(query) {
-  const all = await query.fetchAll()
+async function fetchAllGroupByAcdUnity(query, year, filters) {
+  const firstDayOfYear = new Date(year, 0).toISOString()
+  const lastDayOfYear = new Date(year, 12, 0).toISOString()
+  const all = await query
+    .where({ ...filters })
+    .where('datetime', '>=', firstDayOfYear)
+    .where('datetime', '<=', lastDayOfYear)
+    .fetchAll()
   const group = all.groupBy('unityId')
   const payload = {}
   for (const g in group) {

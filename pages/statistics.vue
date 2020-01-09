@@ -83,7 +83,11 @@
           <div class="columns">
             <div class="column is-half">
               <b-field>
-                <b-tooltip position="is-right" :label="tooltip">
+                <b-tooltip
+                  position="is-right"
+                  :label="tooltip"
+                  :active="!!acdUnityPreviousSearch.length"
+                >
                   <b-autocomplete
                     :data="academicUnities"
                     field="acronym"
@@ -212,6 +216,7 @@ export default {
     getAcdUnitiesByTerm: pDebounce(function(term) {
       if (!term.length) {
         this.academicUnities = []
+        this.acdUnityPreviousSearch = ''
         return
       }
       // Evitar que consultas iguais sejam repetidas consecutivamente
@@ -221,7 +226,7 @@ export default {
         this.$axios
           .get('/api/academicUnities', {
             params: {
-              name: term
+              term
             }
           })
           .then(response => {

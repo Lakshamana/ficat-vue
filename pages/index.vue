@@ -553,7 +553,7 @@ export default {
         this.$axios
           .get('/api/academicUnities', {
             params: {
-              name: term
+              term
             }
           })
           .then(response => {
