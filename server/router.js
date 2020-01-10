@@ -47,6 +47,7 @@ api.use(
       (ctx.path.includes('academicUnities') && ctx.method === 'GET') ||
       (ctx.path === '/api/catalogCards' && ctx.method === 'POST') ||
       (/\/api\/catalogCards\/get/.test(ctx.path) && ctx.method === 'GET') ||
+      (ctx.path === '/api/catalogCards/reportResult' && ctx.method === 'GET') ||
       (ctx.path === '/api/courses' && ctx.method === 'GET')
   })
 )
@@ -79,7 +80,9 @@ api.post(
   catalogRoutes.catalogQueries
 )
 
-api.get('/catalogCards/report', catalogRoutes.getReportPdf)
+api.get('/catalogCards/generateReport', catalogRoutes.getReportPermission)
+
+api.get('/catalogCards/reportResult', catalogRoutes.getReportPdf)
 
 /**
  * Users

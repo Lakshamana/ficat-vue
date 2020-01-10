@@ -96,6 +96,7 @@ export default {
   },
 
   mounted() {
+    this.$axios.setHeader('x-xsrf-token', this.$cookies.get('xsrfToken'))
     !this.acdUnitySelected && this.getAcdUnitiesNames()
   },
 
@@ -158,7 +159,9 @@ export default {
     },
 
     getReport(id) {
-      window.open('/api/catalogCards/report/', '_blank')
+      this.$axios.get('/api/catalogCards/generateReport').then(({ data }) => {
+        window.open('/api/catalogCards/reportResult?reqId=' + data, '_blank')
+      })
     },
 
     getAcdUnitiesNames() {
