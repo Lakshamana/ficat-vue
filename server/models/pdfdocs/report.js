@@ -15,6 +15,7 @@
   }
 */
 function generateReport(doc, queryData) {
+  console.log(queryData)
   // line to the middle
   doc
     .lineCap('butt')

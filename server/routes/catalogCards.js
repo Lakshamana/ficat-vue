@@ -314,12 +314,12 @@ function getReportPermission(ctx) {
 async function getReportPdf(ctx) {
   const username = ctx.cookies.get('user')
   const xsrfToken = ctx.headers['x-xsrf-token']
+  const { reqId } = ctx.query
   const digest = crypto
     .createHash('sha256')
     .update(username + xsrfToken + Date.now(), 'utf8')
     .digest('hex')
     .substring(0, 16)
-  const { reqId } = ctx.query
 
   if (!queryResult || !reqId || digest !== reqId) {
     ctx.body = 'No data to for you to see here, close this window...'
@@ -329,7 +329,7 @@ async function getReportPdf(ctx) {
   const doc = new PDFDocument()
   doc.info.Title = 'relatório.pdf'
   ctx.set('Content-Type', 'application/pdf')
-  ctx.set('Content-Disposition', `filename=${doc.info.Title}`)
+  ctx.set('Content-Disposition', 'filename=' + doc.info.Title)
   generatePdfReport(doc, queryResult)
   await doc.end()
   ctx.body = doc
