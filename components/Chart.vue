@@ -60,7 +60,7 @@ export default {
   data() {
     return {
       chart: undefined,
-      acdUnitiesNames: []
+      acdUnities: []
     }
   },
 
@@ -90,14 +90,14 @@ export default {
           'Dezembro'
         ],
         semiannually: ['1º semestre', '2º semestre'],
-        annually: !this.acdUnitySelected ? this.acdUnitiesNames : ''
+        annually: !this.acdUnitySelected ? this.acdUnities.map(u => u.name) : ''
       }
     }
   },
 
   mounted() {
     this.$axios.setHeader('x-xsrf-token', this.$cookies.get('xsrfToken'))
-    !this.acdUnitySelected && this.getAcdUnitiesNames()
+    !this.acdUnitySelected && this.getAcdUnities()
   },
 
   methods: {
@@ -111,7 +111,7 @@ export default {
           datasets: [
             {
               label: 'Nº de fichas registradas',
-              data: Object.values(dataset),
+              data: this.getData(dataset),
               backgroundColor: randColors(length),
               borderColor: randColors(length),
               borderWidth: 1
@@ -142,6 +142,14 @@ export default {
       })
     },
 
+    getData(dataset) {
+      if (this.acdUnitySelected) return Object.values(dataset)
+      return this.acdUnities.map(({ id }) => {
+        console.log(id, dataset[id] || 0)
+        return dataset[id] || 0
+      })
+    },
+
     downloadImage() {
       const ctx = this.$refs.canvas.getContext('2d')
       ctx.save()
@@ -164,9 +172,9 @@ export default {
       })
     },
 
-    getAcdUnitiesNames() {
+    getAcdUnities() {
       this.$axios.get('/api/academicUnities').then(({ data }) => {
-        this.acdUnitiesNames = data.map(({ name }) => name)
+        this.acdUnities = data.map(({ id, name }) => ({ id, name }))
       })
     }
   }
