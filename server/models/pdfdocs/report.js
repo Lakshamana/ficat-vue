@@ -1,3 +1,5 @@
+const path = require('path')
+
 /**
  * Generates report's PDF
  * @param {PDFKit.PDFDocument} doc
@@ -13,33 +15,83 @@
     },
     data: (String|Object) query result
   }
+  @param {Array} acdUnities if user has not queried by academic unity
 */
-function generateReport(doc, queryData) {
-  console.log(queryData)
-  // line to the middle
+function generateReport(doc, queryData, acdUnities) {
+  console.log(queryData, acdUnities)
+  const { searchType } = queryData
+  doc.registerFont(
+    'Arial',
+    path.resolve(__dirname, '../../../assets/fonts/arimo.regular.ttf')
+  )
+
+  const paramsPrettyNames = {
+    year: 'Ano',
+    // month: 'Mês',
+    // semester: 'Semestre',
+    unityId: 'Unidade acadêmica',
+    type: 'Tipo de curso',
+    courseId: 'Curso'
+  }
+
+  const fontSize = 12
+  const header =
+    'Pesquisa por registros de fichas catalográficas com os seguintes parâmetros:'
+  doc.font('Arial', fontSize).text(header, {
+    align: 'center'
+  })
+  const paramList = Object.entries(queryData.params).map(
+    ([k, v]) => paramsPrettyNames[k] + ': ' + v
+  )
+  doc.moveDown(1)
+  doc.list(paramList)
+
+  const offsetFactor = 20
+  const offset = 120 + offsetFactor * paramList.length
+  let posY = 0
+
+  const searchTypeLabels = labelMap(acdUnities)
+  const labels = searchTypeLabels[searchType]
+  console.log(labels)
+
+  for (const i in labels) {
+    posY = offset + offsetFactor * i
+    row(doc, posY)
+    rowText(doc, labels[i], posY + 10)
+  }
+
   doc
     .lineCap('butt')
-    .moveTo(180, 90)
-    .lineTo(180, 230)
-    .moveTo(360, 90)
-    .lineTo(360, 230)
+    .moveTo(180, offset)
+    .lineTo(180, posY + offsetFactor)
+    .moveTo(360, offset)
+    .lineTo(360, posY + offsetFactor)
     .stroke()
+}
 
-  row(doc, 90)
-  row(doc, 110)
-  row(doc, 130)
-  row(doc, 150)
-  row(doc, 170)
-  row(doc, 190)
-  row(doc, 210)
-
-  rowText(doc, 'Nombre o razón social', 100)
-  rowText(doc, 'RUT', 120)
-  rowText(doc, 'Dirección', 140)
-  rowText(doc, 'Comuna', 160)
-  rowText(doc, 'Ciudad', 180)
-  rowText(doc, 'Telefono', 200)
-  rowText(doc, 'e-mail', 220)
+/**
+ *
+ * @param {Array} acdUnities
+ */
+function labelMap(acdUnities) {
+  return {
+    monthly: [
+      'Janeiro',
+      'Fevereiro',
+      'Março',
+      'Abril',
+      'Maio',
+      'Junho',
+      'Julho',
+      'Agosto',
+      'Setembro',
+      'Outubro',
+      'Novembro',
+      'Dezembro'
+    ],
+    semiannually: ['1º semestre', '2º semestre'],
+    annually: acdUnities.length ? acdUnities.map(u => u.name) : ['Total Anual']
+  }
 }
 
 function rowText(doc, text, heigth, col) {

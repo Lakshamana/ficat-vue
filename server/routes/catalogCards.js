@@ -320,8 +320,6 @@ async function getReportPdf(ctx) {
     .update(username + xsrfToken, 'utf8')
     .digest('hex')
     .substring(0, 16)
-  console.log(reqId, digest, reqId === digest)
-  console.log(queryResult)
 
   if (!queryResult || !reqId || digest !== reqId) {
     ctx.body = 'No data to for you to see here, close this window...'
@@ -333,7 +331,10 @@ async function getReportPdf(ctx) {
   doc.info.Title = 'relatório.pdf'
   ctx.set('Content-Type', 'application/pdf')
   ctx.set('Content-Disposition', 'filename=' + doc.info.Title)
-  generatePdfReport(doc, queryResult)
+
+  const acdUnities =
+    !queryResult.params.unityId && (await AcademicUnity.fetchAll()).toJSON()
+  generatePdfReport(doc, queryResult, acdUnities)
   await doc.end()
   ctx.body = doc
   ctx.status = HttpCodes.OK
