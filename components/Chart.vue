@@ -111,7 +111,7 @@ export default {
           datasets: [
             {
               label: 'Nº de fichas registradas',
-              data: this.getData(dataset),
+              data: Object.values(dataset),
               backgroundColor: randColors(length),
               borderColor: randColors(length),
               borderWidth: 1
@@ -139,14 +139,6 @@ export default {
             ]
           }
         }
-      })
-    },
-
-    getData(dataset) {
-      if (this.acdUnitySelected) return Object.values(dataset)
-      return this.acdUnities.map(({ id }) => {
-        console.log(id, dataset[id] || 0)
-        return dataset[id] || 0
       })
     },
 

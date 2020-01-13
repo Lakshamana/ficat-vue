@@ -223,10 +223,10 @@ async function fetchAllGroupByAcdUnity(query, year, filters) {
     .fetchAll()
   const group = all.groupBy('unityId')
   const payload = {}
-  for (const g in group) {
-    payload[g] = group[g].length
+  const acdUnities = await AcademicUnity.fetchAll()
+  for (const i in acdUnities.toJSON()) {
+    payload[i] = group[i] ? group[i].length : 0
   }
-  payload.null && delete payload.null
   return payload
 }
 
@@ -306,24 +306,27 @@ function getReportPermission(ctx) {
   const xsrfToken = ctx.headers['x-xsrf-token']
   ctx.body = crypto
     .createHash('sha256')
-    .update(username + xsrfToken + Date.now(), 'utf8')
+    .update(username + xsrfToken, 'utf8')
     .digest('hex')
     .substring(0, 16)
 }
 
 async function getReportPdf(ctx) {
   const username = ctx.cookies.get('user')
-  const xsrfToken = ctx.headers['x-xsrf-token']
+  const xsrfToken = ctx.cookies.get('xsrfToken')
   const { reqId } = ctx.query
   const digest = crypto
     .createHash('sha256')
-    .update(username + xsrfToken + Date.now(), 'utf8')
+    .update(username + xsrfToken, 'utf8')
     .digest('hex')
     .substring(0, 16)
+  console.log(reqId, digest, reqId === digest)
+  console.log(queryResult)
 
   if (!queryResult || !reqId || digest !== reqId) {
     ctx.body = 'No data to for you to see here, close this window...'
     ctx.status = HttpCodes.BAD_REQUEST
+    return
   }
 
   const doc = new PDFDocument()
