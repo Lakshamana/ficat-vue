@@ -1,5 +1,11 @@
 const path = require('path')
 
+const tableHeader = {
+  monthly: ['Und. Acadêmica', 'Quantidade'],
+  semiannualy: ['Und. Acadêmica', 'Quantidade'],
+  annually: ['Und. Acadêmica', 'Sigla', 'Quantidade']
+}
+
 /**
  * Generates report's PDF
  * @param {PDFKit.PDFDocument} doc
@@ -18,8 +24,7 @@ const path = require('path')
   @param {Array} acdUnities if user has not queried by academic unity
 */
 function generateReport(doc, queryData, acdUnities) {
-  console.log(queryData, acdUnities)
-  const { searchType } = queryData
+  const { searchType, params } = queryData
   doc.registerFont(
     'Arial',
     path.resolve(__dirname, '../../../assets/fonts/arimo.regular.ttf')
@@ -40,7 +45,7 @@ function generateReport(doc, queryData, acdUnities) {
   doc.font('Arial', fontSize).text(header, {
     align: 'center'
   })
-  const paramList = Object.entries(queryData.params).map(
+  const paramList = Object.entries(params).map(
     ([k, v]) => paramsPrettyNames[k] + ': ' + v
   )
   doc.moveDown(1)
@@ -50,9 +55,15 @@ function generateReport(doc, queryData, acdUnities) {
   const offset = 120 + offsetFactor * paramList.length
   let posY = 0
 
+  const headers = tableHeader[searchType]
+  row(doc, 120)
+  for (const i in headers) {
+    rowText(doc, headers[i], 130, i)
+    console.log(headers[i])
+  }
+
   const searchTypeLabels = labelMap(acdUnities)
   const labels = searchTypeLabels[searchType]
-  console.log(labels)
 
   for (const i in labels) {
     posY = offset + offsetFactor * i
