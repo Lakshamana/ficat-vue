@@ -339,8 +339,8 @@ async function getReportPdf(ctx) {
   const labels = labelMap(acdUnities)[searchType]
   for (const i in labels) {
     const row = Array.isArray(labels[i])
-      ? [...labels[i], data[i]]
-      : [labels[i], data[i]]
+      ? [...labels[i], '' + data[i]]
+      : [labels[i], '' + data[i]]
     table.push(row)
   }
   queryResult.data = table
