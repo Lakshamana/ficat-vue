@@ -61,17 +61,14 @@ function generateReport(doc, queryData, hasChoosenAcdUnity) {
   row(doc, 120)
   doc.fontSize(12)
   const colWidths = []
-  // const maxColWidth = 540
+  const maxLen = 540
   const headers = tableHeader[searchType]
   for (let i = 0; i < headers.length; i++) {
-    colWidths.push(getColumnWidth(data, i))
-    // headers[i] !== 'Quantidade'
-    //   ? getColumnWidth(data, i)
-    //   : (maxColWidth - colWidth) / (headers.length - i)
+    console.log('before bug')
     rowText(doc, headers[i], 130, i, colWidths)
-    console.log(i, colWidths[i])
     if (i === headers.length - 1) break
-    createCol(doc, colWidths[i], 120, posY + offsetFactor)
+    const x = (maxLen - doc.x) / (headers.length - i)
+    createCol(doc, x, 120, posY + offsetFactor)
   }
 
   // Sort rows by register amount if hasChoosenAcdUnity = true
@@ -85,16 +82,17 @@ function generateReport(doc, queryData, hasChoosenAcdUnity) {
   // }
 }
 
-/**
- *
- * @param {Array[][]} data
- * @param {Number} i
- * @param {Number} pixelFactor
- */
-function getColumnWidth(data, i, pixelFactor = 7) {
-  const widerLabel = data.reduce((x, y) => (x[i].length > y[i].length ? x : y))
-  return 180 + pixelFactor * widerLabel[i].length
-}
+// /**
+//  *
+//  * @param {Array[][]} data
+//  * @param {Number} i
+//  * @param {Number} pixelFactor
+//  */
+// function getColumnWidth(data, i, pixelFactor = 7) {
+//   const widerLabel = data.reduce((x, y) => (x[i].length > y[i].length ? x : y))
+//   console.log(widerLabel[i])
+//   return pixelFactor * widerLabel[i].length
+// }
 
 function createCol(doc, startX, startOffsetY, endOffsetY) {
   console.log('create col')
@@ -104,22 +102,34 @@ function createCol(doc, startX, startOffsetY, endOffsetY) {
     .stroke()
 }
 
+// function getAccWidths(widths, col) {
+//   let accWidths = 0
+//   for (let i = 0; i <= col; i++) {
+//     accWidths += widths[i]
+//   }
+//   return accWidths
+// }
+
+/**
+ *
+ * @param {PDFKit.PDFDocument} doc
+ * @param {*} text
+ * @param {*} heigth
+ * @param {*} col
+ * @param {*} colWidths
+ */
 function rowText(doc, text, heigth, col, colWidths) {
+  doc.x = doc.x || 10
   doc.y = heigth - 5
-  let accWidths = 0
-  for (let i = 0; i <= col; i++) {
-    accWidths += colWidths[i]
-  }
-  doc.x = 30 + accWidths
   doc.fillColor('black')
-  console.log(text, 'width:', accWidths + 30, 'col:', col)
-  console.log(typeof col)
+  console.log('passed')
   doc.text(text, {
     paragraphGap: 5,
     indent: 5,
     align: 'justify',
     columns: 1
   })
+  doc.x += 10 + 7 * text.length
 }
 
 function row(doc, heigth) {
