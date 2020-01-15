@@ -7,7 +7,7 @@ const Course = require('../models/Course')
 const AcademicUnity = require('../models/AcademicUnity')
 
 const { validatePayload, chunks } = require('../../shared/utils')
-const { cutterFetch, payloadErrors } = require('../util/utils')
+const { cutterFetch, payloadErrors, labelMap } = require('../util/utils')
 
 const HttpCodes = require('../httpCodes')
 const { MessageCodes } = require('../../shared/messageCodes')
@@ -210,7 +210,7 @@ function fetchMonthCount(query, year, month, filters) {
     .where({ ...filters })
     .where('datetime', '>=', monthInitialDay)
     .where('datetime', '<=', monthFinalDay)
-    .count({ debug: false })
+    .count()
 }
 
 async function fetchAllGroupByAcdUnity(query, year, filters) {
@@ -334,7 +334,17 @@ async function getReportPdf(ctx) {
 
   const acdUnities =
     !queryResult.params.unityId && (await AcademicUnity.fetchAll()).toJSON()
-  generatePdfReport(doc, queryResult, acdUnities)
+  const { searchType, data } = queryResult
+  const table = []
+  const labels = labelMap(acdUnities)[searchType]
+  for (const i in labels) {
+    const row = Array.isArray(labels[i])
+      ? [...labels[i], data[i]]
+      : [labels[i], data[i]]
+    table.push(row)
+  }
+  queryResult.data = table
+  generatePdfReport(doc, queryResult, !!queryResult.params.unityId)
   await doc.end()
   ctx.body = doc
   ctx.status = HttpCodes.OK

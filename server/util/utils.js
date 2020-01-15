@@ -164,11 +164,39 @@ function cutterFetch(surname, workTitle) {
   }
 }
 
+/**
+ *
+ * @param {Array[]} acdUnities
+ */
+function labelMap(acdUnities) {
+  return {
+    monthly: [
+      'Janeiro',
+      'Fevereiro',
+      'Março',
+      'Abril',
+      'Maio',
+      'Junho',
+      'Julho',
+      'Agosto',
+      'Setembro',
+      'Outubro',
+      'Novembro',
+      'Dezembro'
+    ],
+    semiannually: ['1º semestre', '2º semestre'],
+    annually: acdUnities.length
+      ? acdUnities.map(u => [u.name, u.acronym])
+      : ['Total Anual']
+  }
+}
+
 module.exports = {
   paginateCtx,
   tokenSign,
   tokenVerify,
   payloadErrors,
   hash,
-  cutterFetch
+  cutterFetch,
+  labelMap
 }

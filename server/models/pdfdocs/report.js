@@ -19,12 +19,12 @@ const tableHeader = {
       type,
       courseId
     },
-    data: (String|Object) query result
+    data: (Array[][]) query result
   }
-  @param {Array} acdUnities if user has not queried by academic unity
+  @param {Boolean} hasChoosenAcdUnity if user has not queried by academic unity
 */
-function generateReport(doc, queryData, acdUnities) {
-  const { searchType, params } = queryData
+function generateReport(doc, queryData, hasChoosenAcdUnity) {
+  const { searchType, params, data } = queryData
   doc.registerFont(
     'Arial',
     path.resolve(__dirname, '../../../assets/fonts/arimo.regular.ttf')
@@ -39,7 +39,7 @@ function generateReport(doc, queryData, acdUnities) {
     courseId: 'Curso'
   }
 
-  const fontSize = 12
+  const fontSize = 10
   const header =
     'Pesquisa por registros de fichas catalográficas com os seguintes parâmetros:'
   doc.font('Arial', fontSize).text(header, {
@@ -55,59 +55,39 @@ function generateReport(doc, queryData, acdUnities) {
   const offset = 120 + offsetFactor * paramList.length
   let posY = 0
 
-  const headers = tableHeader[searchType]
-  row(doc, 120)
-  for (const i in headers) {
-    rowText(doc, headers[i], 130, i)
-    console.log(headers[i])
-  }
-
-  const searchTypeLabels = labelMap(acdUnities)
-  const labels = searchTypeLabels[searchType]
-
+  // Sort rows by register amount if hasChoosenAcdUnity = true
+  hasChoosenAcdUnity && data.sort((x, y) => x[2] - y[2])
+  const labels = data.map(row => row[0])
   for (const i in labels) {
     posY = offset + offsetFactor * i
     row(doc, posY)
     rowText(doc, labels[i], posY + 10)
   }
 
-  doc
-    .lineCap('butt')
-    .moveTo(180, offset)
-    .lineTo(180, posY + offsetFactor)
-    .moveTo(360, offset)
-    .lineTo(360, posY + offsetFactor)
-    .stroke()
-}
-
-/**
- *
- * @param {Array} acdUnities
- */
-function labelMap(acdUnities) {
-  return {
-    monthly: [
-      'Janeiro',
-      'Fevereiro',
-      'Março',
-      'Abril',
-      'Maio',
-      'Junho',
-      'Julho',
-      'Agosto',
-      'Setembro',
-      'Outubro',
-      'Novembro',
-      'Dezembro'
-    ],
-    semiannually: ['1º semestre', '2º semestre'],
-    annually: acdUnities.length ? acdUnities.map(u => u.name) : ['Total Anual']
+  doc.lineCap('butt')
+  row(doc, 120)
+  doc.fontSize(12)
+  const headers = tableHeader[searchType]
+  for (let i = 0; i < headers.length; i++) {
+    const colWidth = getColumnWidth()
+    rowText(doc, headers[i], 130, i, colWidth)
+    if (i === headers.length - 1) break
+    console.log(i)
+    createCol(doc, (i + 1) * colWidth, 120, posY + offsetFactor)
   }
 }
 
-function rowText(doc, text, heigth, col) {
+function createCol(doc, startX, startOffsetY, endOffsetY) {
+  console.log('create col')
+  doc
+    .moveTo(startX, startOffsetY)
+    .lineTo(startX, endOffsetY)
+    .stroke()
+}
+
+function rowText(doc, text, heigth, col, colWidth) {
   doc.y = heigth - 5
-  doc.x = col * 180 || 30
+  doc.x = 30 + col * colWidth || 30
   doc.fillColor('black')
   doc.text(text, {
     paragraphGap: 5,
