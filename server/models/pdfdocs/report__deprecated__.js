@@ -1,9 +1,17 @@
+/**
+ * @deprecated
+ */
+
 const path = require('path')
 
 const tableHeader = {
   monthly: ['Und. Acadêmica', 'Quantidade'],
   semiannualy: ['Und. Acadêmica', 'Quantidade'],
-  annually: ['Und. Acadêmica', 'Sigla', 'Quantidade']
+  annually(habemusAcdUnity) {
+    return habemusAcdUnity
+      ? ['Total Anual']
+      : ['Und. Acadêmica', 'Sigla', 'Quantidade']
+  }
 }
 
 /**

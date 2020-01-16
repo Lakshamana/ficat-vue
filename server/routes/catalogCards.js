@@ -14,7 +14,7 @@ const { MessageCodes } = require('../../shared/messageCodes')
 const { catalogFields, querieFields } = require('../routeFieldsValidation')
 
 const catalogCardModel = require('../models/pdfdocs/catalogCard')
-const generatePdfReport = require('../models/pdfdocs/report')
+const generatePdfReport = require('../models/pdfdocs/report__deprecated__')
 
 let pdfResult
 async function create(ctx) {
