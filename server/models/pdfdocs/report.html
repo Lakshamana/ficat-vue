@@ -1,0 +1,85 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Relatório</title>
+  </head>
+  <style>
+
+    @font-face {
+      font-family: "Arial-Regular";
+      src: url("{{fontUrl}}");
+    }
+
+    body {
+      font-family: "Arial-Regular" Arial, Helvetica, sans-serif;
+      font-size: 70%;
+    }
+
+    .wrapper {
+      margin: 0 auto;
+      width: 500px;
+      height: 100%;
+    }
+
+    table {
+      margin: 0px auto;
+      width: 100%;
+      font-size: 10pt;
+    }
+
+    table, table th, table td {
+      border: 1px solid black;
+      border-collapse: collapse;
+      text-align: center;
+    }
+
+    table th {
+      font-weight: bold;
+      background-color: #e1dfdf;
+    }
+
+    #img1 {
+      float: left;
+      margin: 0 auto;
+    }
+
+    #img2 {
+      position: absolute;
+      left: calc(50% - 50px);
+    }
+
+    #img3 {
+      float: right;
+    }
+
+    #pageFooter {
+      text-align: center;
+      display: block;
+    }
+
+  </style>
+  <body>
+    <div class="wrapper">
+      <div id="pageHeader">
+        <img id="img1" src="{{bibUfpaLogo}}" width="100" height="100">
+        <img id="img2" src="{{ficatLogo}}" width="100" height="100">
+        <img id="img3" src="{{sibiLogo}}" width="100" height="100">
+      </div>
+        <br />
+        <div style="float:right">
+          <p>Registros de uso do FICAT em {{baseYear}}{{withParameters}}</p>
+            {{paramList}}
+        </div>
+        <table style="clear:both">
+          <thead>{{tableHeader}}</thead>
+          <tbody>{{tableBody}}</tbody>
+          <tfoot>{{tableFooter}}</tfoot>
+        </table>
+        <div id="pageFooter">
+          Página <strong>{{page}}</strong> de <strong>{{pages}}</strong>
+        </div>
+    </div>
+  </body>
+</html>

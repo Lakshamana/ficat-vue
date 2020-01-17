@@ -1,5 +1,6 @@
 const crypto = require('crypto')
 const PDFDocument = require('pdfkit')
+const htmlPdf = require('html-pdf')
 
 const CatalogCard = require('../models/CatalogCard')
 const KnowledgeArea = require('../models/KnowledgeArea')
@@ -12,9 +13,10 @@ const { cutterFetch, payloadErrors, labelMap } = require('../util/utils')
 const HttpCodes = require('../httpCodes')
 const { MessageCodes } = require('../../shared/messageCodes')
 const { catalogFields, querieFields } = require('../routeFieldsValidation')
+const globalPdfConfig = require('../models/pdfdocs/globalPdfConfig')
 
-const catalogCardModel = require('../models/pdfdocs/catalogCard')
-const generatePdfReport = require('../models/pdfdocs/report__deprecated__')
+const catalogCardModel = require('../models/pdfdocs/catalogCard__deprecated__')
+const generatePdfReport = require('../models/pdfdocs/report')
 
 let pdfResult
 async function create(ctx) {
@@ -327,10 +329,8 @@ async function getReportPdf(ctx) {
     return
   }
 
-  const doc = new PDFDocument()
-  doc.info.Title = 'relatório.pdf'
   ctx.set('Content-Type', 'application/pdf')
-  ctx.set('Content-Disposition', 'filename=' + doc.info.Title)
+  ctx.set('Content-Disposition', 'filename=relatório.pdf')
 
   const acdUnities =
     !queryResult.params.unityId && (await AcademicUnity.fetchAll()).toJSON()
@@ -338,15 +338,27 @@ async function getReportPdf(ctx) {
   const table = []
   const labels = labelMap(acdUnities)[searchType]
   for (const i in labels) {
+    console.log(`labels[${i}]:`, labels[i])
+    console.log(`data[${i}]:`, data[i])
     const row = Array.isArray(labels[i])
       ? [...labels[i], '' + data[i]]
       : [labels[i], '' + data[i]]
+    console.log('row:', row)
     table.push(row)
   }
-  queryResult.data = table
-  generatePdfReport(doc, queryResult, !!queryResult.params.unityId)
-  await doc.end()
-  ctx.body = doc
+  queryResult.table = table
+  const htmlTemplate = generatePdfReport(
+    queryResult,
+    !!queryResult.params.unityId
+  )
+  const stream = await new Promise((resolve, reject) => {
+    htmlPdf.create(htmlTemplate, globalPdfConfig).toStream((err, stream) => {
+      if (err) reject(err)
+      resolve(stream)
+    })
+  })
+  queryResult = undefined
+  ctx.body = stream
   ctx.status = HttpCodes.OK
 }
 

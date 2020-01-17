@@ -6,7 +6,7 @@ const path = require('path')
 
 const tableHeader = {
   monthly: ['Und. Acadêmica', 'Quantidade'],
-  semiannualy: ['Und. Acadêmica', 'Quantidade'],
+  semiannually: ['Und. Acadêmica', 'Quantidade'],
   annually(habemusAcdUnity) {
     return habemusAcdUnity
       ? ['Total Anual']
