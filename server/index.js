@@ -1,6 +1,8 @@
+const { resolve } = require('path')
 const Koa = require('koa')
 const consola = require('consola')
 const cors = require('@koa/cors')
+const serve = require('koa-static')
 
 const config = require('./config')
 const { errorHandler } = require('./util/middlewares')
@@ -17,6 +19,7 @@ const port = config.PORT
 app.use(cors({ origin: host }))
 app.use(errorHandler)
 app.use(router.routes())
+app.use(serve(resolve(__dirname, '../assets')))
 
 app.listen(port, host)
 consola.ready({

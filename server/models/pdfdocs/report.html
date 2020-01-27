@@ -40,7 +40,7 @@
       background-color: #e1dfdf;
     }
 
-    #img1 {
+    /* #img1 {
       float: left;
       margin: 0 auto;
     }
@@ -48,10 +48,15 @@
     #img2 {
       position: absolute;
       left: calc(50% - 50px);
-    }
+    } */
 
-    #img3 {
+    /* #img3 {
       float: right;
+    } */
+
+    #pageHeader {
+      display: flex;
+      justify-content: space-around;
     }
 
     #pageFooter {
@@ -75,7 +80,7 @@
         <table style="clear:both">
           <thead>{{tableHeader}}</thead>
           <tbody>{{tableBody}}</tbody>
-          <tfoot>{{tableFooter}}</tfoot>
+          {{withTableFooter}}
         </table>
         <div id="pageFooter">
           Página <strong>{{page}}</strong> de <strong>{{pages}}</strong>

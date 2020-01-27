@@ -18,7 +18,7 @@ const { readFileSync } = require('fs')
   @param {Boolean} hasChoosenAcdUnity if user has not queried by academic unity
 */
 function generateReport(queryData, hasChoosenAcdUnity) {
-  const { searchType, params, table } = queryData
+  const { searchType, params, table, total, mean } = queryData
   console.log(table, searchType)
   const tableHeaders = {
     monthly: ['Unidade Acadêmica', 'Quantidade'],
@@ -37,10 +37,19 @@ function generateReport(queryData, hasChoosenAcdUnity) {
   }
 
   const paramList = Object.entries(params)
-    .filter(([k, v]) => k !== 'year')
+    .filter(([k]) => k !== 'year')
     .map(([k, v]) => paramsPrettyNames[k] + ': ' + v)
 
   const withParameters = paramList.length ? ', com parâmetros:' : ''
+
+  const stats = []
+  total && stats.push(['TOTAL:', total])
+  mean && stats.push(['MÉDIA:', mean])
+
+  const withTableFooter =
+    !searchType === 'annually' || hasChoosenAcdUnity
+      ? renderTableFooter(stats, tableHeaders[searchType])
+      : ''
 
   const templatePath = join(__dirname, 'report.html')
 
@@ -64,6 +73,7 @@ function generateReport(queryData, hasChoosenAcdUnity) {
     .replace('{{paramList}}', renderParamList(paramList))
     .replace('{{tableHeader}}', renderTableHeader(tableHeaders[searchType]))
     .replace('{{tableBody}}', renderTableBody(table))
+    .replace('{{withTableFooter}}', withTableFooter)
   return htmlTemplate
 }
 
@@ -97,6 +107,30 @@ function renderTableBody(table) {
     s += '</tr>'
   }
   return s
+}
+
+/**
+ *
+ * @param {Number} total of catalog card count,
+ * given the user query.
+ * @param {Number} mean, present if
+ * searchType === 'monthly' or
+ * hasChoosenAcdUnity === true
+ */
+function renderTableFooter(stats, headers) {
+  let s = '<tfoot>'
+  for (let i = 0; i < stats.length; i++) {
+    s += '<tr>'
+    for (let j = 0; j < stats[0].length; j++) {
+      if (j === 0 && stats.length < headers.length) {
+        s += `<td rowspan=${stats[0].length}></td>`
+      }
+      s += '<td>' + stats[i][j] + '</td>'
+    }
+    s += '</tr>'
+  }
+
+  return s + '</tfoot>'
 }
 
 module.exports = generateReport
