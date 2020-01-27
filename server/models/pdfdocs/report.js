@@ -1,4 +1,4 @@
-const { join, resolve } = require('path')
+const { join } = require('path')
 const { readFileSync } = require('fs')
 
 /**
@@ -46,22 +46,17 @@ function generateReport(queryData, hasChoosenAcdUnity) {
   total && stats.push(['TOTAL:', total])
   mean && stats.push(['MÉDIA:', mean])
 
-  const withTableFooter =
-    !searchType === 'annually' || hasChoosenAcdUnity
-      ? renderTableFooter(stats, tableHeaders[searchType])
-      : ''
+  const withTableFooter = stats.length
+    ? renderTableFooter(stats, tableHeaders[searchType])
+    : ''
 
   const templatePath = join(__dirname, 'report.html')
 
   // HTML model and script should always have same file name
   let htmlTemplate = readFileSync(templatePath, 'utf8')
 
-  const img = join('file://', __dirname, 'img/bibcentral-logo.png')
-  const fontUrl = resolve(
-    'file://',
-    __dirname,
-    '../../../assets/fonts/arimo.regular.ttf'
-  )
+  const img = '/img/bibcentral-logo.png'
+  const fontUrl = '/fonts/arimo.regular.ttf'
 
   htmlTemplate = htmlTemplate
     .replace('{{fontUrl}}', fontUrl)
@@ -123,7 +118,7 @@ function renderTableFooter(stats, headers) {
     s += '<tr>'
     for (let j = 0; j < stats[0].length; j++) {
       if (j === 0 && stats.length < headers.length) {
-        s += `<td rowspan=${stats[0].length}></td>`
+        s += `<td rowspan="${stats[0].length}"></td>`
       }
       s += '<td>' + stats[i][j] + '</td>'
     }
