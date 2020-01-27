@@ -13,6 +13,7 @@ if (envSetup.error) {
 }
 
 const {
+  PROTOCOL,
   HOST,
   PORT,
   API_PAGE_SIZE,
@@ -27,6 +28,7 @@ const {
 } = process.env
 
 module.exports = {
+  PROTOCOL,
   HOST,
   PORT,
   API_PAGE_SIZE,

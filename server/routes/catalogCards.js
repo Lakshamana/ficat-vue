@@ -347,11 +347,11 @@ async function getReportPdf(ctx) {
     table.push(row)
   }
   queryResult.table = table
-  if (!searchType === 'annually' || !!queryResult.params.unityId) {
+  if (!searchType === 'annually' || !queryResult.params.unityId) {
     const values = Object.values(data)
     queryResult.total = values.reduce((acc, cur) => acc + cur)
-    if (searchType === 'monthly' || !!queryResult.params.unityId) {
-      queryResult.mean = queryResult.total / values.length
+    if (searchType === 'monthly' || !queryResult.params.unityId) {
+      queryResult.mean = (queryResult.total / values.length).toPrecision(3)
     }
   }
   const htmlTemplate = generatePdfReport(

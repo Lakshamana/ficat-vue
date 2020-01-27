@@ -15,15 +15,16 @@ config.dev = app.env !== 'production'
 
 const host = config.HOST
 const port = config.PORT
+const protocol = config.PROTOCOL
 
 app.use(cors({ origin: host }))
 app.use(errorHandler)
-app.use(router.routes())
 app.use(serve(resolve(__dirname, '../assets')))
+app.use(router.routes())
 
 app.listen(port, host)
 consola.ready({
-  message: `Server listening on http://${host}:${port}`,
+  message: `Server listening on ${protocol}://${host}:${port}`,
   badge: true
 })
 

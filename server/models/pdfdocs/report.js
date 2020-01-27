@@ -29,7 +29,7 @@ function generateReport(queryData, hasChoosenAcdUnity) {
   }
 
   const paramsPrettyNames = {
-    // month: 'Mês',
+    // month: 'Mês',withTableFooter
     // semester: 'Semestre',
     unityId: 'Unidade acadêmica',
     type: 'Tipo de curso',
@@ -50,13 +50,16 @@ function generateReport(queryData, hasChoosenAcdUnity) {
     ? renderTableFooter(stats, tableHeaders[searchType])
     : ''
 
+  console.log('withTableFooter:', withTableFooter)
+
   const templatePath = join(__dirname, 'report.html')
 
   // HTML model and script should always have same file name
   let htmlTemplate = readFileSync(templatePath, 'utf8')
 
-  const img = '/img/bibcentral-logo.png'
-  const fontUrl = '/fonts/arimo.regular.ttf'
+  const hostPreffix = `${process.env.PROTOCOL}://${process.env.HOST}:${process.env.PORT}`
+  const img = hostPreffix + '/img/bibcentral-logo.png'
+  const fontUrl = hostPreffix + '/fonts/arimo.regular.ttf'
 
   htmlTemplate = htmlTemplate
     .replace('{{fontUrl}}', fontUrl)
@@ -117,7 +120,7 @@ function renderTableFooter(stats, headers) {
   for (let i = 0; i < stats.length; i++) {
     s += '<tr>'
     for (let j = 0; j < stats[0].length; j++) {
-      if (j === 0 && stats.length < headers.length) {
+      if (i === 0 && j === 0 && stats.length < headers.length) {
         s += `<td rowspan="${stats[0].length}"></td>`
       }
       s += '<td>' + stats[i][j] + '</td>'
