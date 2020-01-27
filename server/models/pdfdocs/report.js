@@ -61,6 +61,13 @@ function generateReport(queryData, hasChoosenAcdUnity) {
   const img = hostPreffix + '/img/bibcentral-logo.png'
   const fontUrl = hostPreffix + '/fonts/arimo.regular.ttf'
 
+  console.log(
+    'background-image:url({{bibUfpaLogo}});width:100px;height:100px;'.replace(
+      '{{bibUfpaLogo}}',
+      img
+    )
+  )
+
   htmlTemplate = htmlTemplate
     .replace('{{fontUrl}}', fontUrl)
     .replace('{{bibUfpaLogo}}', img)
