@@ -66,7 +66,6 @@ function generateReport(queryData, hasChoosenAcdUnity) {
   htmlTemplate = htmlTemplate
     .replace('{{regularFontUrl}}', regularFontUrl)
     .replace('{{boldFontUrl}}', boldFontUrl)
-    .replace(/\{\{imageSideSize\}\}/g, 90)
     .replace('{{bibUfpaLogo}}', img1)
     .replace('{{ficatLogo}}', img2)
     .replace('{{sibiLogo}}', img3)

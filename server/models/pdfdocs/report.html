@@ -25,7 +25,6 @@
 
     .wrapper {
       margin: 0 auto;
-      width: 500px;
       height: 100%;
     }
 
@@ -58,17 +57,11 @@
 
     #img2 {
       position: absolute;
-      left: calc(50% - 50px);
+      left: calc(50% - 64px);
     }
 
     #img3 {
       float: right;
-    }
-
-    #pageHeader::after {
-      content: "";
-      clear: both;
-      display: table;
     }
 
     #pageFooter {
@@ -85,9 +78,9 @@
   <body>
     <div class="wrapper">
       <div id="pageHeader">
-        <img id="img1" src="{{bibUfpaLogo}}" width="{{imageSideSize}}" height="{{imageSideSize}}">
-        <img id="img2" src="{{ficatLogo}}" width="{{imageSideSize}}" height="{{imageSideSize}}">
-        <img id="img3" src="{{sibiLogo}}" width="{{imageSideSize}}" height="{{imageSideSize}}">
+        <img id="img1" src="{{bibUfpaLogo}}" width="75" height="75">
+        <img id="img2" src="{{ficatLogo}}" width="128" height="75">
+        <img id="img3" src="{{sibiLogo}}" width="77" height="75">
       </div>
         <div style="float:right">
           <p>Registros de uso do FICAT em {{baseYear}}{{withParameters}}</p>
