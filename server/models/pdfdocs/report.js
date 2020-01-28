@@ -19,7 +19,6 @@ const { readFileSync } = require('fs')
 */
 function generateReport(queryData, hasChoosenAcdUnity) {
   const { searchType, params, table, total, mean } = queryData
-  console.log(table, searchType)
   const tableHeaders = {
     monthly: ['Unidade Acadêmica', 'Quantidade'],
     semiannually: ['Unidade Acadêmica', 'Quantidade'],
@@ -50,8 +49,6 @@ function generateReport(queryData, hasChoosenAcdUnity) {
     ? renderTableFooter(stats, tableHeaders[searchType])
     : ''
 
-  console.log('withTableFooter:', withTableFooter)
-
   const templatePath = join(__dirname, 'report.html')
 
   // HTML model and script should always have same file name
@@ -67,6 +64,7 @@ function generateReport(queryData, hasChoosenAcdUnity) {
   htmlTemplate = htmlTemplate
     .replace('{{regularFontUrl}}', regularFontUrl)
     .replace('{{boldFontUrl}}', boldFontUrl)
+    .replace(/\{\{imageSideSize\}\}/g, 90)
     .replace('{{bibUfpaLogo}}', img)
     .replace('{{ficatLogo}}', img)
     .replace('{{sibiLogo}}', img)
@@ -120,12 +118,13 @@ function renderTableBody(table) {
  * hasChoosenAcdUnity === true
  */
 function renderTableFooter(stats, headers) {
+  const offset = headers.length - stats[0].length
   let s = '<tfoot>'
   for (let i = 0; i < stats.length; i++) {
     s += '<tr>'
     for (let j = 0; j < stats[0].length; j++) {
-      if (i === 0 && j === 0 && stats.length < headers.length) {
-        s += `<td rowspan="${stats[0].length}"></td>`
+      if (i === 0 && j === 0 && offset > 0) {
+        s += `<td rowspan="${offset + 1}"></td>`
       }
       s += '<td>' + stats[i][j] + '</td>'
     }

@@ -338,16 +338,13 @@ async function getReportPdf(ctx) {
   const table = []
   const labels = labelMap(acdUnities)[searchType]
   for (const i in labels) {
-    console.log(`labels[${i}]:`, labels[i])
-    console.log(`data[${i}]:`, data[i])
     const row = Array.isArray(labels[i])
       ? [...labels[i], '' + data[i]]
       : [labels[i], '' + data[i]]
-    console.log('row:', row)
     table.push(row)
   }
   queryResult.table = table
-  if (!searchType === 'annually' || !queryResult.params.unityId) {
+  if (!(searchType === 'annually') || !queryResult.params.unityId) {
     const values = Object.values(data)
     queryResult.total = values.reduce((acc, cur) => acc + cur)
     if (searchType === 'monthly' || !queryResult.params.unityId) {
