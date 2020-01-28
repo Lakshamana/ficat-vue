@@ -25,7 +25,7 @@ function generateReport(queryData, hasChoosenAcdUnity) {
     semiannually: ['Unidade Acadêmica', 'Quantidade'],
     annually: hasChoosenAcdUnity
       ? ['Total Anual']
-      : ['Und. Acadêmica', 'Sigla', 'Quantidade']
+      : ['Unidade Acadêmica', 'Sigla', 'Quantidade']
   }
 
   const paramsPrettyNames = {
@@ -57,19 +57,16 @@ function generateReport(queryData, hasChoosenAcdUnity) {
   // HTML model and script should always have same file name
   let htmlTemplate = readFileSync(templatePath, 'utf8')
 
-  const hostPreffix = `${process.env.PROTOCOL}://${process.env.HOST}:${process.env.PORT}`
-  const img = hostPreffix + '/img/bibcentral-logo.png'
-  const fontUrl = hostPreffix + '/fonts/arimo.regular.ttf'
-
-  console.log(
-    'background-image:url({{bibUfpaLogo}});width:100px;height:100px;'.replace(
-      '{{bibUfpaLogo}}',
-      img
-    )
-  )
+  // const hostPreffix = `${process.env.PROTOCOL}://${process.env.HOST}:${process.env.PORT}/`
+  const hostPreffix =
+    'https://raw.githubusercontent.com/Lakshamana/ficat-vue/master/assets/'
+  const img = hostPreffix + 'img/bibcentral-logo.png'
+  const regularFontUrl = hostPreffix + 'fonts/arimo.regular.ttf'
+  const boldFontUrl = hostPreffix + 'fonts/arimo.bold.ttf'
 
   htmlTemplate = htmlTemplate
-    .replace('{{fontUrl}}', fontUrl)
+    .replace('{{regularFontUrl}}', regularFontUrl)
+    .replace('{{boldFontUrl}}', boldFontUrl)
     .replace('{{bibUfpaLogo}}', img)
     .replace('{{ficatLogo}}', img)
     .replace('{{sibiLogo}}', img)

@@ -9,10 +9,16 @@
 
     @font-face {
       font-family: "Arial-Regular";
-      src: url("{{fontUrl}}");
+      src: url("{{regularFontUrl}}");
+    }
+
+    @font-face {
+      font-family: "Arial-Bold";
+      src: url("{{boldFontUrl}}");
     }
 
     body {
+      background-color: white;
       font-family: "Arial-Regular" Arial, Helvetica, sans-serif;
       font-size: 70%;
     }
@@ -36,29 +42,39 @@
     }
 
     table th {
+      font-family: "Arial-Bold" Arial, Helvetica, sans-serif;
       font-weight: bold;
       background-color: #e1dfdf;
     }
 
     tfoot td {
+      font-family: "Arial-Bold" Arial, Helvetica, sans-serif;
       font-weight: bold;
     }
 
-    img {
-      border: 1px solid red;
+    /* img {
+      background: rgb(0, 0, 0), url("{{bibUfpaLogo}}");
+      background-size: 100px 100px;
+    } */
+
+    #img1 {
+      float: left;
+      position: relative;
     }
 
-    #pageHeader {
-      display: -webkit-flex;
-      display: -ms-flexbox;
-      display: -moz-box;
-      display: flex;
-      -webkit-box-pack: justify;
-      -ms-flex-pack: justify;
-      -moz-box-pack: justify;
-      justify-content: space-between;
-      width: 100%;
-      border: 1px solid black;
+    #img2 {
+      position: absolute;
+      left: calc(50% - 50px);
+    }
+
+    #img3 {
+      float: right;
+    }
+
+    #pageHeader::after {
+      content: "";
+      clear: both;
+      display: table;
     }
 
     #pageFooter {
