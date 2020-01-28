@@ -57,7 +57,9 @@ function generateReport(queryData, hasChoosenAcdUnity) {
   // const hostPreffix = `${process.env.PROTOCOL}://${process.env.HOST}:${process.env.PORT}/`
   const hostPreffix =
     'https://raw.githubusercontent.com/Lakshamana/ficat-vue/master/assets/'
-  const img = hostPreffix + 'img/bibcentral-logo.png'
+  const img1 = hostPreffix + 'img/bibcentral-logo.png'
+  const img2 = hostPreffix + 'img/ficat-logo.png'
+  const img3 = hostPreffix + 'img/sibi-logo.png'
   const regularFontUrl = hostPreffix + 'fonts/arimo.regular.ttf'
   const boldFontUrl = hostPreffix + 'fonts/arimo.bold.ttf'
 
@@ -65,9 +67,9 @@ function generateReport(queryData, hasChoosenAcdUnity) {
     .replace('{{regularFontUrl}}', regularFontUrl)
     .replace('{{boldFontUrl}}', boldFontUrl)
     .replace(/\{\{imageSideSize\}\}/g, 90)
-    .replace('{{bibUfpaLogo}}', img)
-    .replace('{{ficatLogo}}', img)
-    .replace('{{sibiLogo}}', img)
+    .replace('{{bibUfpaLogo}}', img1)
+    .replace('{{ficatLogo}}', img2)
+    .replace('{{sibiLogo}}', img3)
     .replace('{{baseYear}}', params.year)
     .replace('{{withParameters}}', withParameters)
     .replace('{{paramList}}', renderParamList(paramList))
