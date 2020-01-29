@@ -2,33 +2,31 @@
   <Card title="Authorship Data">
     <div class="columns">
       <div class="column is-half">
-        <b-field label="Author Name">
-          <b-input
-            v-model="$v.authorName.$model"
-            type="text"
-            aria-required="true"
-            required
-            minlength="3"
-            placeholder="Author Name"
-            aria-placeholder="author name"
-          ></b-input>
-          <div v-if="$v.authorName.$error" class="error">
-            This field is required
-          </div>
-        </b-field>
+        <input-validation
+          v-model="authorName"
+          label="Author Name"
+          field-name="authorName"
+          :validators="$options.validations.authorName"
+        ></input-validation>
         <input-validation
           v-model="authorSurname"
-          :properties="authorSurnameProperties"
+          label="Author Surname"
+          field-name="authorSurname"
+          :validators="$options.validations.authorSurname"
         ></input-validation>
       </div>
       <div class="column is-half">
         <input-validation
-          v-model="author2Name"
-          :properties="author2NameProperties"
+          v-model="authorSurname"
+          label="Second Author Name"
+          field-name="author2Name"
+          :validators="$options.validations.author2Name"
         ></input-validation>
         <input-validation
           v-model="author2Surname"
-          :properties="author2SurnameProperties"
+          label="Second Author Surname"
+          field-name="author2Surname"
+          :validators="$options.validations.author2Surname"
         ></input-validation>
       </div>
     </div>
@@ -36,11 +34,17 @@
 </template>
 
 <script>
-import { required, minLength } from 'vuelidate'
+import Vue from 'vue'
+import Vuelidate from 'vuelidate'
+
+import { required, minLength } from 'vuelidate/lib/validators'
 import Card from '~/components/Card'
+import InputValidation from '~/components/InputValidation'
+Vue.use(Vuelidate)
+
 export default {
   name: 'AuthorshipForm',
-  components: { Card },
+  components: { Card, InputValidation },
   data() {
     return {
       authorName: '',
@@ -67,5 +71,3 @@ export default {
   }
 }
 </script>
-
-<style></style>

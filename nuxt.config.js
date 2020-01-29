@@ -34,7 +34,11 @@ module.exports = {
   /*
    ** Plugins to load before mounting the App
    */
-  plugins: ['~/plugins/lang.js', '~/plugins/vue-cookies.js', '~/plugins/vuelidate.js'],
+  plugins: [
+    '~/plugins/lang.js',
+    '~/plugins/vue-cookies.js',
+    '~/plugins/vuelidate.js'
+  ],
   /*
    ** Nuxt.js dev-modules
    */

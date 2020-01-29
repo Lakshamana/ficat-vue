@@ -2,7 +2,7 @@
   <section class="section center">
     <div class="columns is-centered is-mobile">
       <div class="column is-10">
-        <form @submit.prevent="onSubmit"></form>
+        <Slider />
       </div>
     </div>
   </section>
@@ -10,7 +10,17 @@
 
 <script>
 // const pattern = /^[a-zA-Z\u00C0-\u017F ]{5,}$/
-export default {}
+import Slider from '~/components/Slider'
+
+export default {
+  name: 'Index',
+  components: {
+    Slider
+  },
+  loadComponents: {
+    AuthorshipForm: () => import('~/components/AuthorshipForm')
+  }
+}
 </script>
 
 <style></style>
