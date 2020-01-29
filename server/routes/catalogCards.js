@@ -343,7 +343,9 @@ async function getReportPdf(ctx) {
       : [labels[i], '' + data[i]]
     table.push(row)
   }
-  queryResult.table = table
+  // Sort descending first
+  const last = table[0].length - 1
+  queryResult.table = table.sort((rowA, rowB) => rowB[last] - rowA[last])
   if (!(searchType === 'annually') || !queryResult.params.unityId) {
     const values = Object.values(data)
     queryResult.total = values.reduce((acc, cur) => acc + cur)
