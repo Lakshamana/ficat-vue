@@ -6,13 +6,13 @@
           v-model="authorName"
           label="Author Name"
           field-name="authorName"
-          :validators="$options.validations.authorName"
+          :validations="$options.validations.authorName"
         ></input-validation>
         <input-validation
           v-model="authorSurname"
           label="Author Surname"
           field-name="authorSurname"
-          :validators="$options.validations.authorSurname"
+          :validations="$options.validations.authorSurname"
         ></input-validation>
       </div>
       <div class="column is-half">
@@ -20,13 +20,13 @@
           v-model="authorSurname"
           label="Second Author Name"
           field-name="author2Name"
-          :validators="$options.validations.author2Name"
+          :validations="$options.validations.author2Name"
         ></input-validation>
         <input-validation
           v-model="author2Surname"
           label="Second Author Surname"
           field-name="author2Surname"
-          :validators="$options.validations.author2Surname"
+          :validations="$options.validations.author2Surname"
         ></input-validation>
       </div>
     </div>
@@ -34,7 +34,6 @@
 </template>
 
 <script>
-import { required, minLength } from 'vuelidate/lib/validators'
 import Card from '~/components/Card'
 import InputValidation from '~/components/InputValidation'
 
@@ -47,22 +46,6 @@ export default {
       authorSurname: '',
       author2Name: '',
       author2Surname: ''
-    }
-  },
-  validations: {
-    authorName: {
-      required,
-      minLength: minLength(3)
-    },
-    authorSurname: {
-      required,
-      minLength: minLength(5)
-    },
-    author2Name: {
-      minLength: minLength(3)
-    },
-    author2Surname: {
-      minLength: minLength(5)
     }
   }
 }

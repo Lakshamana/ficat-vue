@@ -3,7 +3,7 @@
     <b-input
       v-model="iptValue"
       type="text"
-      :aria-required="!!validations.required"
+      :aria-required="!!$options.validations.required"
       aria-describedby="errormsg"
       :placeholder="label"
       :aria-placeholder="label.toLowerCase()"
@@ -22,9 +22,7 @@
 </template>
 
 <script>
-import Vue from 'vue'
-import Vuelidate from 'vuelidate'
-Vue.use(Vuelidate)
+import { required, minLength } from 'vuelidate/lib/validators'
 export default {
   name: 'InputValidation',
   props: {
@@ -51,6 +49,23 @@ export default {
     useModel: {
       type: Boolean,
       default: true
+    }
+  },
+
+  validations: {
+    authorName: {
+      required,
+      minLength: minLength(3)
+    },
+    authorSurname: {
+      required,
+      minLength: minLength(5)
+    },
+    author2Name: {
+      minLength: minLength(3)
+    },
+    author2Surname: {
+      minLength: minLength(5)
     }
   },
 
