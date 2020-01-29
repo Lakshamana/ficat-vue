@@ -2,11 +2,20 @@
   <Card title="Authorship Data">
     <div class="columns">
       <div class="column is-half">
-        <input-validation
-          v-model="authorName"
-          :properties="authorNameProperties"
-          class="mb"
-        ></input-validation>
+        <b-field label="Author Name">
+          <b-input
+            v-model="$v.authorName.$model"
+            type="text"
+            aria-required="true"
+            required
+            minlength="3"
+            placeholder="Author Name"
+            aria-placeholder="author name"
+          ></b-input>
+          <div v-if="$v.authorName.$error" class="error">
+            This field is required
+          </div>
+        </b-field>
         <input-validation
           v-model="authorSurname"
           :properties="authorSurnameProperties"
@@ -27,6 +36,7 @@
 </template>
 
 <script>
+import { required, minLength } from 'vuelidate'
 import Card from '~/components/Card'
 export default {
   name: 'AuthorshipForm',
@@ -37,6 +47,22 @@ export default {
       authorSurname: '',
       author2Name: '',
       author2Surname: ''
+    }
+  },
+  validations: {
+    authorName: {
+      required,
+      minLength: minLength(3)
+    },
+    authorSurname: {
+      required,
+      minLength: minLength(5)
+    },
+    author2Name: {
+      minLength: minLength(3)
+    },
+    author2Surname: {
+      minLength: minLength(5)
     }
   }
 }
