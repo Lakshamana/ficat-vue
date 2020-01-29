@@ -22,10 +22,11 @@
 </template>
 
 <script>
-import { validationMixin } from 'vuelidate'
+import Vue from 'vue'
+import Vuelidate from 'vuelidate'
+Vue.use(Vuelidate)
 export default {
   name: 'InputValidation',
-  mixins: [validationMixin],
   props: {
     validations: {
       type: Object,

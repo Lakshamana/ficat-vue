@@ -34,13 +34,9 @@
 </template>
 
 <script>
-import Vue from 'vue'
-import Vuelidate from 'vuelidate'
-
 import { required, minLength } from 'vuelidate/lib/validators'
 import Card from '~/components/Card'
 import InputValidation from '~/components/InputValidation'
-Vue.use(Vuelidate)
 
 export default {
   name: 'AuthorshipForm',
