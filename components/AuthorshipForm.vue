@@ -3,37 +3,72 @@
     <div class="columns">
       <div class="column is-half">
         <input-validation
-          v-model="authorName"
+          v-model="$v.authorName.$model"
           label="Author Name"
           field-name="authorName"
           :validations="$options.validations.authorName"
-        ></input-validation>
+          :v="$v"
+          type="text"
+        >
+          <template #required>
+            Field is required
+          </template>
+          <template #minLength="{ props }">
+            Must have a {{ props.min }} chars minima
+          </template>
+        </input-validation>
         <input-validation
-          v-model="authorSurname"
-          label="Author Surname"
+          v-model="$v.authorSurname.$model"
+          label="Author Name"
           field-name="authorSurname"
           :validations="$options.validations.authorSurname"
-        ></input-validation>
-      </div>
-      <div class="column is-half">
+          :v="$v"
+          type="text"
+        >
+          <template #required>
+            Field is required
+          </template>
+          <template #minLength="{ props }">
+            Must have a {{ props.min }} chars minima
+          </template>
+        </input-validation>
         <input-validation
-          v-model="authorSurname"
-          label="Second Author Name"
+          v-model="$v.author2Name.$model"
+          label="Author Name"
           field-name="author2Name"
           :validations="$options.validations.author2Name"
-        ></input-validation>
+          :v="$v"
+          type="text"
+        >
+          <template #required>
+            Field is required
+          </template>
+          <template #minLength="{ props }">
+            Must have a {{ props.min }} chars minima
+          </template>
+        </input-validation>
         <input-validation
-          v-model="author2Surname"
-          label="Second Author Surname"
+          v-model="$v.author2Surname.$model"
+          label="Author Name"
           field-name="author2Surname"
           :validations="$options.validations.author2Surname"
-        ></input-validation>
+          :v="$v"
+          type="text"
+        >
+          <template #required>
+            Field is required
+          </template>
+          <template #minLength="{ props }">
+            Must have a {{ props.min }} chars minima
+          </template>
+        </input-validation>
       </div>
     </div>
   </Card>
 </template>
 
 <script>
+import { required, minLength } from 'vuelidate/lib/validators'
 import Card from '~/components/Card'
 import InputValidation from '~/components/InputValidation'
 
@@ -46,6 +81,23 @@ export default {
       authorSurname: '',
       author2Name: '',
       author2Surname: ''
+    }
+  },
+
+  validations: {
+    authorName: {
+      required,
+      minLength: minLength(3)
+    },
+    authorSurname: {
+      required,
+      minLength: minLength(5)
+    },
+    author2Name: {
+      minLength: minLength(3)
+    },
+    author2Surname: {
+      minLength: minLength(5)
     }
   }
 }

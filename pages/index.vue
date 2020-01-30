@@ -2,7 +2,9 @@
   <section class="section center">
     <div class="columns is-centered is-mobile">
       <div class="column is-10">
-        <Slider />
+        <Slider>
+          <AuthorshipForm></AuthorshipForm>
+        </Slider>
       </div>
     </div>
   </section>
@@ -15,9 +17,7 @@ import Slider from '~/components/Slider'
 export default {
   name: 'Index',
   components: {
-    Slider
-  },
-  loadComponents: {
+    Slider,
     AuthorshipForm: () => import('~/components/AuthorshipForm')
   }
 }

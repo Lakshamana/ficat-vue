@@ -1,36 +1,31 @@
 <template>
-  <b-field :label="label">
-    <b-input
-      v-model="iptValue"
-      type="text"
-      :aria-required="!!$options.validations.required"
-      aria-describedby="errormsg"
-      :placeholder="label"
-      :aria-placeholder="label.toLowerCase()"
-      @input="emit('input', $event.target.value)"
-    ></b-input>
-    <div v-if="$v[fieldName].$error" id="errormsg" class="error">
-      <template v-for="v in validations">
+  <div>
+    <b-field :label="label" label-position="on-border">
+      <b-input
+        v-model="iptValue"
+        :type="type"
+        :aria-required="!!validations.required"
+        aria-describedby="errormsg"
+        :aria-placeholder="label.toLowerCase()"
+        @input="$emit('input', $event)"
+      ></b-input>
+    </b-field>
+    <p v-if="v[fieldName].$error" id="errormsg" class="error">
+      <template v-for="(_, k) in validations">
         <slot
-          v-if="!$v[fieldName][v]"
-          :name="v"
-          :props="$v[fieldName].$params[v]"
+          v-if="!v[fieldName][k]"
+          :name="k"
+          :props="v[fieldName].$params[k]"
         ></slot>
       </template>
-    </div>
-  </b-field>
+    </p>
+  </div>
 </template>
 
 <script>
-import { required, minLength } from 'vuelidate/lib/validators'
 export default {
   name: 'InputValidation',
   props: {
-    validations: {
-      type: Object,
-      default: () => ({})
-    },
-
     fieldName: {
       type: String,
       default: 'field'
@@ -49,29 +44,22 @@ export default {
     useModel: {
       type: Boolean,
       default: true
+    },
+
+    validations: {
+      type: Object,
+      required: true
+    },
+
+    v: {
+      type: Object,
+      required: true
     }
   },
 
-  validations: {
-    authorName: {
-      required,
-      minLength: minLength(3)
-    },
-    authorSurname: {
-      required,
-      minLength: minLength(5)
-    },
-    author2Name: {
-      minLength: minLength(3)
-    },
-    author2Surname: {
-      minLength: minLength(5)
-    }
-  },
-
-  computed: {
-    iptValue() {
-      return this.useModel ? this.$v[this.fieldName].$model : '' + this.value
+  data() {
+    return {
+      iptValue: this.value
     }
   }
 }

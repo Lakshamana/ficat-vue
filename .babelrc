@@ -10,7 +10,8 @@
             }
           }
         ]
-      ]
+      ],
+      "plugins": ["@babel/syntax-dynamic-import", "dynamic-import-webpack"]
     }
   }
 }

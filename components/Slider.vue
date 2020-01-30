@@ -1,25 +1,22 @@
-<template>
-  <keep-alive>
-    <component :is="$options.components[type]" />
-  </keep-alive>
+<template functional>
+  <div class="is-full">
+    <slot></slot>
+  </div>
 </template>
 
 <script>
-import AuthorshipForm from '~/components/AuthorshipForm'
 export default {
   name: 'Slider',
-  components: {
-    AuthorshipForm
-  },
   props: {
     startIndex: {
       type: Number,
       default: 0
     }
-    // slides: {
-    //   type: Object,
-    //   required: true
-    // }
+  },
+  data() {
+    return {
+      currentIndex: this.startIndex
+    }
   },
   computed: {
     type() {
@@ -28,13 +25,36 @@ export default {
     component() {
       return this.$options.components[this.type]
     }
+  },
+  render(h, { props, children, data }) {
+    return h('div', data, children[this.currentIndex])
   }
 }
 </script>
 
 <style>
+input[aria-invalid='true'],
+select[aria-invalid='true'],
+textarea[aria-invalid='true'] {
+  box-shadow: inherit;
+  border-color: initial;
+}
+
+input,
+select,
+textarea {
+  outline: none;
+}
+
 .error {
   color: red;
-  font-size: 7pt;
+  font-size: 9pt;
+  display: block;
+  float: left;
+}
+
+.error::after {
+  content: '';
+  clear: both;
 }
 </style>
