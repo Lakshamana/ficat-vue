@@ -51,6 +51,7 @@ textarea {
   font-size: 9pt;
   display: block;
   float: left;
+  z-index: 5;
 }
 
 .error::after {
