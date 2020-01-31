@@ -1,0 +1,44 @@
+.box-wrapper {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.slider-control {
+  flex: 0 1 auto;
+  align-self: stretch;
+  /* border-width: 1px; */
+  /* border-style: solid; */
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+}
+
+/* .right {
+  border-color: transparent transparent transparent black;
+}
+
+.left {
+  border-color: transparent black transparent transparent;
+} */
+
+.symbol {
+  margin: auto 0;
+  width: 3em;
+}
+
+input,
+select,
+textarea {
+  outline: none;
+}
+
+.error {
+  color: red;
+  font-size: 9pt;
+  min-width: 100%;
+  text-align: left;
+  display: block;
+  height: 1rem;
+  margin-top: -1em;
+}

@@ -2,8 +2,13 @@
   <section class="section vcenter">
     <div class="columns is-centered">
       <div class="column is-10">
-        <Slider>
-          <AuthorshipForm></AuthorshipForm>
+        <Slider
+          :slide-index="slideIdx"
+          @next="slideIdx++"
+          @previous="slideIdx--"
+        >
+          <AuthorshipForm />
+          <WorkForm />
         </Slider>
       </div>
     </div>
@@ -12,13 +17,21 @@
 
 <script>
 // const pattern = /^[a-zA-Z\u00C0-\u017F ]{5,}$/
-import Slider from '~/components/Slider'
+import Slider from '../components/Slider.js'
+import AuthorshipForm from '~/components/AuthorshipForm'
+import WorkForm from '~/components/WorkForm'
 
 export default {
   name: 'Index',
   components: {
     Slider,
-    AuthorshipForm: () => import('~/components/AuthorshipForm')
+    AuthorshipForm,
+    WorkForm
+  },
+  data() {
+    return {
+      slideIdx: 0
+    }
   }
 }
 </script>

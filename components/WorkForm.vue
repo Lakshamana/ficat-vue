@@ -1,5 +1,5 @@
 <template>
-  <Card title="Authorship Data">
+  <Card title="Work Data">
     <div class="columns">
       <div class="column is-half">
         <div class="input-float">
@@ -79,7 +79,7 @@ import Card from '~/components/Card'
 import InputValidation from '~/components/InputValidation'
 
 export default {
-  name: 'WorkForm',
+  name: 'AuthorshipForm',
   components: { Card, InputValidation },
   data() {
     return {
