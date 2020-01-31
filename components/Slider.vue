@@ -33,13 +33,6 @@ export default {
 </script>
 
 <style>
-input[aria-invalid='true'],
-select[aria-invalid='true'],
-textarea[aria-invalid='true'] {
-  box-shadow: inherit;
-  border-color: initial;
-}
-
 input,
 select,
 textarea {

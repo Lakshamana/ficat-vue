@@ -11,7 +11,7 @@
         @input="$emit('input', $event)"
       ></b-input>
     </b-field>
-    <p v-if="v[fieldName].$error" id="errormsg" class="error">
+    <span v-if="v[fieldName].$error" id="errormsg" class="error">
       <template v-for="(_, k) in validations">
         <slot
           v-if="!v[fieldName][k]"
@@ -19,7 +19,7 @@
           :props="v[fieldName].$params[k]"
         ></slot>
       </template>
-    </p>
+    </span>
   </div>
 </template>
 
@@ -74,5 +74,6 @@ export default {
 <style scoped>
 .flex-div {
   flex: 0 1 auto;
+  max-height: 100%;
 }
 </style>
