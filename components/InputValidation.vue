@@ -11,7 +11,7 @@
         @input="$emit('input', $event)"
       ></b-input>
     </b-field>
-    <span id="errormsg" class="error">
+    <span id="errormsg" aria-live="assertive" class="error">
       <template v-for="(_, k) in validations">
         <slot
           v-if="!v[fieldName][k] && v[fieldName].$error"
@@ -65,7 +65,22 @@ export default {
 
   data() {
     return {
-      iptValue: this.value
+      inputVal: this.value
+    }
+  },
+
+  computed: {
+    iptValue: {
+      get() {
+        return this.useModel ? this.v[this.fieldName].$model : this.inputVal
+      },
+
+      set(val) {
+        const model = this.useModel
+          ? this.v[this.fieldName].$model
+          : this.inputVal
+        this.$set(this.v[this.fieldName], '$model', model)
+      }
     }
   }
 }

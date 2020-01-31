@@ -48,9 +48,4 @@ textarea {
   height: 1rem;
   margin-top: -1em;
 }
-
-.error::after {
-  content: '';
-  clear: both;
-}
 </style>

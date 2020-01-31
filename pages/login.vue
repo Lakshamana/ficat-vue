@@ -4,7 +4,7 @@
       <div class="column is-5">
         <section class="section">
           <form @submit.prevent="onSubmit">
-            <card>
+            <Card>
               <section class="section">
                 <div class="centered-image">
                   <figure class="image is-32x32 is-inline-block">
@@ -29,7 +29,7 @@
                 </div>
                 <b-button class="is-info" native-type="submit">Login</b-button>
               </section>
-            </card>
+            </Card>
           </form>
         </section>
       </div>
