@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="flex-div">
     <b-field :label="label" label-position="on-border">
       <b-input
         v-model="iptValue"
@@ -7,6 +7,7 @@
         :aria-required="!!validations.required"
         aria-describedby="errormsg"
         :aria-placeholder="label.toLowerCase()"
+        rounded
         @input="$emit('input', $event)"
       ></b-input>
     </b-field>
@@ -54,6 +55,11 @@ export default {
     v: {
       type: Object,
       required: true
+    },
+
+    type: {
+      type: String,
+      default: 'text'
     }
   },
 
@@ -64,3 +70,9 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+.flex-div {
+  flex: 0 1 auto;
+}
+</style>
