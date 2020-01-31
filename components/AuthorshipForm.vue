@@ -90,6 +90,21 @@ export default {
     }
   },
 
+  watch: {
+    $v: {
+      deep: true,
+      handler($v) {
+        $v.anyDirty && !$v.anyError && this.$emit('ready')
+      }
+    }
+  },
+
+  methods: {
+    filterModels() {
+      return Object.keys(this.$v).filter(k => !k.startsWith('$'))
+    }
+  },
+
   validations: {
     authorName: {
       required,

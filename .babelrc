@@ -9,7 +9,8 @@
               "node": "current"
             }
           }
-        ]
+        ],
+        "@vue/babel-preset-jsx"
       ],
       "plugins": ["@babel/syntax-dynamic-import", "dynamic-import-webpack"]
     }
