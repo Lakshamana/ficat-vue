@@ -42,9 +42,11 @@ textarea {
 .error {
   color: red;
   font-size: 9pt;
+  min-width: 100%;
+  text-align: left;
   display: block;
-  float: left;
-  z-index: 5;
+  height: 1rem;
+  margin-top: -1em;
 }
 
 .error::after {

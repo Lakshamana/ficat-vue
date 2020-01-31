@@ -11,10 +11,10 @@
         @input="$emit('input', $event)"
       ></b-input>
     </b-field>
-    <span v-if="v[fieldName].$error" id="errormsg" class="error">
+    <span id="errormsg" class="error">
       <template v-for="(_, k) in validations">
         <slot
-          v-if="!v[fieldName][k]"
+          v-if="!v[fieldName][k] && v[fieldName].$error"
           :name="k"
           :props="v[fieldName].$params[k]"
         ></slot>
