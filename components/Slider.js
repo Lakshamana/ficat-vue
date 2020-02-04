@@ -7,10 +7,14 @@ export default {
     slideIndex: {
       type: Number,
       default: 0
+    },
+    preventForward: {
+      type: Boolean,
+      default: true
     }
   },
   render(_, { props, children, listeners }) {
-    const { slideIndex } = props
+    const { slideIndex, preventForward } = props
     const normalizedChildren = children.filter(c => c.tag)
     return (
       <div class="box-wrapper">
@@ -31,6 +35,7 @@ export default {
             class="slider-control"
             aria-label="next"
             onClick={listeners.next}
+            disabled={preventForward}
           >
             <span class="symbol">&gt;</span>
           </button>

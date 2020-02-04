@@ -4,11 +4,18 @@
       <div class="column is-10">
         <Slider
           :slide-index="slideIdx"
+          :prevent-forward="preventForward"
           @next="slideIdx++"
           @previous="slideIdx--"
         >
-          <AuthorshipForm />
-          <WorkForm />
+          <AuthorshipForm
+            @ready="preventForward = false"
+            @disableForward="preventForward = true"
+          />
+          <WorkForm
+            @ready="preventForward = false"
+            @disableForward="preventForward = true"
+          />
         </Slider>
       </div>
     </div>
@@ -16,7 +23,6 @@
 </template>
 
 <script>
-// const pattern = /^[a-zA-Z\u00C0-\u017F ]{5,}$/
 import Slider from '../components/Slider.js'
 import AuthorshipForm from '~/components/AuthorshipForm'
 import WorkForm from '~/components/WorkForm'
@@ -30,7 +36,14 @@ export default {
   },
   data() {
     return {
-      slideIdx: 0
+      slideIdx: 0,
+      preventForward: true
+    }
+  },
+
+  methods: {
+    toggleForward() {
+      this.preventForward = !this.preventForward
     }
   }
 }
