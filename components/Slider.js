@@ -15,23 +15,25 @@ export default {
     return (
       <div class="box-wrapper">
         {slideIndex > 0 && (
-          <div
-            class="slider-control left"
+          <button
+            tabindex="0"
+            class="slider-control"
             aria-label="previous"
             onClick={listeners.previous}
           >
-            <span class="symbol">&lt;</span>
-          </div>
+            <span class="symbol left">&lt;</span>
+          </button>
         )}
         {normalizedChildren[slideIndex]}
         {slideIndex < normalizedChildren.length - 1 && (
-          <div
-            class="slider-control right"
+          <button
+            tabindex="0"
+            class="slider-control"
             aria-label="next"
             onClick={listeners.next}
           >
             <span class="symbol">&gt;</span>
-          </div>
+          </button>
         )}
       </div>
     )

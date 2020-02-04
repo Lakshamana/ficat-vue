@@ -6,33 +6,17 @@
 
 .slider-control {
   flex: 0 1 auto;
-  align-self: stretch;
-  border-width: 1px;
-  border-style: solid;
+  align-self: center;
+  width: 3em;
+  height: 3em;
   text-align: center;
+  border-radius: 50%;
   display: flex;
   flex-direction: column;
 }
 
-.left {
-  border-color: black transparent black black;
-}
-
-.right {
-  border-color: black black black transparent;
-}
-
 .symbol {
   margin: auto 0;
-  width: 3em;
-}
-
-.slider-control.right:focus {
-  background-color: grey;
-}
-
-.slider-control:focus .symbol {
-  border: 1px dotted grey;
 }
 
 input,

@@ -1,7 +1,9 @@
 <template>
   <div class="flex-div">
     <b-field :label="label" label-position="on-border">
-      <b-input
+      <slot name="addon"></slot>
+      <component
+        :is="useComponent"
         v-model="iptValue"
         :type="type"
         :aria-required="!!validations.required"
@@ -9,7 +11,7 @@
         :aria-placeholder="label.toLowerCase()"
         rounded
         @input="$emit('input', $event)"
-      ></b-input>
+      ></component>
     </b-field>
     <span id="errormsg" aria-live="assertive" class="error">
       <template v-for="(_, k) in validations">
@@ -60,6 +62,11 @@ export default {
     type: {
       type: String,
       default: 'text'
+    },
+
+    useComponent: {
+      type: String,
+      default: 'b-input'
     }
   },
 
