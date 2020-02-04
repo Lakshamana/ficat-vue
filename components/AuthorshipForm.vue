@@ -79,7 +79,7 @@ import Card from '~/components/Card'
 import InputValidation from '~/components/InputValidation'
 
 export default {
-  name: 'WorkForm',
+  name: 'AuthorshipForm',
   components: { Card, InputValidation },
   data() {
     return {

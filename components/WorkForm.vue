@@ -42,9 +42,11 @@
               :validations="$options.validations.presentationYear"
               :v="$v"
             >
-              <option v-for="y in 10" :key="y">
-                {{ getYear(y - 1) }}
-              </option>
+              <template #component>
+                <option v-for="y in 10" :key="y">
+                  {{ getYear(y - 1) }}
+                </option>
+              </template>
             </input-validation>
             <input-validation
               v-model="$v.totalPages.$model"
@@ -52,12 +54,19 @@
               field-name="totalPages"
               :validations="$options.validations.totalPages"
               :v="$v"
+              type="number"
             >
               <template #addon>
                 <b-select v-model="numberType" rounded>
-                  <option value="roman">Roman</option>
                   <option value="arabic">Arabic</option>
+                  <option value="roman">Roman</option>
                 </b-select>
+              </template>
+              <template #required>
+                Field is required
+              </template>
+              <template #minValue="{props}">
+                Minimum value is {{ props.min }}
               </template>
             </input-validation>
           </b-field>
@@ -72,7 +81,13 @@
             field-name="workImagesType"
             :validations="$options.validations.workImagesType"
             :v="$v"
+            expanded
           >
+            <template #component>
+              <option value="nocolor">Não possui</option>
+              <option value="color">Coloridas</option>
+              <option value="bw">Preto e branco</option>
+            </template>
             <template #required>
               Field is required
             </template>
@@ -80,21 +95,28 @@
               Must have a {{ props.min }} chars minima
             </template>
           </input-validation>
-          <!-- <input-validation
-            v-model="$v.author2Surname.$model"
-            label="Second Author Surname"
-            field-name="author2Surname"
-            :validations="$options.validations.author2Surname"
+          <input-validation
+            v-model="$v.workType.$model"
+            label="Work Type"
+            field-name="workType"
+            :validations="$options.validations.workType"
             :v="$v"
-            type="text"
+            use-component="b-select"
+            expanded
           >
+            <template #component>
+              <option value="thesis">Tese</option>
+              <option value="dissertation">Dissertação</option>
+              <option value="tccExpert">TCC (Especialização)</option>
+              <option value="tccGraduation">TCC (Graduação)</option>
+            </template>
             <template #required>
               Field is required
             </template>
             <template #minLength="{ props }">
               Must have a {{ props.min }} chars minima
             </template>
-          </input-validation> -->
+          </input-validation>
         </div>
       </div>
     </div>
@@ -102,20 +124,26 @@
 </template>
 
 <script>
-import { required, minLength, numeric } from 'vuelidate/lib/validators'
+import {
+  required,
+  minLength,
+  numeric,
+  minValue
+} from 'vuelidate/lib/validators'
 import Card from '~/components/Card'
 import InputValidation from '~/components/InputValidation'
 
 export default {
-  name: 'AuthorshipForm',
+  name: 'WorkForm',
   components: { Card, InputValidation },
   data() {
     return {
       workTitle: '',
       workSubtitle: '',
       presentationYear: '' + new Date(Date.now()).getFullYear(),
-      numberType: 'roman',
-      workImagesType: undefined,
+      numberType: 'arabic',
+      totalPages: '',
+      workImagesType: 'nocolor',
       workType: undefined
     }
   },
@@ -149,7 +177,8 @@ export default {
     },
     totalPages: {
       required,
-      numeric
+      numeric,
+      minValue: minValue(1)
     },
     presentationYear: {
       required

@@ -10,8 +10,11 @@
         aria-describedby="errormsg"
         :aria-placeholder="label.toLowerCase()"
         rounded
+        :expanded="expanded"
         @input="$emit('input', $event)"
-      ></component>
+      >
+        <slot name="component"></slot>
+      </component>
     </b-field>
     <span id="errormsg" aria-live="assertive" class="error">
       <template v-for="(_, k) in validations">
@@ -67,12 +70,18 @@ export default {
     useComponent: {
       type: String,
       default: 'b-input'
+    },
+
+    expanded: {
+      type: Boolean,
+      default: false
     }
   },
 
   data() {
     return {
-      inputVal: this.value
+      inputVal: this.value,
+      expandComponents: ['b-select']
     }
   },
 

@@ -21,7 +21,7 @@ export default {
             aria-label="previous"
             onClick={listeners.previous}
           >
-            <span class="symbol left">&lt;</span>
+            <span class="symbol">&lt;</span>
           </button>
         )}
         {normalizedChildren[slideIndex]}

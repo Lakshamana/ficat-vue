@@ -13,6 +13,25 @@
   border-radius: 50%;
   display: flex;
   flex-direction: column;
+  background-color: white;
+  box-shadow: 2px 2px 5px #0000006a;
+}
+
+button.slider-control {
+  border: none;
+  outline: 0;
+}
+
+button.slider-control:active,
+button.slider-control:focus {
+  color: black;
+  outline: 0;
+  box-shadow: 2px 2px 5px #0000006a inset;
+}
+
+button.slider-control:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .symbol {
