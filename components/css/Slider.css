@@ -20,7 +20,6 @@
 
 button.slider-control {
   border: none;
-  outline: 0;
 }
 
 button.slider-control:active,
@@ -28,7 +27,7 @@ button.slider-control:focus,
 button.slider-control::-moz-focus-inner {
   color: black;
   outline: 0;
-  border: 0;
+  border: 1px solid #370aed;
   box-shadow: 2px 2px 5px #0000006a inset;
 }
 
