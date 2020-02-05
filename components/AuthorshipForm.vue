@@ -94,7 +94,7 @@ export default {
     $v: {
       deep: true,
       handler($v) {
-        ;(!$v.$invalid && this.$emit('ready')) || this.$emit('disableForward')
+        ;(!$v.$invalid && this.$emit('ready')) || this.$emit('preventForward')
       }
     }
   },

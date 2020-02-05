@@ -1,41 +1,59 @@
 import '~/components/css/Slider.css'
 
 export default {
-  functional: true,
   name: 'Slider',
-  props: {
-    slideIndex: {
-      type: Number,
-      default: 0
-    },
-    preventForward: {
-      type: Boolean,
-      default: true
+  // props: {
+  //   preventForward: {
+  //     type: Boolean,
+  //     default: true
+  //   }
+  // },
+  data() {
+    return {
+      slideIndex: 0,
+      disableNext: true
     }
   },
-  render(_, { props, children, listeners }) {
-    const { slideIndex, preventForward } = props
-    const normalizedChildren = children.filter(c => c.tag)
+  methods: {
+    incrementSlideIndex(n) {
+      this.slideIndex += n
+    },
+    toggleForward() {
+      console.log(this.preventForward)
+      this.preventForward = !this.preventForward
+    }
+  },
+  render(h) {
+    const normalizedChildren = this.$slots.default.filter(c => c.tag)
+    for (const child of normalizedChildren) {
+      child.data.on = {
+        ready: () => console.log('ready'),
+        preventForward: () => (this.disableNext = true)
+      }
+    }
+    const Component = normalizedChildren[this.slideIndex]
+    console.log(normalizedChildren)
     return (
       <div class="box-wrapper">
-        {slideIndex > 0 && (
+        {this.slideIndex > 0 && (
           <button
             tabindex="0"
             class="slider-control"
             aria-label="previous"
-            onClick={listeners.previous}
+            onClick={() => this.incrementSlideIndex(-1)}
           >
             <span class="symbol">&lt;</span>
           </button>
         )}
-        {normalizedChildren[slideIndex]}
-        {slideIndex < normalizedChildren.length - 1 && (
+        {/* <Component onClick={(this.disableNext = false)} /> */}
+        {Component}
+        {this.slideIndex < normalizedChildren.length - 1 && (
           <button
             tabindex="0"
             class="slider-control"
             aria-label="next"
-            onClick={listeners.next}
-            disabled={preventForward}
+            onClick={() => this.incrementSlideIndex(1)}
+            disabled={this.disableNext}
           >
             <span class="symbol">&gt;</span>
           </button>
