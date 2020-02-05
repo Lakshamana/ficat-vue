@@ -2,12 +2,6 @@ import '~/components/css/Slider.css'
 
 export default {
   name: 'Slider',
-  props: {
-    components: {
-      type: Array,
-      required: true
-    }
-  },
   data() {
     return {
       slideIndex: 0,

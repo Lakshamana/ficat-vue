@@ -321,7 +321,7 @@ import { Hooper, Slide, Navigation, Pagination } from 'hooper'
 import { mapState } from 'vuex'
 import pDebounce from 'p-debounce'
 
-import InputValidation from '@/components/InputValidation'
+import InputValidation from '@/components/InputValidation.js'
 import Card from '@/components/Card'
 import { romanize, maybe } from '@/shared/frontUtils'
 const { MessageCodes } = require('../shared/messageCodes')

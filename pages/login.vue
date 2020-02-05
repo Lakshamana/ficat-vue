@@ -39,7 +39,7 @@
 
 <script>
 import Card from '@/components/Card'
-import InputValidation from '@/components/InputValidation'
+import InputValidation from '@/components/InputValidation.js'
 const pattern = '[a-zA-Z\u00C0-\u017F]'
 
 export default {

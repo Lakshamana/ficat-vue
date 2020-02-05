@@ -1,0 +1,4 @@
+.flex-div {
+  flex: 0 1 auto;
+  max-height: 100%;
+}

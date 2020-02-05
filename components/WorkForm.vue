@@ -9,7 +9,6 @@
             field-name="workTitle"
             :validations="$options.validations.workTitle"
             :v="$v"
-            type="text"
           >
             <template #required>
               Field is required
@@ -131,7 +130,7 @@ import {
   minValue
 } from 'vuelidate/lib/validators'
 import Card from '~/components/Card'
-import InputValidation from '~/components/InputValidation'
+import InputValidation from '~/components/InputValidation.js'
 
 export default {
   name: 'WorkForm',
@@ -155,6 +154,10 @@ export default {
         ;(!$v.$invalid && this.$emit('ready')) || this.$emit('preventforward')
       }
     }
+  },
+
+  mounted() {
+    console.log(this.$slots.required)
   },
 
   methods: {

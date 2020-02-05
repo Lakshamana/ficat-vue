@@ -9,7 +9,9 @@
             field-name="authorName"
             :validations="$options.validations.authorName"
             :v="$v"
-            type="text"
+            :options="{
+              expanded: true
+            }"
           >
             <template #required>
               Field is required
@@ -76,7 +78,7 @@
 <script>
 import { required, minLength } from 'vuelidate/lib/validators'
 import Card from '~/components/Card'
-import InputValidation from '~/components/InputValidation'
+import InputValidation from '~/components/InputValidation.js'
 
 export default {
   name: 'AuthorshipForm',
