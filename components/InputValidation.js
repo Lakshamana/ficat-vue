@@ -94,15 +94,12 @@ export default {
       )
     })
 
-    const listeners = this.$listeners
-    // console.log(scopedSlots)
-    // console.log(this.$listeners)
     return (
       <div class="flex-div">
         <b-field label={label} label-position="on-border">
           {this.$slots.addon}
           <Component
-            v-model={this.iptValue}
+            vModel={this.iptValue}
             aria-required={!!validations.required}
             aria-describedby="errormsg"
             aria-placeholder={label.toLowerCase()}
@@ -110,7 +107,7 @@ export default {
             onInput={e => this.$emit('input', e)}
             type={type || 'text'}
             {...options}
-            on={listeners}
+            on={this.$listeners}
           >
             {this.$slots.component}
             {this.$props.wrappedSlots(h)}

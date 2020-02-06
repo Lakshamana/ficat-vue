@@ -13,8 +13,8 @@
             <template #required>
               Field is required
             </template>
-            <template #minLength="{ props }">
-              Must have a {{ props.min }} chars minima
+            <template #minLength="{ min }">
+              Must have a {{ min }} chars minima
             </template>
           </input-validation>
           <input-validation
@@ -28,8 +28,8 @@
             <template #required>
               Field is required
             </template>
-            <template #minLength="{ props }">
-              Must have a {{ props.min }} chars minima
+            <template #minLength="{ min }">
+              Must have a {{ min }} chars minima
             </template>
           </input-validation>
           <b-field label="Ano" label-position="on-border" grouped>
@@ -64,8 +64,8 @@
               <template #required>
                 Field is required
               </template>
-              <template #minValue="{props}">
-                Minimum value is {{ props.min }}
+              <template #minValue="{ min }">
+                Minimum value is {{ min }}
               </template>
             </input-validation>
           </b-field>
@@ -92,9 +92,6 @@
             <template #required>
               Field is required
             </template>
-            <template #minLength="{ props }">
-              Must have a {{ props.min }} chars minima
-            </template>
           </input-validation>
           <input-validation
             v-model="$v.workType.$model"
@@ -116,23 +113,26 @@
             <template #required>
               Field is required
             </template>
-            <template #minLength="{ props }">
-              Must have a {{ props.min }} chars minima
-            </template>
           </input-validation>
-          <input-validation
-            label="Knowledge Area"
-            :options="{
-              loading,
-              field: 'description',
-              data: knAreas,
-              icon: 'magnify'
-            }"
-            :wrapped-slots="renderTemplateEmpty"
-            @typing="getKnAreas"
-            @select="option => (selectedKnArea = option)"
-          >
-          </input-validation>
+          <b-field>
+            <b-autocomplete
+              :data="academicUnities"
+              placeholder="Unidade acadêmica"
+              aria-placeholder="Unidade acadêmica"
+              :loading="loading"
+              field="name"
+              required
+              aria-required="true"
+              rounded
+              icon="magnify"
+              @typing="getAcdUnities"
+              @select="onSelectedAcdUnity"
+            >
+              <template slot="empty">
+                Nenhum resultado encontrado
+              </template>
+            </b-autocomplete>
+          </b-field>
         </div>
       </div>
     </div>
@@ -140,11 +140,12 @@
 </template>
 
 <script>
+import pDebounce from 'p-debounce'
 import {
   required,
   minLength,
-  numeric,
-  minValue
+  minValue,
+  helpers
 } from 'vuelidate/lib/validators'
 import Card from '~/components/Card'
 import InputValidation from '~/components/InputValidation.js'
@@ -160,7 +161,10 @@ export default {
       numberType: 'arabic',
       totalPages: '',
       workImagesType: 'nocolor',
-      workType: undefined
+      workType: undefined,
+      loading: false,
+      knAreas: [],
+      selectedKnArea: undefined
     }
   },
 
@@ -187,11 +191,47 @@ export default {
     },
 
     renderTemplateEmpty(h) {
-      return h('div', {
+      return h('template', {
         scopedSlots: {
           empty: () => 'Nenhum resultado encontrado'
         }
       })
+    },
+
+    getKnAreas: pDebounce(function(term) {
+      console.log('term:', term)
+      if (!term.length) {
+        this.knAreas = []
+        return
+      }
+      if (term !== this.knAreaPreviousSearch) {
+        this.knAreaPreviousSearch = term
+        this.$axios
+          .get('/api/knowledgeAreas', {
+            params: {
+              description: term
+            }
+          })
+          .then(response => {
+            this.knAreas = response.data
+          })
+          .catch()
+          .finally(() => (this.loading = false))
+      }
+    }, 500),
+
+    getCoursesByAcdUnity(acdUnityId) {
+      this.$axios
+        .get('/api/courses', {
+          params: {
+            acdUnityId
+          }
+        })
+        .then(response => {
+          this.courses = response.data
+        })
+        .catch()
+        .finally(() => (this.loading = false))
     }
   },
 
@@ -205,7 +245,6 @@ export default {
     },
     totalPages: {
       required,
-      numeric,
       minValue: minValue(1)
     },
     presentationYear: {
@@ -216,6 +255,9 @@ export default {
     },
     workType: {
       required
+    },
+    knArea: {
+      required: val => helpers.req(val) && !!this.selectedKnArea
     }
   }
 }

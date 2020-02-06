@@ -4,11 +4,8 @@
       <div class="column is-10">
         <Slider>
           <AuthorshipForm />
-          <WorkForm>
-            <template #required>
-              Field is required
-            </template>
-          </WorkForm>
+          <WorkForm />
+          <WorkForm />
         </Slider>
       </div>
     </div>
