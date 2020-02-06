@@ -81,16 +81,15 @@ export default {
       type
     } = this.$props
 
-    console.log(options)
-    const templates = Object.keys(validations).map(k => {
+    const scopedSlots = Object.keys(validations).map(k => {
       return (
         !v[fieldName][k] &&
-        v[fieldName].$error && (
-          <slot name={k} props={v[fieldName].$params[k]}></slot>
-        )
+        v[fieldName].$error &&
+        this.$scopedSlots[k](v[fieldName].$params[k])
       )
     })
 
+    // console.log(scopedSlots)
     return (
       <div class="flex-div">
         <b-field label={label} label-position="on-border">
@@ -106,11 +105,11 @@ export default {
             {...options}
             {...this.$listeners}
           >
-            <slot name="component"></slot>
+            {this.$slots.component}
           </Component>
         </b-field>
         <span id="errormsg" aria-live="assertive" class="error">
-          {templates}
+          {scopedSlots}
         </span>
       </div>
     )

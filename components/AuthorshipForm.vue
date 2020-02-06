@@ -16,8 +16,8 @@
             <template #required>
               Field is required
             </template>
-            <template #minLength="{ props }">
-              Must have a {{ props.min }} chars minima
+            <template #minLength="{ min }">
+              Must have a {{ min }} chars minima
             </template>
           </input-validation>
           <input-validation
@@ -31,8 +31,8 @@
             <template #required>
               Field is required
             </template>
-            <template #minLength="{ props }">
-              Must have a {{ props.min }} chars minima
+            <template #minLength="{ min }">
+              Must have a {{ min }} chars minima
             </template>
           </input-validation>
         </div>
@@ -50,8 +50,8 @@
             <template #required>
               Field is required
             </template>
-            <template #minLength="{ props }">
-              Must have a {{ props.min }} chars minima
+            <template #minLength="{ min }">
+              Must have a {{ min }} chars minima
             </template>
           </input-validation>
           <input-validation
@@ -65,8 +65,8 @@
             <template #required>
               Field is required
             </template>
-            <template #minLength="{ props }">
-              Must have a {{ props.min }} chars minima
+            <template #minLength="{ min }">
+              Must have a {{ min }} chars minima
             </template>
           </input-validation>
         </div>
