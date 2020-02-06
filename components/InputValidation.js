@@ -94,7 +94,9 @@ export default {
       )
     })
 
+    const listeners = this.$listeners
     // console.log(scopedSlots)
+    // console.log(this.$listeners)
     return (
       <div class="flex-div">
         <b-field label={label} label-position="on-border">
@@ -108,7 +110,7 @@ export default {
             onInput={e => this.$emit('input', e)}
             type={type || 'text'}
             {...options}
-            {...this.$listeners}
+            on={listeners}
           >
             {this.$slots.component}
             {this.$props.wrappedSlots(h)}
