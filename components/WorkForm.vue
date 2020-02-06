@@ -114,25 +114,28 @@
               Field is required
             </template>
           </input-validation>
-          <b-field>
-            <b-autocomplete
-              :data="academicUnities"
-              placeholder="Unidade acadêmica"
-              aria-placeholder="Unidade acadêmica"
-              :loading="loading"
-              field="name"
-              required
-              aria-required="true"
-              rounded
-              icon="magnify"
-              @typing="getAcdUnities"
-              @select="onSelectedAcdUnity"
-            >
-              <template slot="empty">
-                Nenhum resultado encontrado
-              </template>
-            </b-autocomplete>
-          </b-field>
+          <input-validation
+            v-model="$v.knArea.$model"
+            use-component="b-autocomplete"
+            field-name="knArea"
+            :validations="$options.validations.knArea"
+            :v="$v"
+            label="Knowledge Area"
+            :options="{
+              expanded: true,
+              loading,
+              field: 'description',
+              data: knAreas,
+              icon: 'magnify'
+            }"
+            :wrapped-slots="renderTemplate"
+            @typing="getKnAreas"
+            @select="option => (selectedKnArea = option)"
+          >
+            <template #required>
+              Field is required
+            </template>
+          </input-validation>
         </div>
       </div>
     </div>
@@ -141,12 +144,7 @@
 
 <script>
 import pDebounce from 'p-debounce'
-import {
-  required,
-  minLength,
-  minValue,
-  helpers
-} from 'vuelidate/lib/validators'
+import { required, minLength, minValue } from 'vuelidate/lib/validators'
 import Card from '~/components/Card'
 import InputValidation from '~/components/InputValidation.js'
 
@@ -190,11 +188,13 @@ export default {
       return '' + (new Date(Date.now()).getFullYear() - y)
     },
 
-    renderTemplateEmpty(h) {
+    renderTemplate(h) {
       return h('template', {
         scopedSlots: {
-          empty: () => 'Nenhum resultado encontrado'
-        }
+          empty: () => h('span', 'Nenhum resultado encontrado'),
+          default: option => h('span', option)
+        },
+        slot: 'empty'
       })
     },
 
@@ -257,7 +257,7 @@ export default {
       required
     },
     knArea: {
-      required: val => helpers.req(val) && !!this.selectedKnArea
+      required: (_, vm) => !!vm.selectedKnArea
     }
   }
 }

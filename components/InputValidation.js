@@ -82,7 +82,6 @@ export default {
       useComponent: Component,
       v,
       fieldName,
-      options,
       type
     } = this.$props
 
@@ -94,6 +93,8 @@ export default {
       )
     })
 
+    const vnode = this.$props.wrappedSlots(h)
+    console.log(vnode)
     return (
       <div class="flex-div">
         <b-field label={label} label-position="on-border">
@@ -106,11 +107,11 @@ export default {
             rounded
             onInput={e => this.$emit('input', e)}
             type={type || 'text'}
-            {...options}
+            {...{ props: this.$props.options }}
             on={this.$listeners}
           >
             {this.$slots.component}
-            {this.$props.wrappedSlots(h)}
+            {vnode}
           </Component>
         </b-field>
         <span id="errormsg" aria-live="assertive" class="error">
