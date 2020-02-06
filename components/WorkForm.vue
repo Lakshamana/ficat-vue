@@ -80,7 +80,9 @@
             field-name="workImagesType"
             :validations="$options.validations.workImagesType"
             :v="$v"
-            expanded
+            :options="{
+              expanded: true
+            }"
           >
             <template #component>
               <option value="nocolor">Não possui</option>
@@ -101,7 +103,9 @@
             :validations="$options.validations.workType"
             :v="$v"
             use-component="b-select"
-            expanded
+            :options="{
+              expanded: true
+            }"
           >
             <template #component>
               <option value="thesis">Tese</option>
@@ -115,6 +119,19 @@
             <template #minLength="{ props }">
               Must have a {{ props.min }} chars minima
             </template>
+          </input-validation>
+          <input-validation
+            label="Knowledge Area"
+            :options="{
+              loading,
+              field: 'description',
+              data: knAreas,
+              icon: 'magnify'
+            }"
+            :wrapped-slots="renderTemplateEmpty"
+            @typing="getKnAreas"
+            @select="option => (selectedKnArea = option)"
+          >
           </input-validation>
         </div>
       </div>
@@ -167,6 +184,14 @@ export default {
 
     getYear(y) {
       return '' + (new Date(Date.now()).getFullYear() - y)
+    },
+
+    renderTemplateEmpty(h) {
+      return h('div', {
+        scopedSlots: {
+          empty: () => 'Nenhum resultado encontrado'
+        }
+      })
     }
   },
 

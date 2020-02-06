@@ -46,6 +46,11 @@ export default {
     options: {
       type: Object,
       default: () => ({})
+    },
+
+    wrappedSlots: {
+      type: Function,
+      default: () => {}
     }
   },
 
@@ -70,7 +75,7 @@ export default {
     }
   },
 
-  render() {
+  render(h) {
     const {
       label,
       validations,
@@ -106,6 +111,7 @@ export default {
             {...this.$listeners}
           >
             {this.$slots.component}
+            {this.$props.wrappedSlots(h)}
           </Component>
         </b-field>
         <span id="errormsg" aria-live="assertive" class="error">
