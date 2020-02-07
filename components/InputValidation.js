@@ -50,7 +50,7 @@ export default {
 
     wrappedSlots: {
       type: Function,
-      default: () => {}
+      default: () => []
     }
   },
 
@@ -93,8 +93,9 @@ export default {
       )
     })
 
-    const vnode = this.$props.wrappedSlots(h)
-    console.log(vnode)
+    const vnodes = [...this.$props.wrappedSlots(h)]
+    console.log(vnodes)
+
     return (
       <div class="flex-div">
         <b-field label={label} label-position="on-border">
@@ -111,7 +112,7 @@ export default {
             on={this.$listeners}
           >
             {this.$slots.component}
-            {vnode}
+            {...this.$props.wrappedSlots(h)}
           </Component>
         </b-field>
         <span id="errormsg" aria-live="assertive" class="error">

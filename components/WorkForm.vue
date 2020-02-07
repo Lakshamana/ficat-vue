@@ -115,6 +115,28 @@
             </template>
           </input-validation>
           <input-validation
+            v-model="$v.acdUnity.$model"
+            use-component="b-autocomplete"
+            field-name="acdUnity"
+            :validations="$options.validations.acdUnity"
+            :v="$v"
+            label="Academic Unity"
+            :options="{
+              expanded: true,
+              loading,
+              field: 'name',
+              data: academicUnities,
+              icon: 'magnify'
+            }"
+            :wrapped-slots="h => renderTemplates(h, 'name')"
+            @typing="getAcdUnities"
+            @select="option => (selectedAcdUnity = option)"
+          >
+            <template #required>
+              Field is required
+            </template>
+          </input-validation>
+          <input-validation
             v-model="$v.knArea.$model"
             use-component="b-autocomplete"
             field-name="knArea"
@@ -128,7 +150,7 @@
               data: knAreas,
               icon: 'magnify'
             }"
-            :wrapped-slots="renderTemplate"
+            :wrapped-slots="h => renderTemplates(h, 'description')"
             @typing="getKnAreas"
             @select="option => (selectedKnArea = option)"
           >
@@ -162,7 +184,9 @@ export default {
       workType: undefined,
       loading: false,
       knAreas: [],
-      selectedKnArea: undefined
+      academicUnities: [],
+      selectedKnArea: undefined,
+      selectedAcdUnity: undefined
     }
   },
 
@@ -188,14 +212,16 @@ export default {
       return '' + (new Date(Date.now()).getFullYear() - y)
     },
 
-    renderTemplate(h) {
-      return h('template', {
-        scopedSlots: {
-          empty: () => h('span', 'Nenhum resultado encontrado'),
-          default: option => h('span', option)
-        },
-        slot: 'empty'
-      })
+    renderTemplates(h, field) {
+      return [
+        h(
+          'template',
+          {
+            slot: 'empty'
+          },
+          'No result found'
+        )
+      ]
     },
 
     getKnAreas: pDebounce(function(term) {
@@ -214,6 +240,29 @@ export default {
           })
           .then(response => {
             this.knAreas = response.data
+          })
+          .catch()
+          .finally(() => (this.loading = false))
+      }
+    }, 500),
+
+    getAcdUnities: pDebounce(function(term) {
+      if (!term.length) {
+        this.academicUnities = []
+        return
+      }
+      // Evitar que consultas iguais sejam repetidas
+      if (term !== this.acdUnityPreviousSearch) {
+        this.loading = true
+        this.acdUnityPreviousSearch = term
+        this.$axios
+          .get('/api/academicUnities', {
+            params: {
+              term
+            }
+          })
+          .then(response => {
+            this.academicUnities = response.data
           })
           .catch()
           .finally(() => (this.loading = false))
@@ -258,6 +307,9 @@ export default {
     },
     knArea: {
       required: (_, vm) => !!vm.selectedKnArea
+    },
+    acdUnity: {
+      required: (_, vm) => !!vm.selectedAcdUnity
     }
   }
 }
