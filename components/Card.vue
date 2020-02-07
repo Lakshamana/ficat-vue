@@ -32,6 +32,6 @@ export default {
 
 <style scoped>
 .rounded {
-  border-radius: 2px;
+  border-radius: 10px;
 }
 </style>

@@ -93,9 +93,6 @@ export default {
       )
     })
 
-    const vnodes = [...this.$props.wrappedSlots(h)]
-    console.log(vnodes)
-
     return (
       <div class="flex-div">
         <b-field label={label} label-position="on-border">

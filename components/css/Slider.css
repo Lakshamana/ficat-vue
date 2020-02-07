@@ -26,6 +26,7 @@ button.slider-control {
 button.slider-control:active,
 button.slider-control:focus {
   color: black;
+  cursor: pointer;
   box-shadow: 2px 2px 5px #0000006a inset;
 }
 

@@ -5,7 +5,6 @@
         <Slider>
           <AuthorshipForm />
           <WorkForm />
-          <WorkForm />
         </Slider>
       </div>
     </div>

@@ -115,28 +115,6 @@
             </template>
           </input-validation>
           <input-validation
-            v-model="$v.acdUnity.$model"
-            use-component="b-autocomplete"
-            field-name="acdUnity"
-            :validations="$options.validations.acdUnity"
-            :v="$v"
-            label="Academic Unity"
-            :options="{
-              expanded: true,
-              loading,
-              field: 'name',
-              data: academicUnities,
-              icon: 'magnify'
-            }"
-            :wrapped-slots="h => renderTemplates(h, 'name')"
-            @typing="getAcdUnities"
-            @select="option => (selectedAcdUnity = option)"
-          >
-            <template #required>
-              Field is required
-            </template>
-          </input-validation>
-          <input-validation
             v-model="$v.knArea.$model"
             use-component="b-autocomplete"
             field-name="knArea"
@@ -158,6 +136,50 @@
               Field is required
             </template>
           </input-validation>
+          <input-validation
+            v-model="$v.acdUnity.$model"
+            use-component="b-autocomplete"
+            field-name="acdUnity"
+            :validations="$options.validations.acdUnity"
+            :v="$v"
+            label="Academic Unity"
+            :options="{
+              expanded: true,
+              loading,
+              field: 'name',
+              data: academicUnities,
+              icon: 'magnify'
+            }"
+            :wrapped-slots="h => renderTemplates(h, 'name')"
+            @typing="getAcdUnities"
+            @select="onSelectedAcdUnity"
+          >
+            <template #required>
+              Field is required
+            </template>
+          </input-validation>
+          <template v-if="selectedAcdUnity">
+            <input-validation
+              v-model="$v.course.$model"
+              label="Course"
+              field-name="course"
+              :validations="$options.validations.course"
+              :v="$v"
+              use-component="b-select"
+              :options="{
+                expanded: true
+              }"
+            >
+              <template #component>
+                <option v-for="c in courses" :key="c.id" :value="c.id">
+                  {{ c.name }}
+                </option>
+              </template>
+              <template #required>
+                Field is required
+              </template>
+            </input-validation>
+          </template>
         </div>
       </div>
     </div>
@@ -182,11 +204,14 @@ export default {
       totalPages: '',
       workImagesType: 'nocolor',
       workType: undefined,
+      course: undefined,
       loading: false,
       knAreas: [],
       academicUnities: [],
+      courses: [],
       selectedKnArea: undefined,
-      selectedAcdUnity: undefined
+      selectedAcdUnity: undefined,
+      selectedCourse: undefined
     }
   },
 
@@ -269,6 +294,12 @@ export default {
       }
     }, 500),
 
+    onSelectedAcdUnity(option) {
+      this.selectedAcdUnity = option
+      if (this.selectedAcdUnity)
+        this.getCoursesByAcdUnity(this.selectedAcdUnity.id)
+    },
+
     getCoursesByAcdUnity(acdUnityId) {
       this.$axios
         .get('/api/courses', {
@@ -310,6 +341,9 @@ export default {
     },
     acdUnity: {
       required: (_, vm) => !!vm.selectedAcdUnity
+    },
+    course: {
+      required
     }
   }
 }
@@ -320,10 +354,6 @@ export default {
   height: 100%;
   display: flex;
   flex-direction: column;
-  justify-content: space-evenly;
-}
-
-.columns {
-  height: 30vh;
+  justify-content: space-around;
 }
 </style>
