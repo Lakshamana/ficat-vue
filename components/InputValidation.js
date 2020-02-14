@@ -54,22 +54,14 @@ export default {
     }
   },
 
-  data() {
-    return {
-      inputVal: this.value
-    }
-  },
-
   computed: {
     iptValue: {
       get() {
-        return this.useModel ? this.v[this.fieldName].$model : this.inputVal
+        return this.useModel ? this.v[this.fieldName].$model : this.value
       },
 
       set() {
-        const model = this.useModel
-          ? this.v[this.fieldName].$model
-          : this.inputVal
+        const model = this.useModel ? this.v[this.fieldName].$model : this.value
         this.$set(this.v[this.fieldName], '$model', model)
       }
     }
@@ -86,6 +78,7 @@ export default {
     } = this.$props
 
     const scopedSlots = Object.keys(validations).map(k => {
+      if (!this.$scopedSlots[k]) return undefined
       return (
         !v[fieldName][k] &&
         v[fieldName].$error &&
