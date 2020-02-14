@@ -4,8 +4,9 @@
       <div class="column is-10">
         <Slider>
           <!-- <AuthorshipForm />
-          <WorkForm /> -->
-          <OrientationForm />
+          <WorkForm />
+          <OrientationForm /> -->
+          <KeywordForm />
         </Slider>
       </div>
     </div>
@@ -16,7 +17,8 @@
 import Slider from '~/components/Slider.js'
 // import AuthorshipForm from '~/components/AuthorshipForm'
 // import WorkForm from '~/components/WorkForm'
-import OrientationForm from '~/components/OrientationForm'
+// import OrientationForm from '~/components/OrientationForm'
+import KeywordForm from '~/components/KeywordForm'
 
 export default {
   name: 'Index',
@@ -24,7 +26,8 @@ export default {
     Slider,
     // AuthorshipForm,
     // WorkForm,
-    OrientationForm
+    // OrientationForm
+    KeywordForm
   }
 }
 </script>
