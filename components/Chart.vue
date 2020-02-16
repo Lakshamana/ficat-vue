@@ -14,7 +14,7 @@
           <b-button
             class="btn-margin"
             icon-right="file-pdf"
-            :disabled="searchId <= 0"
+            :disabled="!searchId"
             @click="getReport"
           />
         </div>
