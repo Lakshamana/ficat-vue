@@ -1,4 +1,3 @@
-const crypto = require('crypto')
 const PDFDocument = require('pdfkit')
 const htmlPdf = require('html-pdf')
 
@@ -8,7 +7,12 @@ const Course = require('../models/Course')
 const AcademicUnity = require('../models/AcademicUnity')
 
 const { validatePayload, chunks } = require('../../shared/utils')
-const { cutterFetch, payloadErrors, labelMap } = require('../util/utils')
+const {
+  cutterFetch,
+  payloadErrors,
+  labelMap,
+  sha256
+} = require('../util/utils')
 
 const HttpCodes = require('../httpCodes')
 const { MessageCodes } = require('../../shared/messageCodes')
@@ -113,7 +117,10 @@ async function create(ctx) {
   }
 }
 
-let queryResult
+// Usado para guardar as queries realizadas por cada usuário no sistema
+// Previne condições de corrida
+const queryResults = {}
+
 async function catalogQueries(ctx) {
   const query = CatalogCard
   const searchType = ctx.query.searchType
@@ -175,9 +182,14 @@ async function catalogQueries(ctx) {
     responseObj = await fetchAllGroupByAcdUnity(query, year, optionalFilters)
   }
 
+  const user = ctx.cookies.get('user')
+  const xsrfToken = ctx.headers['x-xsrf-token']
+  const pdfToken = sha256(user + xsrfToken + Date.now())
+  ctx.set('pdfToken', pdfToken)
+
   ctx.status = HttpCodes.OK
-  queryResult = { params, searchType }
-  queryResult.data = responseObj
+  queryResults[pdfToken] = { params, searchType }
+  queryResults[pdfToken].data = responseObj
   ctx.body = responseObj
 }
 
@@ -303,27 +315,10 @@ async function getFirstCatalogCardYear(ctx) {
   }
 }
 
-function getReportPermission(ctx) {
-  const username = ctx.cookies.get('user')
-  const xsrfToken = ctx.headers['x-xsrf-token']
-  ctx.body = crypto
-    .createHash('sha256')
-    .update(username + xsrfToken, 'utf8')
-    .digest('hex')
-    .substring(0, 16)
-}
-
 async function getReportPdf(ctx) {
-  const username = ctx.cookies.get('user')
-  const xsrfToken = ctx.cookies.get('xsrfToken')
-  const { reqId } = ctx.query
-  const digest = crypto
-    .createHash('sha256')
-    .update(username + xsrfToken, 'utf8')
-    .digest('hex')
-    .substring(0, 16)
+  const { pdfToken } = ctx.query
 
-  if (!queryResult || !reqId || digest !== reqId) {
+  if (!queryResults[pdfToken] || !pdfToken) {
     ctx.body = 'No data to for you to see here, close this window...'
     ctx.status = HttpCodes.BAD_REQUEST
     return
@@ -333,8 +328,9 @@ async function getReportPdf(ctx) {
   ctx.set('Content-Disposition', 'filename=relatório.pdf')
 
   const acdUnities =
-    !queryResult.params.unityId && (await AcademicUnity.fetchAll()).toJSON()
-  const { searchType, data } = queryResult
+    !queryResults[pdfToken].params.unityId &&
+    (await AcademicUnity.fetchAll()).toJSON()
+  const { searchType, data } = queryResults[pdfToken]
   const table = []
   const labels = labelMap(acdUnities)[searchType]
   for (const i in labels) {
@@ -345,17 +341,21 @@ async function getReportPdf(ctx) {
   }
   // Sort descending first
   const last = table[0].length - 1
-  queryResult.table = table.sort((rowA, rowB) => rowB[last] - rowA[last])
-  if (!(searchType === 'annually') || !queryResult.params.unityId) {
+  queryResults[pdfToken].table = table.sort(
+    (rowA, rowB) => rowB[last] - rowA[last]
+  )
+  if (!(searchType === 'annually') || !queryResults[pdfToken].params.unityId) {
     const values = Object.values(data)
-    queryResult.total = values.reduce((acc, cur) => acc + cur)
-    if (searchType === 'monthly' || !queryResult.params.unityId) {
-      queryResult.mean = (queryResult.total / values.length).toPrecision(3)
+    queryResults[pdfToken].total = values.reduce((acc, cur) => acc + cur)
+    if (searchType === 'monthly' || !queryResults[pdfToken].params.unityId) {
+      queryResults[pdfToken].mean = (
+        queryResults[pdfToken].total / values.length
+      ).toPrecision(3)
     }
   }
   const htmlTemplate = generatePdfReport(
-    queryResult,
-    !!queryResult.params.unityId
+    queryResults[pdfToken],
+    !!queryResults[pdfToken].params.unityId
   )
   const stream = await new Promise((resolve, reject) => {
     htmlPdf.create(htmlTemplate, globalPdfConfig).toStream((err, stream) => {
@@ -363,7 +363,6 @@ async function getReportPdf(ctx) {
       resolve(stream)
     })
   })
-  queryResult = undefined
   ctx.body = stream
   ctx.status = HttpCodes.OK
 }
@@ -375,6 +374,5 @@ module.exports = {
   getPdfResult,
   catalogQueries,
   getFirstCatalogCardYear,
-  getReportPdf,
-  getReportPermission
+  getReportPdf
 }

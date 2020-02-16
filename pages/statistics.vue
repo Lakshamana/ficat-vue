@@ -100,8 +100,8 @@
                     @typing="getAcdUnitiesByTerm"
                     @select="onSelectedAcdUnity"
                   >
-                    <template slot-scope="{ option }">
-                      <span @mouseover="showAcdUnityName(option.name)">
+                    <template #default="{ option }">
+                      <span @mouseover="tooltip = option.name">
                         {{ option.acronym }}
                       </span>
                     </template>
@@ -201,10 +201,6 @@ export default {
   },
 
   methods: {
-    showAcdUnityName(name) {
-      this.tooltip = name
-    },
-
     getYears() {
       this.$axios.get('/api/catalogCards/oldest').then(({ data }) => {
         const length = this.searchYear - data.year + 1
@@ -278,9 +274,9 @@ export default {
             }
           }
         )
-        .then(({ data }) => {
-          this.searchId++
-          this.$refs.chart.createChart(data)
+        .then(res => {
+          this.searchId = res.headers.pdfToken
+          this.$refs.chart.createChart(res.data)
         })
     }
   }

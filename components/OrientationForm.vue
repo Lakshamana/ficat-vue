@@ -153,10 +153,10 @@ export default {
       advisorSurname: '',
       coadvisorName: '',
       coadvisorSurname: '',
-      isFemaleAdvisor: '',
+      isFemaleAdvisor: false,
       advisorTitle: 'doctor',
       coadvisorTitle: 'doctor',
-      isFemaleCoadvisor: ''
+      isFemaleCoadvisor: false
     }
   },
 
@@ -164,7 +164,13 @@ export default {
     $v: {
       deep: true,
       handler($v) {
-        ;(!$v.$invalid && this.$emit('ready')) || this.$emit('preventforward')
+        if (!$v.$invalid) {
+          this.$emit('ready')
+          this.$store.dispatch('form/save', {
+            data: this.$data,
+            index: 'advisors'
+          })
+        } else this.$emit('preventforward')
       }
     }
   },

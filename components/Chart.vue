@@ -52,8 +52,8 @@ export default {
     },
 
     searchId: {
-      type: Number,
-      default: 0
+      type: String,
+      default: ''
     }
   },
 
@@ -159,9 +159,10 @@ export default {
     },
 
     getReport(id) {
-      this.$axios.get('/api/catalogCards/generateReport').then(({ data }) => {
-        window.open('/api/catalogCards/reportResult?reqId=' + data, '_blank')
-      })
+      window.open(
+        '/api/catalogCards/reportResult?pdfToken=' + this.searchId,
+        '_blank'
+      )
     },
 
     getAcdUnities() {

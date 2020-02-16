@@ -3,9 +3,9 @@
     <div class="columns is-centered">
       <div class="column is-10">
         <Slider>
-          <!-- <AuthorshipForm />
+          <AuthorshipForm />
           <WorkForm />
-          <OrientationForm /> -->
+          <OrientationForm />
           <KeywordForm />
         </Slider>
       </div>
@@ -15,18 +15,18 @@
 
 <script>
 import Slider from '~/components/Slider.js'
-// import AuthorshipForm from '~/components/AuthorshipForm'
-// import WorkForm from '~/components/WorkForm'
-// import OrientationForm from '~/components/OrientationForm'
+import AuthorshipForm from '~/components/AuthorshipForm'
+import WorkForm from '~/components/WorkForm'
+import OrientationForm from '~/components/OrientationForm'
 import KeywordForm from '~/components/KeywordForm'
 
 export default {
   name: 'Index',
   components: {
     Slider,
-    // AuthorshipForm,
-    // WorkForm,
-    // OrientationForm
+    AuthorshipForm,
+    WorkForm,
+    OrientationForm,
     KeywordForm
   }
 }

@@ -80,8 +80,6 @@ api.post(
   catalogRoutes.catalogQueries
 )
 
-api.get('/catalogCards/generateReport', catalogRoutes.getReportPermission)
-
 api.get('/catalogCards/reportResult', catalogRoutes.getReportPdf)
 
 /**

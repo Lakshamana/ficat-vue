@@ -1,5 +1,6 @@
 const path = require('path')
 const { execSync } = require('child_process')
+const crypto = require('crypto')
 const { sign, verify, decode } = require('jsonwebtoken')
 const bcrypt = require('bcrypt')
 
@@ -191,6 +192,13 @@ function labelMap(acdUnities) {
   }
 }
 
+function sha256(data) {
+  return crypto
+    .createHash('sha256')
+    .update(data, 'utf8')
+    .digest('hex')
+}
+
 module.exports = {
   paginateCtx,
   tokenSign,
@@ -198,5 +206,6 @@ module.exports = {
   payloadErrors,
   hash,
   cutterFetch,
-  labelMap
+  labelMap,
+  sha256
 }
