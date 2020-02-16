@@ -22,7 +22,7 @@ const globalPdfConfig = require('../models/pdfdocs/globalPdfConfig')
 const catalogCardModel = require('../models/pdfdocs/catalogCard__deprecated__')
 const generatePdfReport = require('../models/pdfdocs/report')
 
-let pdfResult
+const pdfResults = {}
 async function create(ctx) {
   // Validação interna do payload
   const {
@@ -105,8 +105,8 @@ async function create(ctx) {
     const newCatalogCard = await CatalogCard.forge(payload).save()
     ctx.body = newCatalogCard
     ctx.status = HttpCodes.OK
-    pdfResult = doc
     const id = newCatalogCard.id
+    pdfResults[id] = doc
     ctx.set('Location', `/api/catalogCards/${id}`)
   } catch (e) {
     ctx.throw(HttpCodes.BAD_REQUEST, MessageCodes.error.errOnDbSave, {
@@ -246,6 +246,8 @@ async function fetchAllGroupByAcdUnity(query, year, filters) {
 
 function getPdfResult(ctx) {
   ctx.set('Content-Type', 'application/pdf')
+  const { id } = ctx.params
+  const pdfResult = pdfResults[id]
   ctx.set('Content-Disposition', `filename=${pdfResult.info.Title}`)
   if (!pdfResult) {
     ctx.status = HttpCodes.NOT_FOUND
@@ -253,8 +255,8 @@ function getPdfResult(ctx) {
     return
   }
   ctx.status = HttpCodes.OK
+  delete pdfResults[id]
   ctx.body = pdfResult
-  pdfResult = undefined
 }
 
 async function list(ctx) {
@@ -327,10 +329,10 @@ async function getReportPdf(ctx) {
   ctx.set('Content-Type', 'application/pdf')
   ctx.set('Content-Disposition', 'filename=relatório.pdf')
 
+  const queryResult = queryResults[pdfToken]
   const acdUnities =
-    !queryResults[pdfToken].params.unityId &&
-    (await AcademicUnity.fetchAll()).toJSON()
-  const { searchType, data } = queryResults[pdfToken]
+    !queryResult.params.unityId && (await AcademicUnity.fetchAll()).toJSON()
+  const { searchType, data } = queryResult
   const table = []
   const labels = labelMap(acdUnities)[searchType]
   for (const i in labels) {
@@ -341,21 +343,17 @@ async function getReportPdf(ctx) {
   }
   // Sort descending first
   const last = table[0].length - 1
-  queryResults[pdfToken].table = table.sort(
-    (rowA, rowB) => rowB[last] - rowA[last]
-  )
-  if (!(searchType === 'annually') || !queryResults[pdfToken].params.unityId) {
+  queryResult.table = table.sort((rowA, rowB) => rowB[last] - rowA[last])
+  if (!(searchType === 'annually') || !queryResult.params.unityId) {
     const values = Object.values(data)
-    queryResults[pdfToken].total = values.reduce((acc, cur) => acc + cur)
-    if (searchType === 'monthly' || !queryResults[pdfToken].params.unityId) {
-      queryResults[pdfToken].mean = (
-        queryResults[pdfToken].total / values.length
-      ).toPrecision(3)
+    queryResult.total = values.reduce((acc, cur) => acc + cur)
+    if (searchType === 'monthly' || !queryResult.params.unityId) {
+      queryResult.mean = (queryResult.total / values.length).toPrecision(3)
     }
   }
   const htmlTemplate = generatePdfReport(
-    queryResults[pdfToken],
-    !!queryResults[pdfToken].params.unityId
+    queryResult,
+    !!queryResult.params.unityId
   )
   const stream = await new Promise((resolve, reject) => {
     htmlPdf.create(htmlTemplate, globalPdfConfig).toStream((err, stream) => {
@@ -364,6 +362,7 @@ async function getReportPdf(ctx) {
     })
   })
   ctx.body = stream
+  delete queryResults[pdfToken]
   ctx.status = HttpCodes.OK
 }
 
