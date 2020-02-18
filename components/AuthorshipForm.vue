@@ -82,7 +82,7 @@ import Card from '~/components/Card'
 import InputValidation from '~/components/InputValidation.js'
 
 export default {
-  name: 'Authorshipauthors',
+  name: 'AuthorshipForm',
   components: { Card, InputValidation },
   data() {
     const { authors } = recovery('form')
@@ -99,18 +99,14 @@ export default {
     $v: {
       deep: true,
       handler($v) {
-        if (!$v.$invalid) {
-          this.$emit('ready')
-          replace('form', { authors: { ...this.$data } })
-          console.log('new:', recovery('form').authors)
-        } else this.$emit('preventforward')
+        replace('form', { authors: { ...this.$data } })
+        ;(!$v.$invalid && this.$emit('ready')) || this.$emit('preventforward')
       }
     }
   },
 
   beforeCreate() {
-    const tmp = recovery('form').authors
-    if (!tmp) {
+    if (!recovery('form').authors)
       replace('form', {
         authors: {
           authorName: '',
@@ -119,7 +115,10 @@ export default {
           author2Surname: ''
         }
       })
-    }
+  },
+
+  mounted() {
+    ;(!this.$v.$invalid && this.$emit('ready')) || this.$emit('preventforward')
   },
 
   methods: {

@@ -198,7 +198,6 @@ export default {
   components: { Card, InputValidation },
   data() {
     const { work } = recovery('form')
-    console.log(work)
     return {
       workTitle: work.workTitle,
       workSubtitle: work.workSubtitle,
@@ -216,7 +215,9 @@ export default {
       selectedAcdUnity: work.selectedAcdUnity,
       selectedCourse: work.selectedCourse,
       acdUnity: work.acdUnity,
-      knArea: work.knArea
+      knArea: work.knArea,
+      knAreaPreviousSearch: '',
+      acdUnityPreviousSearch: ''
     }
   },
 
@@ -224,12 +225,14 @@ export default {
     $v: {
       deep: true,
       handler($v) {
-        if (!$v.$invalid) {
-          this.$emit('ready')
-          replace('form', { work: { ...this.$data } })
-        } else this.$emit('preventforward')
+        replace('form', { work: { ...this.$data } })
+        ;(!$v.$invalid && this.$emit('ready')) || this.$emit('preventforward')
       }
     }
+  },
+
+  mounted() {
+    ;(!this.$v.$invalid && this.$emit('ready')) || this.$emit('preventforward')
   },
 
   beforeCreate() {
@@ -255,10 +258,6 @@ export default {
           knArea: ''
         }
       })
-  },
-
-  mounted() {
-    console.log(this.$slots.required)
   },
 
   methods: {

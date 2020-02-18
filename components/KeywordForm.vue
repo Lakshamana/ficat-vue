@@ -47,13 +47,15 @@
 <script>
 import { required, minLength } from 'vuelidate/lib/validators'
 import Card from '~/components/Card'
+import { recovery, replace } from '~/front/persistence'
 import InputValidation from '~/components/InputValidation.js'
 export default {
   name: 'KeywordForm',
   components: { Card, InputValidation },
   data() {
+    const { keywords } = recovery('form')
     return {
-      keywords: [{ text: '' }]
+      keywords
     }
   },
 
@@ -61,15 +63,21 @@ export default {
     $v: {
       deep: true,
       handler($v) {
-        if (!$v.$invalid) {
-          this.$emit('ready')
-          this.$store.dispatch('form/save', {
-            data: this.$data.map(kw => kw.text),
-            index: 'keywords'
-          })
-        } else this.$emit('preventforward')
+        replace('form', { keywords: { ...this.$data } })
+        ;(!$v.$invalid && this.$emit('ready')) || this.$emit('preventforward')
       }
     }
+  },
+
+  mounted() {
+    ;(!this.$v.$invalid && this.$emit('ready')) || this.$emit('preventforward')
+  },
+
+  beforeCreate() {
+    if (!recovery('form').keywords)
+      replace('form', {
+        keywords: [{ text: '' }]
+      })
   },
 
   validations: {

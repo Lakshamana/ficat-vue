@@ -22,7 +22,7 @@
           </input-validation>
           <input-validation
             v-model="$v.advisorSurname.$model"
-            label="Author Surname"
+            label="Advisor Surname"
             field-name="advisorSurname"
             :validations="$options.validations.advisorSurname"
             :v="$v"
@@ -104,8 +104,11 @@
           <div class="columns vcenter">
             <div class="column is-half">
               <b-field class="field">
-                <b-checkbox v-model="isFemaleCoadvisor">
-                  Orientadora
+                <b-checkbox
+                  v-model="isFemaleCoadvisor"
+                  :disabled="!coadvisorName"
+                >
+                  Co-orientadora
                 </b-checkbox>
               </b-field>
             </div>
@@ -141,6 +144,7 @@
 
 <script>
 import { required, minLength } from 'vuelidate/lib/validators'
+import { recovery, replace } from '~/front/persistence'
 import Card from '~/components/Card'
 import InputValidation from '~/components/InputValidation.js'
 
@@ -148,15 +152,16 @@ export default {
   name: 'AuthorshipForm',
   components: { Card, InputValidation },
   data() {
+    const { advisors } = recovery('form')
     return {
-      advisorName: '',
-      advisorSurname: '',
-      coadvisorName: '',
-      coadvisorSurname: '',
-      isFemaleAdvisor: false,
-      advisorTitle: 'doctor',
-      coadvisorTitle: 'doctor',
-      isFemaleCoadvisor: false
+      advisorName: advisors.advisorName,
+      advisorSurname: advisors.advisorSurname,
+      coadvisorName: advisors.coadvisorName,
+      coadvisorSurname: advisors.coadvisorSurname,
+      isFemaleAdvisor: advisors.isFemaleAdvisor,
+      advisorTitle: advisors.advisorTitle,
+      coadvisorTitle: advisors.coadvisorTitle,
+      isFemaleCoadvisor: advisors.isFemaleCoadvisor
     }
   },
 
@@ -164,15 +169,31 @@ export default {
     $v: {
       deep: true,
       handler($v) {
-        if (!$v.$invalid) {
-          this.$emit('ready')
-          this.$store.dispatch('form/save', {
-            data: this.$data,
-            index: 'advisors'
-          })
-        } else this.$emit('preventforward')
+        replace('form', { advisors: { ...this.$data } })
+        console.log(recovery('form').advisors)
+        ;(!$v.$invalid && this.$emit('ready')) || this.$emit('preventforward')
       }
     }
+  },
+
+  mounted() {
+    ;(!this.$v.$invalid && this.$emit('ready')) || this.$emit('preventforward')
+  },
+
+  beforeCreate() {
+    if (!recovery('form').advisors)
+      replace('form', {
+        advisors: {
+          advisorName: '',
+          advisorSurname: '',
+          coadvisorName: '',
+          coadvisorSurname: '',
+          isFemaleAdvisor: false,
+          advisorTitle: 'doctor',
+          coadvisorTitle: 'doctor',
+          isFemaleCoadvisor: false
+        }
+      })
   },
 
   methods: {
