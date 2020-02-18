@@ -245,7 +245,7 @@ export default {
           numberType: 'arabic',
           totalPages: '',
           workImagesType: 'nocolor',
-          workType: undefined,
+          workType: 'thesis',
           course: undefined,
           loading: false,
           knAreas: [],
