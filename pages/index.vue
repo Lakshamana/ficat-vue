@@ -15,6 +15,7 @@
 
 <script>
 import Slider from '~/components/Slider.js'
+import { persist } from '~/front/persistence'
 import AuthorshipForm from '~/components/AuthorshipForm'
 import WorkForm from '~/components/WorkForm'
 import OrientationForm from '~/components/OrientationForm'
@@ -28,6 +29,10 @@ export default {
     WorkForm,
     OrientationForm,
     KeywordForm
+  },
+
+  created() {
+    persist('form', {})
   }
 }
 </script>

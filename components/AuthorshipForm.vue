@@ -77,18 +77,21 @@
 
 <script>
 import { required, minLength } from 'vuelidate/lib/validators'
+import { recovery, replace } from '~/front/persistence'
 import Card from '~/components/Card'
 import InputValidation from '~/components/InputValidation.js'
 
 export default {
-  name: 'AuthorshipForm',
+  name: 'Authorshipauthors',
   components: { Card, InputValidation },
   data() {
+    const { authors } = recovery('form')
+    console.log(authors)
     return {
-      authorName: '',
-      authorSurname: '',
-      author2Name: '',
-      author2Surname: ''
+      authorName: authors.authorName,
+      authorSurname: authors.authorSurname,
+      author2Name: authors.author2Name,
+      author2Surname: authors.author2Surname
     }
   },
 
@@ -96,8 +99,26 @@ export default {
     $v: {
       deep: true,
       handler($v) {
-        ;(!$v.$invalid && this.$emit('ready')) || this.$emit('preventforward')
+        if (!$v.$invalid) {
+          this.$emit('ready')
+          replace('form', { authors: { ...this.$data } })
+          console.log('new:', recovery('form').authors)
+        } else this.$emit('preventforward')
       }
+    }
+  },
+
+  beforeCreate() {
+    const tmp = recovery('form').authors
+    if (!tmp) {
+      replace('form', {
+        authors: {
+          authorName: '',
+          authorSurname: '',
+          author2Name: '',
+          author2Surname: ''
+        }
+      })
     }
   },
 

@@ -171,7 +171,7 @@
               }"
             >
               <template #component>
-                <option v-for="c in courses" :key="c.id" :value="c.id">
+                <option v-for="c in courses" :key="c.id" :value="'' + c.id">
                   {{ c.name }}
                 </option>
               </template>
@@ -189,6 +189,7 @@
 <script>
 import pDebounce from 'p-debounce'
 import { required, minLength, minValue } from 'vuelidate/lib/validators'
+import { recovery, replace } from '~/front/persistence'
 import Card from '~/components/Card'
 import InputValidation from '~/components/InputValidation.js'
 
@@ -196,22 +197,26 @@ export default {
   name: 'WorkForm',
   components: { Card, InputValidation },
   data() {
+    const { work } = recovery('form')
+    console.log(work)
     return {
-      workTitle: '',
-      workSubtitle: '',
-      presentationYear: '' + new Date(Date.now()).getFullYear(),
-      numberType: 'arabic',
-      totalPages: '',
-      workImagesType: 'nocolor',
-      workType: undefined,
-      course: undefined,
-      loading: false,
-      knAreas: [],
-      academicUnities: [],
-      courses: [],
-      selectedKnArea: undefined,
-      selectedAcdUnity: undefined,
-      selectedCourse: undefined
+      workTitle: work.workTitle,
+      workSubtitle: work.workSubtitle,
+      presentationYear: work.presentationYear,
+      numberType: work.numberType,
+      totalPages: work.totalPages,
+      workImagesType: work.workImagesType,
+      workType: work.workType,
+      course: work.course,
+      loading: work.loading,
+      knAreas: work.knAreas,
+      academicUnities: work.academicUnities,
+      courses: work.courses,
+      selectedKnArea: work.selectedKnArea,
+      selectedAcdUnity: work.selectedAcdUnity,
+      selectedCourse: work.selectedCourse,
+      acdUnity: work.acdUnity,
+      knArea: work.knArea
     }
   },
 
@@ -219,9 +224,37 @@ export default {
     $v: {
       deep: true,
       handler($v) {
-        ;(!$v.$invalid && this.$emit('ready')) || this.$emit('preventforward')
+        if (!$v.$invalid) {
+          this.$emit('ready')
+          replace('form', { work: { ...this.$data } })
+        } else this.$emit('preventforward')
       }
     }
+  },
+
+  beforeCreate() {
+    if (!recovery('form').work)
+      replace('form', {
+        work: {
+          workTitle: '',
+          workSubtitle: '',
+          presentationYear: '' + new Date(Date.now()).getFullYear(),
+          numberType: 'arabic',
+          totalPages: '',
+          workImagesType: 'nocolor',
+          workType: undefined,
+          course: undefined,
+          loading: false,
+          knAreas: [],
+          academicUnities: [],
+          courses: [],
+          selectedKnArea: undefined,
+          selectedAcdUnity: undefined,
+          selectedCourse: undefined,
+          acdUnity: '',
+          knArea: ''
+        }
+      })
   },
 
   mounted() {

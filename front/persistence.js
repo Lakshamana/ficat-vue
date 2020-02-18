@@ -9,3 +9,9 @@ export function persist(key, value, options) {
 export function recovery(key) {
   return window.$cookies.get(key)
 }
+
+export function replace(key, value) {
+  const curr = window.$cookies.get(key)
+  const newVal = Object.assign(curr, value)
+  persist(key, newVal)
+}

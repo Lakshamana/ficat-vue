@@ -56,6 +56,22 @@ export default {
       keywords: [{ text: '' }]
     }
   },
+
+  watch: {
+    $v: {
+      deep: true,
+      handler($v) {
+        if (!$v.$invalid) {
+          this.$emit('ready')
+          this.$store.dispatch('form/save', {
+            data: this.$data.map(kw => kw.text),
+            index: 'keywords'
+          })
+        } else this.$emit('preventforward')
+      }
+    }
+  },
+
   validations: {
     keywords: {
       required,
