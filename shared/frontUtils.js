@@ -84,3 +84,19 @@ export function romanize(n, uppercase = false) {
 export function rand(min, max) {
   return min + Math.ceil(Math.random() * (max - min))
 }
+
+/**
+ * Remove object attributes based on a list.
+ * @param {Object} obj not modified by the function
+ * @param {Array} attrList
+ * @returns {Object} new object without the passed properties
+ */
+export function removeAttrs(obj, attrList) {
+  const payload = {}
+  for (const attr in obj) {
+    if (!attrList.includes(attr)) {
+      payload[attr] = obj[attr]
+    }
+  }
+  return obj
+}

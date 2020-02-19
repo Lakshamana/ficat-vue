@@ -12,13 +12,38 @@
                   </figure>
                 </div>
                 <input-validation
-                  v-model="username"
-                  :properties="usernameProperties"
-                ></input-validation>
+                  v-model="$v.username.$model"
+                  label="Username"
+                  field-name="username"
+                  :validations="$options.validations.username"
+                  :v="$v"
+                >
+                  <template #required>
+                    Field is required
+                  </template>
+                  <template #minLength="{ min }">
+                    Must have a {{ min }} chars minima
+                  </template>
+                </input-validation>
                 <input-validation
-                  v-model="password"
-                  :properties="passwordProperties"
-                ></input-validation>
+                  v-model="$v.username.$model"
+                  label="Username"
+                  field-name="username"
+                  :validations="$options.validations.username"
+                  :v="$v"
+                  type="password"
+                  :options="{
+                    expanded: true,
+                    passwordReveal: true
+                  }"
+                >
+                  <template #required>
+                    Field is required
+                  </template>
+                  <template #minLength="{ min }">
+                    Must have a {{ min }} chars minima
+                  </template>
+                </input-validation>
                 <div class="level">
                   <div class="level-left"></div>
                   <div class="field level-right">

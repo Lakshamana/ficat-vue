@@ -128,6 +128,9 @@ function cutterFetch(surname, workTitle) {
     return word
   })
 
+  // Capitalizar sobrenome para encontrar o cutter correspondente
+  surname = capit(surname)
+
   // Fatiar por espaços
   const chunks = surname.split(' ')
   let s
@@ -144,9 +147,9 @@ function cutterFetch(surname, workTitle) {
   const file = path.resolve(__dirname, '../../static/cutter.txt')
 
   /**
-   * Caso o código para o componente do sobrenome não tenha um código,
+   * Caso a pesquisa para o componente do sobrenome não encontre um código,
    * retire a letra final e repita o processo.
-   * Caso contrário, resolva a promise passando o valor encontrado
+   * Caso contrário, retorne o valor encontrado
    */
   while (true) {
     // grep -w: exact match
@@ -159,10 +162,19 @@ function cutterFetch(surname, workTitle) {
     if (code) {
       // e.g. 'S' + 677 + 't', para surname = 'Sobrenome' e workTitle = 'Trabalho'
       const result = s[0].toUpperCase() + code + workTitle[0].toLowerCase()
-      console.log('worktitle: ' + workTitle)
       return result
     } else s = s.substring(0, s.length - 1)
   }
+}
+
+/**
+ * Capitalizes a word
+ * @param {String} word
+ * @example example -> Example
+ * @returns {String} Capitalized word
+ */
+function capit(word) {
+  return word[0].toUpperCase() + word.substring(1)
 }
 
 /**
@@ -207,5 +219,6 @@ module.exports = {
   hash,
   cutterFetch,
   labelMap,
-  sha256
+  sha256,
+  capit
 }

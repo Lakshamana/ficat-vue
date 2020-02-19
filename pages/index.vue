@@ -7,6 +7,7 @@
           <WorkForm />
           <OrientationForm />
           <KeywordForm />
+          <SendCatalogDataForm />
         </Slider>
       </div>
     </div>
@@ -20,6 +21,7 @@ import AuthorshipForm from '~/components/AuthorshipForm'
 import WorkForm from '~/components/WorkForm'
 import OrientationForm from '~/components/OrientationForm'
 import KeywordForm from '~/components/KeywordForm'
+import SendCatalogDataForm from '~/components/SendCatalogDataForm'
 
 export default {
   name: 'Index',
@@ -28,7 +30,8 @@ export default {
     AuthorshipForm,
     WorkForm,
     OrientationForm,
-    KeywordForm
+    KeywordForm,
+    SendCatalogDataForm
   },
 
   created() {
