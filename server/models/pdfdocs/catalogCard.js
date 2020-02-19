@@ -105,6 +105,7 @@ function catalogCard(
   // HTML model and script should always have same file name
   const htmlTemplate = readFileSync(templatePath, 'utf8')
   return htmlTemplate
+    .replace('{{cutter}}', cutter)
     .replace('{{header}}', header)
     .replace('{{authorHeader}}', authorHeader)
     .replace('{{workTitleHeader}}', workTitleHeader)
