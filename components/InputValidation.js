@@ -105,9 +105,15 @@ export default {
             {...this.$props.wrappedSlots(h)}
           </Component>
         </b-field>
-        <span id="errormsg" aria-live="assertive" class="error">
-          {scopedSlots}
-        </span>
+        {!validations.required && !validations.$invalid ? (
+          <div class="optional" aria-live="assertive">
+            Optional field
+          </div>
+        ) : (
+          <span id="errormsg" aria-live="assertive" class="error">
+            {scopedSlots}
+          </span>
+        )}
       </div>
     )
   }

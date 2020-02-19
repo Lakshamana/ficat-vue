@@ -44,14 +44,3 @@ select,
 textarea {
   outline: none;
 }
-
-.error {
-  color: red;
-  font-size: 9pt;
-  min-width: 100%;
-  text-align: left;
-  display: block;
-  height: 1rem;
-  margin-top: -1em;
-  margin-bottom: 1em;
-}

@@ -11,7 +11,7 @@
             v-model="kw.text.$model"
             :label="'Keyword ' + (+i + 1)"
             field-name="text"
-            :validations="kw.text"
+            :validations="$options.validations.keywords.$each.text"
             :v="kw"
             :options="{
               expanded: true
