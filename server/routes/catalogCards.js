@@ -22,7 +22,10 @@ const globalPdfConfig = require('../models/pdfdocs/globalPdfConfig')
 const catalogCardModel = require('../models/pdfdocs/catalogCard')
 const generatePdfReport = require('../models/pdfdocs/report')
 
+// Usado para guardar as operações realizadas por cada usuário no sistema
+// Previne condições de corrida
 const pdfResults = {}
+
 async function create(ctx) {
   // Validação interna do payload
   const {
@@ -82,7 +85,6 @@ async function create(ctx) {
   }
 
   const cutter = cutterFetch(authors.authorSurname, work.workTitle)
-
   try {
     const payload = {
       type: work.workType,
