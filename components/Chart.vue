@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div v-show="searchId > 0">
+    <div v-show="searchId.length">
       <canvas id="canvas" ref="canvas"></canvas>
       <br />
       <div class="level">

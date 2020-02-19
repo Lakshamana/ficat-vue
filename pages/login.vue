@@ -19,17 +19,17 @@
                   :v="$v"
                 >
                   <template #required>
-                    Field is required
+                    Nome de usuário é obrigatório
                   </template>
                   <template #minLength="{ min }">
-                    Must have a {{ min }} chars minima
+                    Nome de usuário deve possuir no mínimo {{ min }} carac.
                   </template>
                 </input-validation>
                 <input-validation
-                  v-model="$v.username.$model"
-                  label="Username"
-                  field-name="username"
-                  :validations="$options.validations.username"
+                  v-model="$v.password.$model"
+                  label="Password"
+                  field-name="password"
+                  :validations="$options.validations.password"
                   :v="$v"
                   type="password"
                   :options="{
@@ -38,10 +38,10 @@
                   }"
                 >
                   <template #required>
-                    Field is required
+                    Senha é obrigatória
                   </template>
                   <template #minLength="{ min }">
-                    Must have a {{ min }} chars minima
+                    Senha deve possuir no mínimo {{ min }} carac.
                   </template>
                 </input-validation>
                 <div class="level">
@@ -63,9 +63,9 @@
 </template>
 
 <script>
+import { required, minLength } from 'vuelidate/lib/validators'
 import Card from '@/components/Card'
 import InputValidation from '@/components/InputValidation.js'
-const pattern = '[a-zA-Z\u00C0-\u017F]'
 
 export default {
   name: 'Login',
@@ -80,29 +80,7 @@ export default {
     return {
       username: '',
       password: '',
-      rememberMe: false,
-      usernameProperties: {
-        placeholder: 'Nome de usuário',
-        invalidMessages: [
-          'Campo obrigatório e mínimo de 5 caracteres. Digite letras apenas'
-        ],
-        pattern: `${pattern}+`,
-        minlength: 5,
-        required: true,
-        rounded: true
-      },
-      passwordProperties: {
-        type: 'password',
-        placeholder: 'Senha',
-        invalidMessages: [
-          'Campo obrigatório e mínimo de 5 caracteres. Digite letras apenas'
-        ],
-        pattern: `${pattern}+`,
-        minlength: 5,
-        required: true,
-        rounded: true,
-        passwordReveal: true
-      }
+      rememberMe: false
     }
   },
 
@@ -124,6 +102,17 @@ export default {
           const to = this.$route.query.to ? atob(this.$route.query.to) : '/'
           this.$router.push(to)
         })
+    }
+  },
+
+  validations: {
+    username: {
+      required,
+      minLength: minLength(5)
+    },
+    password: {
+      required,
+      minLength: minLength(5)
     }
   }
 }

@@ -190,7 +190,7 @@ export default {
       semester: '',
       selectedAcdUnity: undefined,
       selectedCourse: undefined,
-      searchId: 0,
+      searchId: '',
       tooltip: ''
     }
   },
@@ -275,7 +275,7 @@ export default {
           }
         )
         .then(res => {
-          this.searchId = res.headers.pdfToken
+          this.searchId = res.headers.pdftoken
           this.$refs.chart.createChart(res.data)
         })
     }
