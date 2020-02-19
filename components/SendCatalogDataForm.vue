@@ -103,16 +103,11 @@ export default {
           catalogFont
         })
         .then(response => {
-          const location = response.headers.location
-          const id = location.substr(location.lastIndexOf('/') + 1)
-          this.getPdfResult(id)
+          const location = response.headers['pdf-location']
+          window.open(location, '_blank')
         })
         .catch()
         .finally(() => (this.loading = false))
-    },
-
-    getPdfResult(id) {
-      window.open(`/api/catalogCards/get/${id}`, '_blank')
     }
   }
 }

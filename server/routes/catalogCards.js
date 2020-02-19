@@ -1,4 +1,4 @@
-const PDFDocument = require('pdfkit')
+// const PDFDocument = require('pdfkit')
 const htmlPdf = require('html-pdf')
 
 const CatalogCard = require('../models/CatalogCard')
@@ -19,7 +19,7 @@ const { MessageCodes } = require('../../shared/messageCodes')
 const { catalogFields, querieFields } = require('../routeFieldsValidation')
 const globalPdfConfig = require('../models/pdfdocs/globalPdfConfig')
 
-const catalogCardModel = require('../models/pdfdocs/catalogCard__deprecated__')
+const catalogCardModel = require('../models/pdfdocs/catalogCard')
 const generatePdfReport = require('../models/pdfdocs/report')
 
 const pdfResults = {}
@@ -63,7 +63,6 @@ async function create(ctx) {
     })
   }
 
-  // Construir o PDF
   const kna = await KnowledgeArea.where({
     id: academicDetails.knAreaId
   }).fetch()
@@ -83,18 +82,6 @@ async function create(ctx) {
   }
 
   const cutter = cutterFetch(authors.authorSurname, work.workTitle)
-  const doc = new PDFDocument()
-  catalogCardModel(doc, catalogFont, {
-    cutter,
-    authors,
-    work,
-    advisors,
-    academicDetailNames,
-    keywords,
-    cdd
-  })
-  doc.info.Title = 'ficha.pdf'
-  await doc.end()
 
   try {
     const payload = {
@@ -103,11 +90,21 @@ async function create(ctx) {
       courseId: academicDetails.course
     }
     const newCatalogCard = await CatalogCard.forge(payload).save()
-    ctx.body = newCatalogCard
+    ctx.set('Content-Type', 'application/pdf')
+    ctx.set('Content-Disposition', `filename=ficha.pdf`)
     ctx.status = HttpCodes.OK
     const id = newCatalogCard.id
-    pdfResults[id] = doc
-    ctx.set('Location', `/api/catalogCards/${id}`)
+    pdfResults[id] = {
+      catalogFont,
+      cutter,
+      authors,
+      work,
+      advisors,
+      academicDetailNames,
+      keywords,
+      cdd
+    }
+    ctx.set('PDF-Location', `/api/catalogCards/get/${id}`)
   } catch (e) {
     ctx.throw(HttpCodes.BAD_REQUEST, MessageCodes.error.errOnDbSave, {
       error: {
@@ -115,6 +112,32 @@ async function create(ctx) {
       }
     })
   }
+}
+
+async function getPdfResult(ctx) {
+  const { id } = ctx.params
+  const pdfResult = pdfResults[id]
+  const { catalogFont } = pdfResult
+  if (!pdfResult) {
+    ctx.status = HttpCodes.NOT_FOUND
+    ctx.body = 'PDF already downloaded, please close this window.'
+    return
+  }
+  ctx.set('Content-Type', 'application/pdf')
+  ctx.set('Content-Disposition', `filename=ficha.pdf`)
+
+  // Construir o PDF
+  const htmlTemplate = catalogCardModel(catalogFont, pdfResult)
+  const stream = await new Promise((resolve, reject) => {
+    htmlPdf.create(htmlTemplate, globalPdfConfig).toStream((err, stream) => {
+      if (err) reject(err)
+      resolve(stream)
+    })
+  })
+
+  // delete pdfResults[id]
+  ctx.body = stream
+  ctx.status = HttpCodes.OK
 }
 
 // Usado para guardar as queries realizadas por cada usuário no sistema
@@ -156,10 +179,8 @@ async function catalogQueries(ctx) {
   let responseObj = {}
   // Filtre e conte por mês, semestre ou ano inteiro.
   if (!isNaN(month)) {
-    console.log('have a month')
     responseObj = await fetchMonthCount(query, year, month, optionalFilters)
   } else if (!isNaN(semester)) {
-    console.log('have a semester')
     const groupedMonths = chunks(months, chunkSizeConvert[searchType])
     responseObj = await fetchMonthGroupCount(
       query,
@@ -242,21 +263,6 @@ async function fetchAllGroupByAcdUnity(query, year, filters) {
     payload[i] = group[i] ? group[i].length : 0
   }
   return payload
-}
-
-function getPdfResult(ctx) {
-  ctx.set('Content-Type', 'application/pdf')
-  const { id } = ctx.params
-  const pdfResult = pdfResults[id]
-  ctx.set('Content-Disposition', `filename=${pdfResult.info.Title}`)
-  if (!pdfResult) {
-    ctx.status = HttpCodes.NOT_FOUND
-    ctx.body = 'PDF already downloaded, please close this window.'
-    return
-  }
-  ctx.status = HttpCodes.OK
-  delete pdfResults[id]
-  ctx.body = pdfResult
 }
 
 async function list(ctx) {
@@ -362,7 +368,7 @@ async function getReportPdf(ctx) {
     })
   })
   ctx.body = stream
-  delete queryResults[pdfToken]
+  // delete queryResults[pdfToken]
   ctx.status = HttpCodes.OK
 }
 

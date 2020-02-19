@@ -52,8 +52,9 @@ function generateReport(queryData, hasChoosenAcdUnity) {
   const templatePath = join(__dirname, 'report.html')
 
   // HTML model and script should always have same file name
-  let htmlTemplate = readFileSync(templatePath, 'utf8')
+  const htmlTemplate = readFileSync(templatePath, 'utf8')
 
+  // A hospedagem dessas imagens poderia ser melhorada
   // const hostPreffix = `${process.env.PROTOCOL}://${process.env.HOST}:${process.env.PORT}/`
   const hostPreffix =
     'https://raw.githubusercontent.com/Lakshamana/ficat-vue/master/assets/'
@@ -63,7 +64,7 @@ function generateReport(queryData, hasChoosenAcdUnity) {
   const regularFontUrl = hostPreffix + 'fonts/arimo.regular.ttf'
   const boldFontUrl = hostPreffix + 'fonts/arimo.bold.ttf'
 
-  htmlTemplate = htmlTemplate
+  return htmlTemplate
     .replace('{{regularFontUrl}}', regularFontUrl)
     .replace('{{boldFontUrl}}', boldFontUrl)
     .replace('{{bibUfpaLogo}}', img1)
@@ -75,7 +76,6 @@ function generateReport(queryData, hasChoosenAcdUnity) {
     .replace('{{tableHeader}}', renderTableHeader(tableHeaders[searchType]))
     .replace('{{tableBody}}', renderTableBody(table))
     .replace('{{withTableFooter}}', withTableFooter)
-  return htmlTemplate
 }
 
 function renderParamList(paramList) {
