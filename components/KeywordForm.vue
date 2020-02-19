@@ -64,7 +64,6 @@ export default {
       deep: true,
       handler($v) {
         replace('form', { keywords: this.keywords })
-        console.log(recovery('form').keywords)
         ;(!$v.$invalid && this.$emit('ready')) || this.$emit('preventforward')
       }
     }

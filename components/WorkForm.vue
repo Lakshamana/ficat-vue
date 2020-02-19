@@ -171,7 +171,7 @@
               }"
             >
               <template #component>
-                <option v-for="c in courses" :key="c.id" :value="'' + c.id">
+                <option v-for="c in courses" :key="c.id" :value="c.id">
                   {{ c.name }}
                 </option>
               </template>
@@ -206,14 +206,13 @@ export default {
       totalPages: work.totalPages,
       workImagesType: work.workImagesType,
       workType: work.workType,
-      course: work.course,
+      course: work.courseId,
       loading: work.loading,
       knAreas: work.knAreas,
       academicUnities: work.academicUnities,
       courses: work.courses,
       selectedKnArea: work.selectedKnArea,
       selectedAcdUnity: work.selectedAcdUnity,
-      selectedCourse: work.selectedCourse,
       acdUnity: work.acdUnity,
       knArea: work.knArea,
       knAreaPreviousSearch: '',
@@ -225,7 +224,7 @@ export default {
     $v: {
       deep: true,
       handler($v) {
-        replace('form', { work: { ...this.$data } })
+        replace('form', { work: this.$data })
         ;(!$v.$invalid && this.$emit('ready')) || this.$emit('preventforward')
       }
     }
@@ -282,7 +281,6 @@ export default {
     },
 
     getKnAreas: pDebounce(function(term) {
-      console.log('term:', term)
       if (!term.length) {
         this.knAreas = []
         return

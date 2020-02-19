@@ -170,7 +170,6 @@ export default {
       deep: true,
       handler($v) {
         replace('form', { advisors: { ...this.$data } })
-        console.log(recovery('form').advisors)
         ;(!$v.$invalid && this.$emit('ready')) || this.$emit('preventforward')
       }
     }

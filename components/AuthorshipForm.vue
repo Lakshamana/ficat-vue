@@ -86,7 +86,6 @@ export default {
   components: { Card, InputValidation },
   data() {
     const { authors } = recovery('form')
-    console.log(authors)
     return {
       authorName: authors.authorName,
       authorSurname: authors.authorSurname,

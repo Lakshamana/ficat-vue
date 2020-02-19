@@ -124,7 +124,6 @@ export default {
             enabled: true,
             callbacks: {
               title: (items, data) => {
-                console.log(items, data)
                 return items[0].xLabel
               }
             }
