@@ -119,6 +119,7 @@ async function create(ctx) {
 async function getPdfResult(ctx) {
   const { id } = ctx.params
   const pdfResult = pdfResults[id]
+  console.log(pdfResult)
   const { catalogFont } = pdfResult
   if (!pdfResult) {
     ctx.status = HttpCodes.NOT_FOUND
@@ -131,10 +132,22 @@ async function getPdfResult(ctx) {
   // Construir o PDF
   const htmlTemplate = catalogCardModel(catalogFont, pdfResult)
   const stream = await new Promise((resolve, reject) => {
-    htmlPdf.create(htmlTemplate, globalPdfConfig).toStream((err, stream) => {
-      if (err) reject(err)
-      resolve(stream)
-    })
+    htmlPdf
+      .create(
+        htmlTemplate,
+        Object.assign(globalPdfConfig, {
+          border: {
+            top: '4.25cm',
+            right: '5cm',
+            bottom: '4.25cm',
+            left: '5cm'
+          }
+        })
+      )
+      .toStream((err, stream) => {
+        if (err) reject(err)
+        resolve(stream)
+      })
   })
 
   // delete pdfResults[id]
