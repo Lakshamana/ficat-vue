@@ -35,7 +35,7 @@
     "hooper": "^0.3.4",
     "html-pdf": "^2.2.0",
     "jsonwebtoken": "^8.5.1",
-    "knex": "^0.19.3",
+    "knex": "^0.19.5",
     "koa": "^2.6.2",
     "koa-body": "^4.1.1",
     "koa-router": "^7.4.0",
