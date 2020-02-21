@@ -162,8 +162,9 @@ function cutterFetch(surname, workTitle) {
     )
     if (code) {
       // e.g. 'S' + 677 + 't', para surname = 'Sobrenome' e workTitle = 'Trabalho'
-      const result = s[0].toUpperCase() + code + workTitle[0].toLowerCase()
-      return result
+      return (
+        s[0].toUpperCase() + code.substring(0, 3) + workTitle[0].toLowerCase()
+      )
     } else s = s.substring(0, s.length - 1)
   }
 }

@@ -88,8 +88,8 @@ async function create(ctx) {
   try {
     const payload = {
       type: work.workType,
-      unityId: academicDetails.acdUnity,
-      courseId: academicDetails.course
+      unityId: academicDetails.acdUnityId,
+      courseId: academicDetails.courseId
     }
     const newCatalogCard = await CatalogCard.forge(payload).save()
     ctx.set('Content-Type', 'application/pdf')
@@ -119,7 +119,6 @@ async function create(ctx) {
 async function getPdfResult(ctx) {
   const { id } = ctx.params
   const pdfResult = pdfResults[id]
-  console.log(pdfResult)
   const { catalogFont } = pdfResult
   if (!pdfResult) {
     ctx.status = HttpCodes.NOT_FOUND
@@ -215,6 +214,7 @@ async function catalogQueries(ctx) {
       responseObj[groupIdx] = f
     }
   } else {
+    console.log('yay!')
     responseObj = await fetchAllGroupByAcdUnity(query, year, optionalFilters)
   }
 
