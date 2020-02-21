@@ -78,12 +78,16 @@
       text-align: right;
     }
 
+    .card-data p {
+      text-align: justify;
+    }
+
     .mt {
       margin-top: .5em;
     }
 
-    .ml {
-      margin-left: 1em;
+    .ml::first-letter {
+      margin-left: 2em;
     }
   </style>
 </head>
@@ -101,9 +105,9 @@
           <p>{{pagesHeader}}</p>
           <p class="mt ml">{{advisorHeader}}</p>
           {{coadvisorHeader}}
-          <p>{{workHeader}}</p>
+          <p class="ml">{{workHeader}}</p>
           <p>{{localHeader}}</p>
-          <p class="mt">{{keywordHeader}}</p>
+          <p class="mt ml">{{keywordHeader}}</p>
         </div>
       </div>
       <p class="cdd">CDD {{cdd}}</p>
