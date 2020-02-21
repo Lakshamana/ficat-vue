@@ -144,7 +144,10 @@ async function getPdfResult(ctx) {
         })
       )
       .toStream((err, stream) => {
-        if (err) reject(err)
+        if (err) {
+          stream.close()
+          reject(err)
+        }
         resolve(stream)
       })
   })

@@ -5,7 +5,7 @@ const env = process.env.NODE_ENV || 'development'
 const tail = env === 'development' ? '' : `.${process.env.NODE_ENV}`
 
 const envSetup = dotenv.config({
-  path: path.join(__dirname, `../.env${tail}`)
+  path: path.join(__dirname, `../env/.env${tail}`)
 })
 
 if (envSetup.error) {
@@ -24,7 +24,11 @@ const {
   DATABASE_USER = null,
   DATABASE_PASS = null,
   DATABASE_NAME = null,
-  DATABASE_FILE = null
+  DATABASE_FILE = null,
+  EMAIL_HOST = null,
+  EMAIL_PORT = null,
+  EMAIL_USER = null,
+  EMAIL_PASSWD = null
 } = process.env
 
 module.exports = {
@@ -39,5 +43,9 @@ module.exports = {
   DATABASE_USER,
   DATABASE_PASS,
   DATABASE_NAME,
-  DATABASE_FILE
+  DATABASE_FILE,
+  EMAIL_HOST,
+  EMAIL_PORT,
+  EMAIL_USER,
+  EMAIL_PASSWD
 }
