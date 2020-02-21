@@ -39,6 +39,13 @@ const obj = {
     useNullAsDefault
   },
 
+  'dev.local': {
+    ...db,
+    migrations,
+    seeds,
+    useNullAsDefault
+  },
+
   test: {
     ...db,
     migrations,
