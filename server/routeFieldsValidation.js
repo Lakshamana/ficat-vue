@@ -105,5 +105,9 @@ module.exports = {
       'academicDetails',
       'catalogFont'
     ]
+  },
+  email: {
+    mandatory: ['name', 'email', 'fone', 'msg'],
+    optional: ['file']
   }
 }

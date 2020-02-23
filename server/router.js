@@ -16,6 +16,7 @@ const kaRoutes = require('./routes/knowledgeAreas')
 const courseRoutes = require('./routes/courses')
 const acdUnitiesRoutes = require('./routes/academicUnities')
 const catalogRoutes = require('./routes/catalogCards')
+const emailRoutes = require('./routes/email')
 
 // Auth* routes
 const { auth, authz } = require('./routes/auth')
@@ -48,7 +49,8 @@ api.use(
       (ctx.path === '/api/catalogCards' && ctx.method === 'POST') ||
       (/\/api\/catalogCards\/get/.test(ctx.path) && ctx.method === 'GET') ||
       (ctx.path === '/api/catalogCards/reportResult' && ctx.method === 'GET') ||
-      (ctx.path === '/api/courses' && ctx.method === 'GET')
+      (ctx.path === '/api/courses' && ctx.method === 'GET') ||
+      (ctx.path === '/api/send' && ctx.method === 'POST')
   })
 )
 
@@ -187,6 +189,13 @@ api.put(
 
 // delete
 api.del('/academicUnities/:id', acdUnitiesRoutes.del)
+
+api.post(
+  '/send',
+  BodyParser({ multipart: true }),
+  routeValidate('email'),
+  emailRoutes.send
+)
 
 // api not found
 api.use('/*', ctx => {
