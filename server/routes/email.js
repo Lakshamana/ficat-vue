@@ -1,16 +1,23 @@
 const { readFileSync } = require('fs')
 const { resolve } = require('path')
 const mailer = require('../emailConfig')
+const { formatDate } = require('../util/utils')
 
 function send(ctx) {
   const { body, files } = ctx.request
-  console.log(body, files.file)
+  const { file } = files
   ctx.status = 200
   mailer.sendMail({
-    from: 'lakshamana@arjuna.test',
-    to: 'lakshamana@protonmail.com',
-    subject: 'Chamado FICAT',
-    html: makeEmailContent(body)
+    from: process.env.EMAIL_USER,
+    to: process.env.EMAIL_RCV_ADDRESS,
+    subject: `Chamado FICAT ${body.name} - ${formatDate()}`,
+    html: makeEmailContent(body),
+    attachments: [
+      {
+        filename: file.name,
+        content: file
+      }
+    ]
   })
 }
 

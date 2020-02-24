@@ -28,7 +28,8 @@ const {
   EMAIL_HOST = null,
   EMAIL_PORT = null,
   EMAIL_USER = null,
-  EMAIL_PASSWD = null
+  EMAIL_PASSWD = null,
+  EMAIL_RCV_ADDRESS = null
 } = process.env
 
 module.exports = {
@@ -47,5 +48,6 @@ module.exports = {
   EMAIL_HOST,
   EMAIL_PORT,
   EMAIL_USER,
-  EMAIL_PASSWD
+  EMAIL_PASSWD,
+  EMAIL_RCV_ADDRESS
 }

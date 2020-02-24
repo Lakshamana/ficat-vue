@@ -213,6 +213,19 @@ function sha256(data) {
     .digest('hex')
 }
 
+/**
+ *
+ * @param {Date} d
+ */
+function formatDate(d = new Date()) {
+  return d
+    .toISOString()
+    .split('T')[0]
+    .split('-')
+    .reverse()
+    .join('/')
+}
+
 module.exports = {
   paginateCtx,
   tokenSign,
@@ -222,5 +235,6 @@ module.exports = {
   cutterFetch,
   labelMap,
   sha256,
-  capit
+  capit,
+  formatDate
 }
