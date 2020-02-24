@@ -59,7 +59,7 @@ function catalogCard(
 
   const subtitle = work.workSubtitle ? `: ${work.workSubtitle}` : ''
   const authorHeader = `${authors.authorSurname}, ${authors.authorName}`
-  const workTitleHeader = `  ${work.workTitle} ${subtitle} / ${authors.authorName} ${authors.authorSurname}${author2} — ${work.presentationYear}`
+  const workTitleHeader = `${work.workTitle} ${subtitle} / ${authors.authorName} ${authors.authorSurname}${author2} — ${work.presentationYear}`
   const pagesHeader = `${work.totalPages} f.${color[work.workImagesType]}`
 
   // Títulos em masculino e feminino
@@ -70,14 +70,19 @@ function catalogCard(
     doctor: ['Dr. ', 'Dra. ']
   }
 
-  const femaleAdvisor = +advisors.isFemaleAdvisor
-  const femaleCoadvisor = +advisors.isFemaleCoadvisor
+  console.log(advisors)
+  const femaleAdvisor = +!!advisors.isFemaleAdvisor
+  const femaleCoadvisor = +!!advisors.isFemaleCoadvisor
   const advisorHeader = `Orientador(a): ${title[advisors.advisorTitle][femaleAdvisor]}${advisors.advisorName} ${advisors.advisorSurname}`
   const coadvisorHeader = advisors.coadvisorName
     ? `Coorientador(a): ${title[advisors.coadvisorTitle][femaleCoadvisor]} ${advisors.coadvisorName} ${advisors.coadvisorSurname}`
     : ''
+
+  const fontSize = catalogFont === 'times' ? 9 : 10
+  // &nbsp; = html space - used to adjust headings alignment
+  const space = Math.floor(fontSize / 2) + 2 // hacky, but works
   const withCoadvisorHeader = coadvisorHeader
-    ? `<p class="ml">${coadvisorHeader}</p>`
+    ? `<p>${'&nbsp;'.repeat(space) + coadvisorHeader}</p>`
     : ''
 
   const workTypes = {
@@ -108,23 +113,22 @@ function catalogCard(
   const fontFamily =
     catalogFont === 'times' ? "'Noto Serif TC', serif" : "'Arimo', sans-serif"
 
-  const fontSize = catalogFont === 'times' ? 9 : 10
-
   // HTML model and script should always have same file name
   const htmlTemplate = readFileSync(templatePath, 'utf8')
+
   return htmlTemplate
     .replace('__fontFamily__', fontFamily)
     .replace('__fontSize__', fontSize)
     .replace('{{cutter}}', cutter)
     .replace('{{header}}', header)
     .replace('{{authorHeader}}', authorHeader)
-    .replace('{{workTitleHeader}}', workTitleHeader)
+    .replace('{{workTitleHeader}}', '&nbsp;'.repeat(space) + workTitleHeader)
     .replace('{{pagesHeader}}', pagesHeader)
-    .replace('{{advisorHeader}}', advisorHeader)
+    .replace('{{advisorHeader}}', '&nbsp;'.repeat(space) + advisorHeader)
     .replace('{{coadvisorHeader}}', withCoadvisorHeader)
-    .replace('{{workHeader}}', workHeader)
+    .replace('{{workHeader}}', '&nbsp;'.repeat(space) + workHeader)
     .replace('{{localHeader}}', localHeader)
-    .replace('{{keywordHeader}}', keywordHeader)
+    .replace('{{keywordHeader}}', '&nbsp;'.repeat(space) + keywordHeader)
     .replace('{{cdd}}', cdd)
 }
 

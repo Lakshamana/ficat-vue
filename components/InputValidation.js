@@ -61,8 +61,9 @@ export default {
       },
 
       set() {
-        const model = this.useModel ? this.v[this.fieldName].$model : this.value
-        this.$set(this.v[this.fieldName], '$model', model)
+        // const model = this.useModel ? this.v[this.fieldName].$model : this.value
+        // this.$set(this.v[this.fieldName], '$model', model)
+        this.v[this.fieldName].$touch()
       }
     }
   },
@@ -107,7 +108,7 @@ export default {
         </b-field>
         {!validations.required && !validations.$invalid ? (
           <div class="optional" aria-live="assertive">
-            Optional field
+            {this.$slots.optional || 'Optional field'}
           </div>
         ) : (
           <span id="errormsg" aria-live="assertive" class="error">
