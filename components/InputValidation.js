@@ -60,11 +60,7 @@ export default {
         return this.useModel ? this.v[this.fieldName].$model : this.value
       },
 
-      set() {
-        // const model = this.useModel ? this.v[this.fieldName].$model : this.value
-        // this.$set(this.v[this.fieldName], '$model', model)
-        this.v[this.fieldName].$touch()
-      }
+      set() {}
     }
   },
 

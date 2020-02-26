@@ -3,67 +3,73 @@
     <div class="columns is-centered">
       <div class="column is-10">
         <Card title="Talk to us!">
-          <div class="columns">
-            <div class="column is-half">
-              <div class="input-float">
-                <input-validation
-                  v-model="$v.name.$model"
-                  label="Name"
-                  field-name="name"
-                  :validations="$options.validations.name"
-                  :v="$v"
-                  :options="{
-                    expanded: true
-                  }"
-                >
-                  <template #required>
-                    Field is required
-                  </template>
-                  <template #minLength="{ min }">
-                    Must have a {{ min }} chars minima
-                  </template>
-                </input-validation>
-                <input-validation
-                  v-model="email"
-                  label="Email"
-                  field-name="email"
-                  :validations="$options.validations.email"
-                  :v="$v"
-                  :use-model="false"
-                >
-                  <template #required>
-                    Field is required
-                  </template>
-                  <template #minLength="{ min }">
-                    Must have a {{ min }} chars minima
-                  </template>
-                  <template #email>
-                    It doesn't look like a valid email.
-                  </template>
-                </input-validation>
-                <input-validation
-                  v-model="$v.fone.$model"
-                  label="Fone"
-                  field-name="fone"
-                  :validations="$options.validations.fone"
-                  :v="$v"
-                  type="text"
-                >
-                  <template #required>
-                    Field is required
-                  </template>
-                  <template #minLength="{ min }">
-                    Must have a {{ min }} chars minima
-                  </template>
-                  <template #optional>
-                    Use +[your country code here] if you need it
-                  </template>
-                </input-validation>
+          <form @submit.prevent="onSubmit">
+            <div class="columns">
+              <div class="column is-half">
+                <div class="input-float">
+                  <input-validation
+                    ref="name"
+                    v-model="$v.name.$model"
+                    label="Name"
+                    field-name="name"
+                    :validations="$options.validations.name"
+                    :v="$v"
+                    :options="{
+                      expanded: true
+                    }"
+                  >
+                    <template #required>
+                      Field is required
+                    </template>
+                    <template #minLength="{ min }">
+                      Must have a {{ min }} chars minima
+                    </template>
+                  </input-validation>
+                  <input-validation
+                    ref="email"
+                    v-model.trim="email"
+                    label="Email"
+                    field-name="email"
+                    :validations="$options.validations.email"
+                    :v="$v"
+                    @blur="$v.email.$touch"
+                  >
+                    <template #required>
+                      Field is required
+                    </template>
+                    <template #minLength="{ min }">
+                      Must have a {{ min }} chars minima
+                    </template>
+                    <template #email>
+                      It doesn't look like a valid email.
+                    </template>
+                  </input-validation>
+                  <input-validation
+                    ref="fone"
+                    v-model="$v.fone.$model"
+                    label="Fone"
+                    field-name="fone"
+                    :validations="$options.validations.fone"
+                    :v="$v"
+                  >
+                    <template #required>
+                      Field is required
+                    </template>
+                    <template #minLength="{ min }">
+                      Must have a {{ min }} chars minima
+                    </template>
+                    <template #pattern>
+                      Use numbers or "+" only.
+                    </template>
+                    <template #message>
+                      Use +[your country code here] if you need it
+                    </template>
+                  </input-validation>
+                </div>
               </div>
-            </div>
-            <div class="column is-half">
-              <div class="input-float">
+              <div class="column is-center is-half">
                 <input-validation
+                  ref="msg"
                   v-model="$v.msg.$model"
                   label="Message"
                   field-name="msg"
@@ -78,9 +84,47 @@
                     Must have a {{ min }} chars minima
                   </template>
                 </input-validation>
+                <b-field>
+                  <b-upload
+                    v-model="files"
+                    multiple
+                    drag-drop
+                    @input="onChoose"
+                  >
+                    <div class="content has-text-centered">
+                      <p>
+                        <b-icon icon="upload" size="is-small"></b-icon>
+                      </p>
+                      <p>Drop your files here or click to upload</p>
+                    </div>
+                  </b-upload>
+                </b-field>
+                <b-taglist>
+                  <template v-for="(file, i) in files">
+                    <b-tag
+                      v-if="file"
+                      :key="i"
+                      style="margin:auto .5em"
+                      attached
+                      closable
+                      aria-close-label="close tag"
+                      @close="files.splice(i, 1)"
+                    >
+                      {{ abbreviate(file.name) }}
+                    </b-tag>
+                  </template>
+                </b-taglist>
+                <b-button
+                  class="is-success"
+                  :disabled="$v.$invalid || !validCaptcha"
+                  rounded
+                  native-type="submit"
+                >
+                  Submit
+                </b-button>
               </div>
             </div>
-          </div>
+          </form>
         </Card>
       </div>
     </div>
@@ -101,14 +145,48 @@ export default {
       email: '',
       fone: '',
       msg: '',
-      file: undefined,
-      validCaptcha: false
+      files: [],
+      validCaptcha: true
     }
   },
 
   methods: {
-    filterModels() {
-      return Object.keys(this.$v).filter(k => !k.startsWith('$'))
+    onSubmit() {
+      this.$v.$touch()
+      if (this.$v.$invalid) {
+        const fields = Object.keys(this.$options.validations)
+        for (const f of fields) {
+          if (this.$v[f].$error) {
+            this.$refs[f].focus()
+            break
+          }
+        }
+      }
+      const formData = new FormData()
+      formData.append('name', this.name)
+      formData.append('email', this.email)
+      formData.append('fone', this.fone)
+      formData.append('msg', this.msg)
+      formData.append('uploads', this.files)
+      this.$axios
+        .post('/api/send', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        })
+        .then(res => {
+          this.$buefy.toast.open({
+            duration: 1000,
+            message: 'Message sucessfully sent!'
+          })
+        })
+    },
+
+    abbreviate(filename) {
+      const grps = /^(.*)\.(.+)$/.exec(filename)
+      return filename.length < 10
+        ? filename
+        : filename.substring(0, 3) + '...' + (grps ? '.' + grps[2] : '')
     }
   },
 
@@ -146,7 +224,6 @@ export default {
 
 .columns {
   flex: 1 0 auto;
-  height: 30vh;
   margin: auto;
 }
 
