@@ -167,7 +167,9 @@ export default {
       formData.append('email', this.email)
       formData.append('fone', this.fone)
       formData.append('msg', this.msg)
-      formData.append('uploads', this.files)
+      for (const f of this.files) {
+        formData.append('uploads', f, f.name)
+      }
       this.$axios
         .post('/api/send', formData, {
           headers: {
