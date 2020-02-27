@@ -53,9 +53,7 @@ export default {
   margin: auto;
   flex: 1 0 auto;
 }
-</style>
 
-<style>
 .bodyClass,
 .htmlClass {
   overflow-y: hidden;
