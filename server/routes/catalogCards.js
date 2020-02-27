@@ -15,7 +15,7 @@ const {
 } = require('../util/utils')
 
 const HttpCodes = require('../httpCodes')
-const { MessageCodes } = require('../../shared/messageCodes')
+const MessageCodes = require('../../shared/messageCodes')
 const { catalogFields, querieFields } = require('../routeFieldsValidation')
 const globalPdfConfig = require('../models/pdfdocs/globalPdfConfig')
 

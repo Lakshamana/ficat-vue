@@ -21,7 +21,8 @@ const messages = {
     errPasswordMismatch: 'errPasswordMismatch',
     errNotAuthorized: 'errNotAuthorized',
     errOnAuthz: 'errOnAuthz',
-    errInvalidCatalogFields: 'errInvalidCatalogFields'
+    errInvalidCatalogFields: 'errInvalidCatalogFields',
+    errOnEmailSend: 'errOnEmailSend'
   },
   layout: {
     ltAbout: 'ltAbout',
@@ -31,4 +32,4 @@ const messages = {
   }
 }
 
-exports.MessageCodes = messages
+module.exports = messages

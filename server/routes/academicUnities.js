@@ -1,6 +1,6 @@
 const AcademicUnity = require('../models/AcademicUnity')
 const HttpCodes = require('../httpCodes')
-const { MessageCodes } = require('../../shared/messageCodes')
+const MessageCodes = require('../../shared/messageCodes')
 
 async function create(ctx) {
   const payload = ctx.request.body

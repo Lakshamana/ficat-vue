@@ -5,7 +5,7 @@ const { sign, verify, decode } = require('jsonwebtoken')
 const bcrypt = require('bcrypt')
 
 const HttpCodes = require('../httpCodes')
-const { MessageCodes } = require('../../shared/messageCodes')
+const MessageCodes = require('../../shared/messageCodes')
 
 // Default exp = 4h
 const TIMEOUT = 60 * 60 * 4

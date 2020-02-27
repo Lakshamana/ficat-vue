@@ -2,21 +2,33 @@ const { readFileSync } = require('fs')
 const { resolve } = require('path')
 const mailer = require('../emailConfig')
 const { formatDate } = require('../util/utils')
+const HttpCodes = require('../httpCodes')
+const MessageCodes = require('../../shared/messageCodes')
 
-function send(ctx) {
+async function send(ctx) {
   const { body, files } = ctx.request
   const { uploads } = files
-  ctx.status = 200
-  mailer.sendMail({
-    from: process.env.EMAIL_USER,
-    to: process.env.EMAIL_RCV_ADDRESS,
-    subject: `Chamado FICAT ${body.name} - ${formatDate()}`,
-    html: makeEmailContent(body),
-    attachments: uploads.map(file => ({
-      filename: file.name,
-      content: file
-    }))
-  })
+
+  try {
+    await mailer.sendMail({
+      from: process.env.EMAIL_USER,
+      to: process.env.EMAIL_RCV_ADDRESS,
+      subject: `Chamado FICAT ${body.name} - ${formatDate()}`,
+      html: makeEmailContent(body),
+      ...(uploads && {
+        attachments: uploads.map(file => ({
+          filename: file.name,
+          content: file
+        }))
+      })
+    })
+    ctx.status = 200
+  } catch (e) {
+    ctx.throw(HttpCodes.INT_SRV_ERROR, {
+      code: MessageCodes.error.errOnEmailSend,
+      message: 'error!'
+    })
+  }
 }
 
 function makeEmailContent({ name, email, fone, msg }) {

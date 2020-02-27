@@ -57,7 +57,7 @@
 
 <script>
 import { mapState } from 'vuex'
-const { MessageCodes } = require('../shared/messageCodes')
+const MessageCodes = require('../shared/messageCodes')
 
 export default {
   computed: {
