@@ -59,7 +59,8 @@ module.exports = {
     // Doc: https://buefy.github.io/#/documentation
     'nuxt-buefy',
     // Doc: https://axios.nuxtjs.org/usage
-    '@nuxtjs/axios'
+    '@nuxtjs/axios',
+    '@nuxtjs/recaptcha'
   ],
   /*
    ** Axios module configuration
@@ -68,6 +69,15 @@ module.exports = {
   axios: {
     baseUrl: '/'
   },
+
+  recaptcha: {
+    hideBadge: true, // Hide badge element (v3 & v2 via size=invisible)
+    language: 'pt-BR', // Recaptcha language (v2)
+    siteKey: process.env.RECAPTCHA_SITE_KEY, // Site key for requests
+    version: 2, // Version
+    size: 'normal'
+  },
+
   /*
    ** Build configuration
    */

@@ -24,6 +24,7 @@
   "dependencies": {
     "@koa/cors": "^3.0.0",
     "@nuxtjs/axios": "^5.3.6",
+    "@nuxtjs/recaptcha": "^0.6.2",
     "@vue/babel-helper-vue-jsx-merge-props": "^1.0.0",
     "@vue/babel-preset-jsx": "^1.1.2",
     "bcrypt": "^3.0.6",

@@ -100,7 +100,7 @@
                       <b-tag
                         v-if="file"
                         :key="i"
-                        style="margin:auto .5em"
+                        class="with-margin"
                         attached
                         closable
                         aria-close-label="close tag"
@@ -110,9 +110,18 @@
                       </b-tag>
                     </template>
                   </b-taglist>
+                  <div style="display:flex;margin:.5em">
+                    <div style="margin:auto">
+                      <recaptcha
+                        @success="touchedCaptcha = true"
+                        @error="onSomeError('error')"
+                        @expired="onSomeError('exp')"
+                      />
+                    </div>
+                  </div>
                   <b-button
                     class="is-success"
-                    :disabled="$v.$invalid || !validCaptcha"
+                    :disabled="disabled"
                     rounded
                     :loading="loading"
                     native-type="submit"
@@ -141,7 +150,9 @@ const defaultData = {
   fone: '',
   msg: '',
   files: [],
-  validCaptcha: true,
+  touchedCaptcha: false,
+  captchaHasError: false,
+  captchaHasExpired: false,
   loading: false
 }
 
@@ -153,8 +164,19 @@ export default {
     return defaultData
   },
 
+  computed: {
+    disabled() {
+      return (
+        this.$v.$invalid ||
+        !this.touchedCaptcha ||
+        this.captchaHasError ||
+        this.captchaHasExpired
+      )
+    }
+  },
+
   methods: {
-    onSubmit() {
+    async onSubmit() {
       this.$v.$touch()
       if (this.$v.$invalid) {
         const fields = Object.keys(this.$options.validations)
@@ -166,6 +188,19 @@ export default {
         }
       }
       this.loading = true
+
+      // Resolver captcha
+      const token = await this.$recaptcha.getResponse()
+      const res = await this.$axios.get('/api/captcha', {
+        params: {
+          token
+        }
+      })
+
+      if (!res) return
+      console.log(res)
+
+      // Construir formulário para o envio do emails
       const formData = new FormData()
       formData.append('name', this.name)
       formData.append('email', this.email)
@@ -201,6 +236,11 @@ export default {
     resetState() {
       Object.assign(this.$data, defaultData)
       this.$v.$reset()
+    },
+
+    onSomeError(type) {
+      const data = type === 'exp' ? 'captchaHasExpired' : 'captchaHasError'
+      this.$set(this, data, true)
     }
   },
 
@@ -239,7 +279,7 @@ export default {
 .wrapper {
   flex: 1 0 auto;
   margin: auto;
-  height: 50vh;
+  height: 60vh;
 }
 
 .input-float {
@@ -248,5 +288,9 @@ export default {
   display: flex;
   flex-direction: column;
   justify-content: space-evenly;
+}
+
+.with-margin {
+  margin: auto 0.5em;
 }
 </style>
