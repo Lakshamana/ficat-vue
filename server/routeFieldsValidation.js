@@ -107,7 +107,6 @@ module.exports = {
     ]
   },
   email: {
-    mandatory: ['name', 'email', 'fone', 'msg', 'uploads'],
-    optional: ['uploads']
+    mandatory: ['name', 'email', 'fone', 'msg']
   }
 }
