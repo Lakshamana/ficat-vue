@@ -9,6 +9,7 @@ async function send(ctx) {
   const { body, files } = ctx.request
   const { uploads } = files
 
+  // uploads pode ser um File[] ou File
   try {
     await mailer.sendMail({
       from: process.env.EMAIL_USER,
@@ -16,17 +17,19 @@ async function send(ctx) {
       subject: `Chamado FICAT ${body.name} - ${formatDate()}`,
       html: makeEmailContent(body),
       ...(uploads && {
-        attachments: uploads.map(file => ({
-          filename: file.name,
-          content: file
-        }))
+        attachments: Array.isArray(uploads)
+          ? uploads.map(file => ({
+              filename: file.name,
+              content: file
+            }))
+          : uploads
       })
     })
     ctx.status = 200
   } catch (e) {
     ctx.throw(HttpCodes.INT_SRV_ERROR, {
       code: MessageCodes.error.errOnEmailSend,
-      message: 'error!'
+      message: e.message
     })
   }
 }

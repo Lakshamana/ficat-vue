@@ -86,12 +86,7 @@
                     </template>
                   </input-validation>
                   <b-field>
-                    <b-upload
-                      v-model="files"
-                      multiple
-                      drag-drop
-                      @input="onChoose"
-                    >
+                    <b-upload v-model="files" multiple drag-drop>
                       <div class="content has-text-centered">
                         <p>
                           <b-icon icon="upload" size="is-small"></b-icon>
@@ -119,6 +114,7 @@
                     class="is-success"
                     :disabled="$v.$invalid || !validCaptcha"
                     rounded
+                    :loading="loading"
                     native-type="submit"
                   >
                     Submit
@@ -137,19 +133,24 @@
 import { required, minLength, maxLength, email } from 'vuelidate/lib/validators'
 import Card from '~/components/Card'
 import InputValidation from '~/components/InputValidation.js'
+import handler from '@/mixins/handler'
+
+const defaultData = {
+  name: '',
+  email: '',
+  fone: '',
+  msg: '',
+  files: [],
+  validCaptcha: true,
+  loading: false
+}
 
 export default {
   name: 'AuthorshipForm',
   components: { Card, InputValidation },
+  mixins: [handler],
   data() {
-    return {
-      name: '',
-      email: '',
-      fone: '',
-      msg: '',
-      files: [],
-      validCaptcha: true
-    }
+    return defaultData
   },
 
   methods: {
@@ -164,6 +165,7 @@ export default {
           }
         }
       }
+      this.loading = true
       const formData = new FormData()
       formData.append('name', this.name)
       formData.append('email', this.email)
@@ -181,16 +183,12 @@ export default {
         .then(res => {
           this.$buefy.toast.open({
             duration: 1000,
-            message: 'Message sucessfully sent!'
+            message: 'Message sucessfully sent!',
+            type: 'is-success'
           })
+          this.resetState()
         })
-        .catch(err => {
-          console.log(err.response)
-          this.$buefy.toast.open({
-            duration: 1000,
-            message: err.response.code
-          })
-        })
+        .catch(this.handle)
     },
 
     abbreviate(filename) {
@@ -198,6 +196,11 @@ export default {
       return filename.length < 10
         ? filename
         : filename.substring(0, 3) + '...' + (grps ? '.' + grps[2] : '')
+    },
+
+    resetState() {
+      Object.assign(this.$data, defaultData)
+      this.$v.$reset()
     }
   },
 
