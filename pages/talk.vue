@@ -113,7 +113,7 @@
                   <div style="display:flex;margin:.5em">
                     <div style="margin:auto">
                       <recaptcha
-                        @success="touchedCaptcha = true"
+                        @success="onSuccess"
                         @error="onSomeError('error')"
                         @expired="onSomeError('exp')"
                       />
@@ -241,6 +241,12 @@ export default {
     onSomeError(type) {
       const data = type === 'exp' ? 'captchaHasExpired' : 'captchaHasError'
       this.$set(this.$data, data, true)
+    },
+
+    onSuccess() {
+      this.touchedCaptcha = true
+      this.captchaHasError = false
+      this.captchaHasExpired = false
     }
   },
 
