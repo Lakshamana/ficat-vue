@@ -15,11 +15,22 @@
               <option value="arial">Arial</option>
             </b-select>
           </b-field>
-          <div style="border:1px solid black;margin: 3em auto">
-            recaptcha
+          <div style="display:flex;margin:.5em">
+            <div style="margin:auto">
+              <recaptcha
+                @success="onSuccess"
+                @error="onSomeError('error')"
+                @expired="onSomeError('exp')"
+              />
+            </div>
           </div>
           <b-field>
-            <b-button class="is-success" rounded native-type="submit">
+            <b-button
+              class="is-success"
+              rounded
+              native-type="submit"
+              :disabled="disabled"
+            >
               Generate
             </b-button>
           </b-field>
@@ -43,7 +54,18 @@ export default {
   data() {
     const { catalogFont } = recovery('form')
     return {
-      catalogFont
+      catalogFont,
+      touchedCaptcha: false,
+      captchaHasError: false,
+      captchaHasExpired: false
+    }
+  },
+
+  computed: {
+    disabled() {
+      return (
+        !this.touchedCaptcha || this.captchaHasError || this.captchaHasExpired
+      )
     }
   },
 
@@ -61,6 +83,17 @@ export default {
   },
 
   methods: {
+    onSomeError(type) {
+      const data = type === 'exp' ? 'captchaHasExpired' : 'captchaHasError'
+      this.$set(this.$data, data, true)
+    },
+
+    onSuccess() {
+      this.touchedCaptcha = true
+      this.captchaHasError = false
+      this.captchaHasExpired = false
+    },
+
     onSubmit() {
       const form = recovery('form')
       const { authors, work, advisors, keywords, catalogFont } = form
