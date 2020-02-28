@@ -171,7 +171,7 @@
               }"
             >
               <template #component>
-                <option v-for="c in courses" :key="c.id" :value="c.id">
+                <option v-for="c in courses" :key="c.id" :value="'' + c.id">
                   {{ c.name }}
                 </option>
               </template>
@@ -206,7 +206,7 @@ export default {
       totalPages: work.totalPages,
       workImagesType: work.workImagesType,
       workType: work.workType,
-      course: work.courseId,
+      course: work.course,
       loading: work.loading,
       knAreas: work.knAreas,
       academicUnities: work.academicUnities,

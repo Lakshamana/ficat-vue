@@ -79,10 +79,8 @@ function catalogCard(
     : ''
 
   const fontSize = catalogFont === 'times' ? 9 : 10
-  // &nbsp; = html space - used to adjust headings alignment
-  const space = Math.floor(fontSize / 2) + 2 // hacky, but works
   const withCoadvisorHeader = coadvisorHeader
-    ? `<p>${'&nbsp;'.repeat(space) + coadvisorHeader}</p>`
+    ? `<p class="ml">${coadvisorHeader}</p>`
     : ''
 
   const workTypes = {
@@ -106,7 +104,7 @@ function catalogCard(
     kws += `${+kn + 1}. ${keywords[kn]} `
   }
   kws = kws.substring(0, kws.length - 1)
-  const keywordHeader = `${kws}. I. ${work.workTitle}.`
+  const keywordHeader = `${kws}. I. Título.`
 
   const templatePath = join(__dirname, 'catalogCard.html')
 
@@ -122,13 +120,13 @@ function catalogCard(
     .replace('{{cutter}}', cutter)
     .replace('{{header}}', header)
     .replace('{{authorHeader}}', authorHeader)
-    .replace('{{workTitleHeader}}', '&nbsp;'.repeat(space) + workTitleHeader)
+    .replace('{{workTitleHeader}}', workTitleHeader)
     .replace('{{pagesHeader}}', pagesHeader)
-    .replace('{{advisorHeader}}', '&nbsp;'.repeat(space) + advisorHeader)
+    .replace('{{advisorHeader}}', advisorHeader)
     .replace('{{coadvisorHeader}}', withCoadvisorHeader)
-    .replace('{{workHeader}}', '&nbsp;'.repeat(space) + workHeader)
+    .replace('{{workHeader}}', workHeader)
     .replace('{{localHeader}}', localHeader)
-    .replace('{{keywordHeader}}', '&nbsp;'.repeat(space) + keywordHeader)
+    .replace('{{keywordHeader}}', keywordHeader)
     .replace('{{cdd}}', cdd)
 }
 

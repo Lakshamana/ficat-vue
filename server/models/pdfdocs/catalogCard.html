@@ -78,12 +78,16 @@
       text-align: right;
     }
 
-    .card-data p {
+    .card-data .justify {
       text-align: justify;
     }
 
     .mt {
       margin-top: .5em;
+    }
+
+    .ml::first-letter {
+      margin-left: 1.6em;
     }
   </style>
 </head>
@@ -97,13 +101,13 @@
         <div class="cutter">{{cutter}}</div>
         <div class="card-data clearfix">
           <p>{{authorHeader}}</p>
-          <p>{{workTitleHeader}}</p>
+          <p class="ml justify">{{workTitleHeader}}</p>
           <p>{{pagesHeader}}</p>
-          <p class="mt">{{advisorHeader}}</p>
+          <p class="mt ml">{{advisorHeader}}</p>
           {{coadvisorHeader}}
-          <p>{{workHeader}}</p>
+          <p class="ml">{{workHeader}}</p>
           <p>{{localHeader}}</p>
-          <p class="mt">{{keywordHeader}}</p>
+          <p class="mt ml">{{keywordHeader}}</p>
         </div>
       </div>
       <p class="cdd">CDD {{cdd}}</p>

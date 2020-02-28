@@ -234,10 +234,6 @@ export default {
   justify-content: space-evenly;
 }
 
-.columns {
-  height: 30vh;
-}
-
 .vcenter {
   align-items: center;
 }
