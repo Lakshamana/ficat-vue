@@ -1,5 +1,6 @@
 const { readFileSync } = require('fs')
 const { resolve } = require('path')
+const axios = require('axios').default
 const mailer = require('../emailConfig')
 const { formatDate } = require('../util/utils')
 const HttpCodes = require('../httpCodes')
@@ -46,4 +47,24 @@ function makeEmailContent({ name, email, fone, msg }) {
     .replace('{{msg}}', msg)
 }
 
-module.exports = { send }
+async function captchaValidate(ctx) {
+  const { token } = ctx.query
+  try {
+    const { data } = await axios.post(
+      'https://www.google.com/recaptcha/api/siteverify',
+      {
+        secret: process.env.RECAPTCHA_SECRET_KEY,
+        token
+      }
+    )
+    ctx.status = HttpCodes.OK
+    ctx.body = data
+  } catch (e) {
+    ctx.throw(HttpCodes.FAILED_DEPENDENCY, {
+      code: MessageCodes.error.errCaptchaSrvNoResponse,
+      message: e.message
+    })
+  }
+}
+
+module.exports = { send, captchaValidate }

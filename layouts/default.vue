@@ -68,7 +68,6 @@ export default {
     paths() {
       return {
         about: this.$tr(this.lang, MessageCodes.layout.ltAbout),
-        instructions: this.$tr(this.lang, MessageCodes.layout.ltInstructions),
         talk: this.$tr(this.lang, MessageCodes.layout.ltTalkUs)
       }
     }

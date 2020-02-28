@@ -22,7 +22,8 @@ const messages = {
     errNotAuthorized: 'errNotAuthorized',
     errOnAuthz: 'errOnAuthz',
     errInvalidCatalogFields: 'errInvalidCatalogFields',
-    errOnEmailSend: 'errOnEmailSend'
+    errOnEmailSend: 'errOnEmailSend',
+    errCaptchaSrvNoResponse: 'errCaptchaSrvNoResponse'
   },
   layout: {
     ltAbout: 'ltAbout',

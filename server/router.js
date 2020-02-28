@@ -16,7 +16,7 @@ const kaRoutes = require('./routes/knowledgeAreas')
 const courseRoutes = require('./routes/courses')
 const acdUnitiesRoutes = require('./routes/academicUnities')
 const catalogRoutes = require('./routes/catalogCards')
-const emailRoutes = require('./routes/email')
+const miscRoutes = require('./routes/miscellaneous')
 
 // Auth* routes
 const { auth, authz } = require('./routes/auth')
@@ -50,7 +50,8 @@ api.use(
       (/\/api\/catalogCards\/get/.test(ctx.path) && ctx.method === 'GET') ||
       (ctx.path === '/api/catalogCards/reportResult' && ctx.method === 'GET') ||
       (ctx.path === '/api/courses' && ctx.method === 'GET') ||
-      (ctx.path === '/api/send' && ctx.method === 'POST')
+      (ctx.path === '/api/send' && ctx.method === 'POST') ||
+      (ctx.path === '/api/captcha' && ctx.method === 'GET')
   })
 )
 
@@ -194,8 +195,10 @@ api.post(
   '/send',
   BodyParser({ multipart: true }),
   routeValidate('email'),
-  emailRoutes.send
+  miscRoutes.send
 )
+
+api.get('/captcha', miscRoutes.captchaValidate)
 
 // api not found
 api.use('/*', ctx => {

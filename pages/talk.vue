@@ -144,7 +144,7 @@ import Card from '~/components/Card'
 import InputValidation from '~/components/InputValidation.js'
 import handler from '@/mixins/handler'
 
-const defaultData = {
+const defaultData = () => ({
   name: '',
   email: '',
   fone: '',
@@ -154,14 +154,14 @@ const defaultData = {
   captchaHasError: false,
   captchaHasExpired: false,
   loading: false
-}
+})
 
 export default {
-  name: 'AuthorshipForm',
+  name: 'Talk',
   components: { Card, InputValidation },
   mixins: [handler],
   data() {
-    return defaultData
+    return defaultData()
   },
 
   computed: {
@@ -198,7 +198,6 @@ export default {
       })
 
       if (!res) return
-      console.log(res)
 
       // Construir formulário para o envio do emails
       const formData = new FormData()
@@ -215,13 +214,13 @@ export default {
             'Content-Type': 'multipart/form-data'
           }
         })
-        .then(res => {
+        .then(async res => {
           this.$buefy.toast.open({
             duration: 1000,
             message: 'Message sucessfully sent!',
             type: 'is-success'
           })
-          this.resetState()
+          await this.resetState()
         })
         .catch(this.handle)
     },
@@ -233,14 +232,15 @@ export default {
         : filename.substring(0, 3) + '...' + (grps ? '.' + grps[2] : '')
     },
 
-    resetState() {
-      Object.assign(this.$data, defaultData)
+    async resetState() {
+      Object.assign(this.$data, defaultData())
       this.$v.$reset()
+      await this.$recaptcha.reset()
     },
 
     onSomeError(type) {
       const data = type === 'exp' ? 'captchaHasExpired' : 'captchaHasError'
-      this.$set(this, data, true)
+      this.$set(this.$data, data, true)
     }
   },
 
