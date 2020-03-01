@@ -1,7 +1,7 @@
 <template>
   <Card title="Prepare Card">
     <div class="columns is-centered">
-      <div class="column is-4">
+      <div class="column is-center is-5">
         <form @submit.prevent="onSubmit">
           <b-field>
             <b-select
