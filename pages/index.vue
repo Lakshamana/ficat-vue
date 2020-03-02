@@ -3,10 +3,10 @@
     <div class="columns is-centered">
       <div class="column is-10">
         <Slider>
-          <!-- <AuthorshipForm />
+          <AuthorshipForm />
           <WorkForm />
           <OrientationForm />
-          <KeywordForm /> -->
+          <KeywordForm />
           <SendCatalogDataForm />
         </Slider>
       </div>
@@ -17,20 +17,20 @@
 <script>
 import Slider from '~/components/Slider.js'
 import { persist } from '~/front/persistence'
-// import AuthorshipForm from '~/components/AuthorshipForm'
-// import WorkForm from '~/components/WorkForm'
-// import OrientationForm from '~/components/OrientationForm'
-// import KeywordForm from '~/components/KeywordForm'
+import AuthorshipForm from '~/components/AuthorshipForm'
+import WorkForm from '~/components/WorkForm'
+import OrientationForm from '~/components/OrientationForm'
+import KeywordForm from '~/components/KeywordForm'
 import SendCatalogDataForm from '~/components/SendCatalogDataForm'
 
 export default {
   name: 'Index',
   components: {
     Slider,
-    // AuthorshipForm,
-    // WorkForm,
-    // OrientationForm,
-    // KeywordForm,
+    AuthorshipForm,
+    WorkForm,
+    OrientationForm,
+    KeywordForm,
     SendCatalogDataForm
   },
 
