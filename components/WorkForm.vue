@@ -56,7 +56,7 @@
               type="number"
             >
               <template #addon>
-                <b-select v-model="numberType" rounded>
+                <b-select v-model="numberType" rounded @input="onChangeType">
                   <option value="arabic">Arabic</option>
                   <option value="roman">Roman</option>
                 </b-select>
@@ -207,7 +207,7 @@ export default {
       workImagesType: work.workImagesType,
       workType: work.workType,
       course: work.course,
-      loading: work.loading,
+      loading: false,
       knAreas: work.knAreas,
       academicUnities: work.academicUnities,
       courses: work.courses,
@@ -342,6 +342,10 @@ export default {
         })
         .catch()
         .finally(() => (this.loading = false))
+    },
+
+    onChangeType(e) {
+      replace('form', { work: this.$data })
     }
   },
 

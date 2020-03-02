@@ -131,7 +131,7 @@ function catalogCard(
 }
 
 function getLocal(acdUnityName) {
-  const arr = acdUnityName.split('')
+  const arr = acdUnityName.split(' ')
   return arr[arr.length - 1]
 }
 
