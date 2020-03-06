@@ -53,6 +53,11 @@ export default {
       default: ''
     },
 
+    useLabel: {
+      type: Boolean,
+      default: true
+    },
+
     wrappedSlots: {
       type: Function,
       default: () => []
@@ -78,7 +83,8 @@ export default {
       fieldName,
       type,
       tooltipLabel,
-      options
+      options,
+      useLabel = true
     } = this.$props
 
     const scopedSlots = Object.keys(validations).map(k => {
@@ -93,7 +99,10 @@ export default {
     return (
       <div class="flex-div">
         <div class="with-tooltip">
-          <b-field label={label} label-position="on-border">
+          <b-field
+            {...(useLabel && { props: { label } })}
+            label-position="on-border"
+          >
             {this.$slots.addon}
             <Component
               vModel={this.iptValue}

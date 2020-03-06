@@ -9,6 +9,7 @@
             field-name="workTitle"
             :validations="$options.validations.workTitle"
             :v="$v"
+            tooltip-label="work's main title"
           >
             <template #required>
               Field is required
@@ -23,6 +24,7 @@
             field-name="workSubtitle"
             :validations="$options.validations.workSubtitle"
             :v="$v"
+            tooltip-label="work's secondary title/subtitle"
             type="text"
           >
             <template #required>
@@ -32,43 +34,49 @@
               Must have a {{ min }} chars minima
             </template>
           </input-validation>
-          <b-field label="Ano" label-position="on-border" grouped>
-            <input-validation
-              v-model="$v.presentationYear.$model"
-              use-component="b-select"
-              field-name="presentationYear"
-              label="Ano"
-              :validations="$options.validations.presentationYear"
-              :v="$v"
-            >
-              <template #component>
-                <option v-for="y in 10" :key="y">
-                  {{ getYear(y - 1) }}
-                </option>
-              </template>
-            </input-validation>
-            <input-validation
-              v-model="$v.totalPages.$model"
-              label="Pages Count"
-              field-name="totalPages"
-              :validations="$options.validations.totalPages"
-              :v="$v"
-              type="number"
-            >
-              <template #addon>
-                <b-select v-model="numberType" rounded @input="onChangeType">
-                  <option value="arabic">Arabic</option>
-                  <option value="roman">Roman</option>
-                </b-select>
-              </template>
-              <template #required>
-                Field is required
-              </template>
-              <template #minValue="{ min }">
-                Minimum value is {{ min }}
-              </template>
-            </input-validation>
-          </b-field>
+          <div class="columns">
+            <div class="column is-4">
+              <input-validation
+                v-model="$v.presentationYear.$model"
+                use-component="b-select"
+                field-name="presentationYear"
+                label="Year"
+                :validations="$options.validations.presentationYear"
+                :v="$v"
+              >
+                <template #component>
+                  <option v-for="y in 10" :key="y">
+                    {{ getYear(y - 1) }}
+                  </option>
+                </template>
+              </input-validation>
+            </div>
+            <div class="column is-8">
+              <input-validation
+                v-model="$v.totalPages.$model"
+                label="Pages Count"
+                field-name="totalPages"
+                :validations="$options.validations.totalPages"
+                :v="$v"
+                :use-label="false"
+                tooltip-label="Write roman/arabic numerals on the card"
+                type="number"
+              >
+                <template #addon>
+                  <b-select v-model="numberType" rounded @input="onChangeType">
+                    <option value="arabic">Arabic</option>
+                    <option value="roman">Roman</option>
+                  </b-select>
+                </template>
+                <template #required>
+                  Field is required
+                </template>
+                <template #minValue="{ min }">
+                  Minimum value is {{ min }}
+                </template>
+              </input-validation>
+            </div>
+          </div>
         </div>
       </div>
       <div class="column is-half">
@@ -385,7 +393,7 @@ export default {
 
 <style scoped>
 .input-float {
-  height: 100%;
+  min-height: 100%;
   display: flex;
   flex-direction: column;
   justify-content: space-around;

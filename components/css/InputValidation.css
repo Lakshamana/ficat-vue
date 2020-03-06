@@ -9,9 +9,8 @@
   min-width: 100%;
   text-align: left;
   display: block;
-  height: 1rem;
+  height: 1em;
   margin-top: -1em;
-  margin-bottom: 1em;
 }
 
 .optional {
@@ -20,13 +19,13 @@
   min-width: 100%;
   text-align: left;
   display: block;
-  height: 1rem;
+  height: 1em;
   margin-top: -1em;
-  margin-bottom: 1em;
 }
 
 .with-tooltip {
   position: relative;
+  margin: 1em 0;
 }
 
 .with-tooltip .tooltip {
