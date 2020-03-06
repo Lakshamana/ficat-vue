@@ -48,9 +48,9 @@ export default {
       default: () => ({})
     },
 
-    tooltipOptions: {
-      type: Object,
-      default: () => ({})
+    tooltipLabel: {
+      type: String,
+      default: ''
     },
 
     wrappedSlots: {
@@ -77,7 +77,7 @@ export default {
       v,
       fieldName,
       type,
-      tooltipOptions,
+      tooltipLabel,
       options
     } = this.$props
 
@@ -90,8 +90,6 @@ export default {
       )
     })
 
-    if (!tooltipOptions.label) tooltipOptions.label = fieldName
-
     return (
       <div class="flex-div">
         <div class="with-tooltip">
@@ -99,7 +97,7 @@ export default {
             {this.$slots.addon}
             <Component
               vModel={this.iptValue}
-              aria-label={tooltipOptions.label}
+              aria-label={tooltipLabel}
               aria-required={!!validations.required}
               aria-describedby="errormsg"
               aria-placeholder={label.toLowerCase()}
@@ -114,7 +112,7 @@ export default {
               {...this.$props.wrappedSlots(h)}
             </Component>
           </b-field>
-          <div class="tooltip">{tooltipOptions.label}</div>
+          {tooltipLabel && <div class="tooltip">{tooltipLabel}</div>}
         </div>
         {this.$slots.message && (
           <div class="optional" aria-live="assertive">
