@@ -48,6 +48,11 @@ export default {
       default: () => ({})
     },
 
+    tooltipOptions: {
+      type: Object,
+      default: () => ({})
+    },
+
     wrappedSlots: {
       type: Function,
       default: () => []
@@ -71,7 +76,9 @@ export default {
       useComponent: Component,
       v,
       fieldName,
-      type
+      type,
+      tooltipOptions,
+      options
     } = this.$props
 
     const scopedSlots = Object.keys(validations).map(k => {
@@ -83,25 +90,32 @@ export default {
       )
     })
 
+    if (!tooltipOptions.label) tooltipOptions.label = fieldName
+
     return (
       <div class="flex-div">
-        <b-field label={label} label-position="on-border">
-          {this.$slots.addon}
-          <Component
-            vModel={this.iptValue}
-            aria-required={!!validations.required}
-            aria-describedby="errormsg"
-            aria-placeholder={label.toLowerCase()}
-            rounded
-            onInput={e => this.$emit('input', e)}
-            type={type || 'text'}
-            {...{ props: this.$props.options }}
-            on={this.$listeners}
-          >
-            {this.$slots.component}
-            {...this.$props.wrappedSlots(h)}
-          </Component>
-        </b-field>
+        <div class="with-tooltip">
+          <b-field label={label} label-position="on-border">
+            {this.$slots.addon}
+            <Component
+              vModel={this.iptValue}
+              aria-label={tooltipOptions.label}
+              aria-required={!!validations.required}
+              aria-describedby="errormsg"
+              aria-placeholder={label.toLowerCase()}
+              rounded
+              expanded
+              onInput={e => this.$emit('input', e)}
+              type={type || 'text'}
+              {...{ props: options }}
+              on={this.$listeners}
+            >
+              {this.$slots.component}
+              {...this.$props.wrappedSlots(h)}
+            </Component>
+          </b-field>
+          <div class="tooltip">{tooltipOptions.label}</div>
+        </div>
         {this.$slots.message && (
           <div class="optional" aria-live="assertive">
             {this.$slots.message}

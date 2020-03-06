@@ -24,3 +24,36 @@
   margin-top: -1em;
   margin-bottom: 1em;
 }
+
+.with-tooltip {
+  position: relative;
+}
+
+.with-tooltip .tooltip {
+  visibility: hidden;
+  padding: .5em;
+  background-color: #555c;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  position: absolute;
+  top: -150%;
+  z-index: 64;
+  opacity: 0;
+  transition: opacity .5s ease-in;
+}
+
+.with-tooltip .tooltip::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  border-width: 5px;
+  border-style: solid;
+  border-color: #555c transparent transparent transparent;
+}
+
+.with-tooltip:hover .tooltip {
+  visibility: visible;
+  opacity: 1;
+}

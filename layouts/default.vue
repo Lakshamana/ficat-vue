@@ -55,7 +55,7 @@
         class="fb-customerchat"
         attribution="setup_tool"
         page_id="103822584563032"
-        theme_color="#fa3c4c"
+        theme_color="#0d2167"
       ></div>
     </div>
   </div>

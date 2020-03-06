@@ -9,6 +9,9 @@
             field-name="authorName"
             :validations="$options.validations.authorName"
             :v="$v"
+            :tooltip-options="{
+              label: 'the work\'s author name'
+            }"
             :options="{
               expanded: true
             }"
@@ -151,9 +154,5 @@ export default {
   display: flex;
   flex-direction: column;
   justify-content: space-evenly;
-}
-
-.columns {
-  height: 30vh;
 }
 </style>
