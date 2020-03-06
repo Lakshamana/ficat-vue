@@ -15,9 +15,7 @@
                       field-name="name"
                       :validations="$options.validations.name"
                       :v="$v"
-                      :options="{
-                        expanded: true
-                      }"
+                      tooltip-label="Type in your name"
                     >
                       <template #required>
                         Field is required
@@ -33,6 +31,7 @@
                       field-name="email"
                       :validations="$options.validations.email"
                       :v="$v"
+                      tooltip-label="Type in your main email address"
                       @blur="$v.email.$touch"
                     >
                       <template #required>
@@ -51,6 +50,7 @@
                       label="Fone"
                       field-name="fone"
                       :validations="$options.validations.fone"
+                      tooltip-label="Type in your main phone number"
                       :v="$v"
                     >
                       <template #required>
@@ -63,7 +63,7 @@
                         Use numbers or "+" only.
                       </template>
                       <template #message>
-                        Use +[your country code here] if you need it
+                        Use +[your country code here] for international numbers
                       </template>
                     </input-validation>
                   </div>
@@ -77,6 +77,7 @@
                     :validations="$options.validations.msg"
                     :v="$v"
                     type="textarea"
+                    tooltip-label="Type in a message describing the issue"
                   >
                     <template #required>
                       Field is required
@@ -86,14 +87,18 @@
                     </template>
                   </input-validation>
                   <b-field>
-                    <b-upload v-model="files" multiple drag-drop>
-                      <div class="content has-text-centered">
-                        <p>
-                          <b-icon icon="upload" size="is-small"></b-icon>
-                        </p>
-                        <p>Drop your files here or click to upload</p>
-                      </div>
-                    </b-upload>
+                    <WithTooltip
+                      text="Just drop or push to insert any files attachments you want"
+                    >
+                      <b-upload v-model="files" multiple drag-drop>
+                        <div class="content has-text-centered">
+                          <p>
+                            <b-icon icon="upload" size="is-small"></b-icon>
+                          </p>
+                          <p>Drop your files here or click to upload</p>
+                        </div>
+                      </b-upload>
+                    </WithTooltip>
                   </b-field>
                   <b-taglist>
                     <template v-for="(file, i) in files">
@@ -111,23 +116,27 @@
                     </template>
                   </b-taglist>
                   <div style="display:flex;margin:.5em">
-                    <div style="margin:auto">
-                      <recaptcha
-                        @success="onSuccess"
-                        @error="onSomeError('error')"
-                        @expired="onSomeError('exp')"
-                      />
-                    </div>
+                    <WithTooltip text="Solve the captcha">
+                      <div style="margin:auto">
+                        <recaptcha
+                          @success="onSuccess"
+                          @error="onSomeError('error')"
+                          @expired="onSomeError('exp')"
+                        />
+                      </div>
+                    </WithTooltip>
+                    <WithTooltip text="Ready? Send the message to us">
+                      <b-button
+                        class="is-success"
+                        :disabled="disabled"
+                        rounded
+                        :loading="loading"
+                        native-type="submit"
+                      >
+                        Submit
+                      </b-button>
+                    </WithTooltip>
                   </div>
-                  <b-button
-                    class="is-success"
-                    :disabled="disabled"
-                    rounded
-                    :loading="loading"
-                    native-type="submit"
-                  >
-                    Submit
-                  </b-button>
                 </div>
               </div>
             </form>
@@ -142,6 +151,7 @@
 import { required, minLength, maxLength, email } from 'vuelidate/lib/validators'
 import Card from '~/components/Card'
 import InputValidation from '~/components/InputValidation.js'
+import WithTooltip from '~/components/WithTooltip'
 import handler from '@/mixins/handler'
 
 const defaultData = () => ({
@@ -158,7 +168,7 @@ const defaultData = () => ({
 
 export default {
   name: 'Talk',
-  components: { Card, InputValidation },
+  components: { Card, InputValidation, WithTooltip },
   mixins: [handler],
   data() {
     return defaultData()
@@ -277,15 +287,13 @@ export default {
 <style scoped>
 .vcenter {
   display: flex;
-  align-items: flex-end;
   align-items: center;
-  height: 90vh;
+  align-items: center;
 }
 
 .wrapper {
   flex: 1 0 auto;
   margin: auto;
-  height: 60vh;
 }
 
 .input-float {
