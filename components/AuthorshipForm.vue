@@ -9,7 +9,7 @@
             field-name="authorName"
             :validations="$options.validations.authorName"
             :v="$v"
-            tooltip-label="the work's author name"
+            tooltip-label="Work's author name"
             :options="{
               expanded: true
             }"
@@ -26,7 +26,7 @@
             label="Author Surname"
             field-name="authorSurname"
             :validations="$options.validations.authorSurname"
-            tooltip-label="the work's author surname"
+            tooltip-label="Work's author surname"
             :v="$v"
             type="text"
           >
@@ -46,7 +46,7 @@
             label="Second Author Name"
             field-name="author2Name"
             :validations="$options.validations.author2Name"
-            tooltip-label="the second work's author name"
+            tooltip-label="Second work's author name"
             :v="$v"
             type="text"
           >
@@ -62,7 +62,7 @@
             label="Second Author Surname"
             field-name="author2Surname"
             :validations="$options.validations.author2Surname"
-            tooltip-label="the second work's author name"
+            tooltip-label="Second work's author name"
             :v="$v"
             type="text"
           >

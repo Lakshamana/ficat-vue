@@ -1,4 +1,5 @@
 import '~/components/css/InputValidation.css'
+import WithTooltip from '~/components/WithTooltip'
 
 export default {
   name: 'InputValidation',
@@ -64,6 +65,10 @@ export default {
     }
   },
 
+  components: {
+    WithTooltip
+  },
+
   computed: {
     iptValue: {
       get() {
@@ -98,7 +103,13 @@ export default {
 
     return (
       <div class="flex-div">
-        <div class="with-tooltip">
+        <WithTooltip
+          {...{
+            props: {
+              text: tooltipLabel
+            }
+          }}
+        >
           <b-field
             {...(useLabel && { props: { label } })}
             label-position="on-border"
@@ -121,8 +132,7 @@ export default {
               {...this.$props.wrappedSlots(h)}
             </Component>
           </b-field>
-          {tooltipLabel && <div class="tooltip">{tooltipLabel}</div>}
-        </div>
+        </WithTooltip>
         {this.$slots.message && (
           <div class="optional" aria-live="assertive">
             {this.$slots.message}

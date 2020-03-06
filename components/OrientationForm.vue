@@ -9,9 +9,7 @@
             field-name="advisorName"
             :validations="$options.validations.advisorName"
             :v="$v"
-            :options="{
-              expanded: true
-            }"
+            tooltip-label="Type in your work's advisor name"
           >
             <template #required>
               Field is required
@@ -27,6 +25,7 @@
             :validations="$options.validations.advisorSurname"
             :v="$v"
             type="text"
+            tooltip-label="Type in your work's advisor surname"
           >
             <template #required>
               Field is required
@@ -37,11 +36,13 @@
           </input-validation>
           <div class="columns vcenter">
             <div class="column is-half">
-              <b-field class="field">
-                <b-checkbox v-model="isFemaleAdvisor">
-                  Orientadora
-                </b-checkbox>
-              </b-field>
+              <div class="vcenter">
+                <WithTooltip text="Check if is your advisor a woman">
+                  <b-checkbox v-model="isFemaleAdvisor">
+                    Female
+                  </b-checkbox>
+                </WithTooltip>
+              </div>
             </div>
             <div class="column is-half">
               <input-validation
@@ -51,9 +52,7 @@
                 :validations="$options.validations.advisorTitle"
                 :v="$v"
                 use-component="b-select"
-                :options="{
-                  expanded: true
-                }"
+                tooltip-label="Select the advisor's title"
               >
                 <template #component>
                   <option value="graduate">Graduado</option>
@@ -78,6 +77,7 @@
             :validations="$options.validations.coadvisorName"
             :v="$v"
             type="text"
+            tooltip-label="Type in your work's coadvisor name"
           >
             <template #required>
               Field is required
@@ -93,6 +93,7 @@
             :validations="$options.validations.coadvisorSurname"
             :v="$v"
             type="text"
+            tooltip-label="Type in your work's coadvisor surname"
           >
             <template #required>
               Field is required
@@ -103,14 +104,16 @@
           </input-validation>
           <div class="columns vcenter">
             <div class="column is-half">
-              <b-field class="field">
-                <b-checkbox
-                  v-model="isFemaleCoadvisor"
-                  :disabled="!coadvisorName"
-                >
-                  Co-orientadora
-                </b-checkbox>
-              </b-field>
+              <div class="vcenter">
+                <WithTooltip text="Check if is your coadvisor a woman">
+                  <b-checkbox
+                    v-model="isFemaleCoadvisor"
+                    :disabled="!coadvisorName"
+                  >
+                    Female
+                  </b-checkbox>
+                </WithTooltip>
+              </div>
             </div>
             <div class="column is-half">
               <input-validation
@@ -120,9 +123,7 @@
                 :validations="$options.validations.coadvisorTitle"
                 :v="$v"
                 use-component="b-select"
-                :options="{
-                  expanded: true
-                }"
+                tooltip-label="Select the coadvisor's title"
               >
                 <template #component>
                   <option value="graduate">Graduado</option>
@@ -147,10 +148,11 @@ import { required, minLength } from 'vuelidate/lib/validators'
 import { recovery, replace } from '~/front/persistence'
 import Card from '~/components/Card'
 import InputValidation from '~/components/InputValidation.js'
+import WithTooltip from '~/components/WithTooltip'
 
 export default {
   name: 'AuthorshipForm',
-  components: { Card, InputValidation },
+  components: { Card, InputValidation, WithTooltip },
   data() {
     const { advisors } = recovery('form')
     return {

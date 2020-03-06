@@ -1,7 +1,11 @@
 import '~/components/css/Slider.css'
+import WithTooltip from '~/components/WithTooltip'
 
 export default {
   name: 'Slider',
+  components: {
+    WithTooltip
+  },
   data() {
     return {
       slideIndex: 0,
@@ -20,29 +24,33 @@ export default {
     return (
       <div class="box-wrapper">
         {this.slideIndex > 0 && (
-          <button
-            tabindex="0"
-            class="slider-control"
-            aria-label="previous"
-            onClick={() => this.incrementSlideIndex(-1)}
-          >
-            <span class="symbol">&lt;</span>
-          </button>
+          <WithTooltip {...{ props: { text: 'Go to previous slide' } }}>
+            <button
+              tabindex="0"
+              class="slider-control"
+              aria-label="previous"
+              onClick={() => this.incrementSlideIndex(-1)}
+            >
+              <span class="symbol">&lt;</span>
+            </button>
+          </WithTooltip>
         )}
         <Component
           on-ready={() => (this.disableNext = false)}
           on-preventforward={() => (this.disableNext = true)}
         />
         {this.slideIndex < children.length - 1 && (
-          <button
-            tabindex="0"
-            class="slider-control"
-            aria-label="next"
-            onClick={() => this.incrementSlideIndex(1)}
-            disabled={this.disableNext}
-          >
-            <span class="symbol">&gt;</span>
-          </button>
+          <WithTooltip {...{ props: { text: 'Go to next slide' } }}>
+            <button
+              tabindex="0"
+              class="slider-control"
+              aria-label="next"
+              onClick={() => this.incrementSlideIndex(1)}
+              disabled={this.disableNext}
+            >
+              <span class="symbol">&gt;</span>
+            </button>
+          </WithTooltip>
         )}
       </div>
     )

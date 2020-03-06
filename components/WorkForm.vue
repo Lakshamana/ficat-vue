@@ -9,7 +9,7 @@
             field-name="workTitle"
             :validations="$options.validations.workTitle"
             :v="$v"
-            tooltip-label="work's main title"
+            tooltip-label="Work's main title"
           >
             <template #required>
               Field is required
@@ -24,7 +24,7 @@
             field-name="workSubtitle"
             :validations="$options.validations.workSubtitle"
             :v="$v"
-            tooltip-label="work's secondary title/subtitle"
+            tooltip-label="Work's secondary title/subtitle"
             type="text"
           >
             <template #required>
@@ -88,9 +88,7 @@
             field-name="workImagesType"
             :validations="$options.validations.workImagesType"
             :v="$v"
-            :options="{
-              expanded: true
-            }"
+            tooltip-label="Select a kind of pictures present in your work or none"
           >
             <template #component>
               <option value="nocolor">Não possui</option>
@@ -108,9 +106,7 @@
             :validations="$options.validations.workType"
             :v="$v"
             use-component="b-select"
-            :options="{
-              expanded: true
-            }"
+            tooltip-label="Select your work's scientific work category"
           >
             <template #component>
               <option value="thesis">Tese</option>
@@ -130,12 +126,12 @@
             :v="$v"
             label="Knowledge Area"
             :options="{
-              expanded: true,
               loading,
               field: 'description',
               data: knAreas,
               icon: 'magnify'
             }"
+            tooltip-label="Type in either knowledge area CDD or description"
             :wrapped-slots="h => renderTemplates(h, 'description')"
             @typing="getKnAreas"
             @select="option => (selectedKnArea = option)"
@@ -151,8 +147,8 @@
             :validations="$options.validations.acdUnity"
             :v="$v"
             label="Academic Unity"
+            tooltip-label="Type in either your academic unity name or acronym"
             :options="{
-              expanded: true,
               loading,
               field: 'name',
               data: academicUnities,
@@ -174,9 +170,7 @@
               :validations="$options.validations.course"
               :v="$v"
               use-component="b-select"
-              :options="{
-                expanded: true
-              }"
+              tooltip-label="Select your course"
             >
               <template #component>
                 <option v-for="c in courses" :key="c.id" :value="'' + c.id">

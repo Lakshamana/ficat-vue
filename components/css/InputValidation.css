@@ -23,7 +23,7 @@
   margin-top: -1em;
 }
 
-.with-tooltip {
+/* .with-tooltip {
   position: relative;
   margin: 1em 0;
 }
@@ -55,4 +55,4 @@
 .with-tooltip:hover .tooltip {
   visibility: visible;
   opacity: 1;
-}
+} */
