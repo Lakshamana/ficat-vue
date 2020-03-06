@@ -62,6 +62,11 @@ export default {
     wrappedSlots: {
       type: Function,
       default: () => []
+    },
+
+    disabled: {
+      type: Boolean,
+      default: false
     }
   },
 
@@ -89,6 +94,7 @@ export default {
       type,
       tooltipLabel,
       options,
+      disabled,
       useLabel = true
     } = this.$props
 
@@ -127,6 +133,7 @@ export default {
               type={type || 'text'}
               {...{ props: options }}
               on={this.$listeners}
+              disabled={disabled}
             >
               {this.$slots.component}
               {...this.$props.wrappedSlots(h)}

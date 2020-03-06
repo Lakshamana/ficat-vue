@@ -4,35 +4,41 @@
       <div class="column is-center is-5">
         <form @submit.prevent="onSubmit">
           <b-field>
-            <b-select
-              v-model="catalogFont"
-              placeholder="Font"
-              aria-placeholder="Font"
-              rounded
-              expanded
-            >
-              <option value="times">Times New Roman</option>
-              <option value="arial">Arial</option>
-            </b-select>
+            <WithTooltip text="Select this card's final font family">
+              <b-select
+                v-model="catalogFont"
+                placeholder="Font"
+                aria-placeholder="Font"
+                rounded
+                expanded
+              >
+                <option value="times">Times New Roman</option>
+                <option value="arial">Arial</option>
+              </b-select>
+            </WithTooltip>
           </b-field>
           <div style="display:flex;margin:.5em">
-            <div style="margin:auto">
-              <recaptcha
-                @success="onSuccess"
-                @error="onSomeError('error')"
-                @expired="onSomeError('exp')"
-              />
-            </div>
+            <WithTooltip text="Solve the captcha">
+              <div style="margin:auto">
+                <recaptcha
+                  @success="onSuccess"
+                  @error="onSomeError('error')"
+                  @expired="onSomeError('exp')"
+                />
+              </div>
+            </WithTooltip>
           </div>
           <b-field>
-            <b-button
-              class="is-success"
-              rounded
-              native-type="submit"
-              :disabled="disabled"
-            >
-              Generate
-            </b-button>
+            <WithTooltip text="Generate your card!">
+              <b-button
+                class="is-success"
+                rounded
+                native-type="submit"
+                :disabled="disabled"
+              >
+                Generate
+              </b-button>
+            </WithTooltip>
           </b-field>
         </form>
       </div>
@@ -42,13 +48,15 @@
 
 <script>
 import Card from '~/components/Card'
+import WithTooltip from '~/components/WithTooltip'
 import { recovery, replace } from '~/front/persistence'
 import { maybe, romanize } from '~/shared/frontUtils'
 
 export default {
   name: 'SendCatalogDataForm',
   components: {
-    Card
+    Card,
+    WithTooltip
   },
 
   data() {

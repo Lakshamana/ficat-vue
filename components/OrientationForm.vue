@@ -124,6 +124,7 @@
                 :v="$v"
                 use-component="b-select"
                 tooltip-label="Select the coadvisor's title"
+                :disabled="!coadvisorName"
               >
                 <template #component>
                   <option value="graduate">Graduado</option>

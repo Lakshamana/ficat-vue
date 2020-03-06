@@ -19,7 +19,6 @@ export default {
 
 <style>
 .with-tooltip {
-  border: 1px solid red;
   box-sizing: border-box;
   position: relative;
   margin: 1em 0;
