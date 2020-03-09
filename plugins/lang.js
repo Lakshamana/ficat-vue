@@ -1,33 +1,28 @@
 import en from '@/front/i18n/en'
 import pt from '@/front/i18n/pt'
 
-const translation = {
+const translations = {
   en,
   pt
 }
 
-const prefixes = {
-  err: 'error',
-  inf: 'info',
-  lt: 'layout',
-  msg: 'message'
-}
+const DEFAULT_TR = '_Translation Not Found_'
 
-/**
- * Obter tipo de validação baseado no prefixo
- * da chave
- * @param {String} key
- */
-function getType(key) {
-  for (const pfx in prefixes) {
-    if (key.indexOf(pfx) === 0) return prefixes[pfx]
-  }
-}
+export default ({ store }, inject) => {
+  // key = String that fits the form 'string.string'
+  // args = Array of arguments (used if trKey is a actually a function)
+  inject('tr', (key, args) => {
+    const lang = store.state.lang.lang || 'pt'
+    const [subject, trKey] = key.split('.')
 
-export default ({ app }, inject) => {
-  inject('tr', (langKey, trKey) => {
-    const tr = translation[langKey]
-    const type = getType(trKey)
-    return tr[type][trKey]
+    // trResult could be a function as well as a string
+    const translation = translations[lang][subject][trKey]
+
+    // Return fn evaluation of the value itself (if it's a string)
+    return (
+      (typeof translation === 'function'
+        ? translation(...args)
+        : translation) || DEFAULT_TR
+    )
   })
 }

@@ -12,10 +12,10 @@
             tooltip-label="Type in your work's advisor name"
           >
             <template #required>
-              Field is required
+              {{ $tr('layout.required') }}
             </template>
             <template #minLength="{ min }">
-              Must have a {{ min }} chars minima
+              {{ $tr('layout.minLength', [min]) }}
             </template>
           </input-validation>
           <input-validation
@@ -28,10 +28,10 @@
             tooltip-label="Type in your work's advisor surname"
           >
             <template #required>
-              Field is required
+              {{ $tr('layout.required') }}
             </template>
             <template #minLength="{ min }">
-              Must have a {{ min }} chars minima
+              {{ $tr('layout.minLength', [min]) }}
             </template>
           </input-validation>
           <div class="columns vcenter">
@@ -61,7 +61,7 @@
                   <option value="doctor">Doutor</option>
                 </template>
                 <template #required>
-                  Field is required
+                  {{ $tr('layout.required') }}
                 </template>
               </input-validation>
             </div>
@@ -80,10 +80,10 @@
             tooltip-label="Type in your work's coadvisor name"
           >
             <template #required>
-              Field is required
+              {{ $tr('layout.required') }}
             </template>
             <template #minLength="{ min }">
-              Must have a {{ min }} chars minima
+              {{ $tr('layout.minLength', [min]) }}
             </template>
           </input-validation>
           <input-validation
@@ -96,10 +96,10 @@
             tooltip-label="Type in your work's coadvisor surname"
           >
             <template #required>
-              Field is required
+              {{ $tr('layout.required') }}
             </template>
             <template #minLength="{ min }">
-              Must have a {{ min }} chars minima
+              {{ $tr('layout.minLength', [min]) }}
             </template>
           </input-validation>
           <div class="columns vcenter">
@@ -133,7 +133,7 @@
                   <option value="doctor">Doutor</option>
                 </template>
                 <template #required>
-                  Field is required
+                  {{ $tr('layout.required') }}
                 </template>
               </input-validation>
             </div>

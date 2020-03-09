@@ -1,15 +1,15 @@
 export const state = () => ({
-  langTag: 'pt'
+  lang: 'pt'
 })
 
 export const mutations = {
-  setLangTag(state, langTag) {
-    state.langTag = langTag
+  setLang(state, lang) {
+    state.lang = lang
   }
 }
 
 export const actions = {
-  change({ commit }, langTag) {
-    commit('setLangTag', langTag)
+  change({ commit }, lang) {
+    commit('setLang', lang)
   }
 }

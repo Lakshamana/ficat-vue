@@ -1,40 +1,37 @@
 <template>
-  <Card title="Authorship Data">
+  <Card :title="$tr('layout.authorshipData')">
     <div class="columns">
       <div class="column is-half">
         <div class="input-float">
           <input-validation
             v-model="$v.authorName.$model"
-            label="Author Name"
+            :label="$tr('layout.whosName', ['autor'])"
             field-name="authorName"
             :validations="$options.validations.authorName"
             :v="$v"
-            tooltip-label="Work's author name"
-            :options="{
-              expanded: true
-            }"
+            :tooltip-label="$tr('layout.writeName', ['autor'])"
           >
             <template #required>
-              Field is required
+              {{ $tr('layout.required') }}
             </template>
             <template #minLength="{ min }">
-              Must have a {{ min }} chars minima
+              {{ $tr('layout.minLength', [min]) }}
             </template>
           </input-validation>
           <input-validation
             v-model="$v.authorSurname.$model"
-            label="Author Surname"
+            :label="$tr('layout.authorSurname')"
             field-name="authorSurname"
             :validations="$options.validations.authorSurname"
-            tooltip-label="Work's author surname"
+            :tooltip-label="$tr('layout.writeSurname', ['autor'])"
             :v="$v"
             type="text"
           >
             <template #required>
-              Field is required
+              {{ $tr('layout.required') }}
             </template>
             <template #minLength="{ min }">
-              Must have a {{ min }} chars minima
+              {{ $tr('layout.minLength', [min]) }}
             </template>
           </input-validation>
         </div>
@@ -43,18 +40,18 @@
         <div class="input-float">
           <input-validation
             v-model="$v.author2Name.$model"
-            label="Second Author Name"
+            :label="$tr('layout.whosName', ['segundo autor'])"
             field-name="author2Name"
             :validations="$options.validations.author2Name"
-            tooltip-label="Second work's author name"
+            :tooltip-label="$tr('layout.writeName', ['segundo autor'])"
             :v="$v"
             type="text"
           >
             <template #required>
-              Field is required
+              {{ $tr('layout.required') }}
             </template>
             <template #minLength="{ min }">
-              Must have a {{ min }} chars minima
+              {{ $tr('layout.minLength', [min]) }}
             </template>
           </input-validation>
           <input-validation
@@ -62,15 +59,15 @@
             label="Second Author Surname"
             field-name="author2Surname"
             :validations="$options.validations.author2Surname"
-            tooltip-label="Second work's author name"
+            :tooltip-label="$tr('layout.writeSurname', ['segundo autor'])"
             :v="$v"
             type="text"
           >
             <template #required>
-              Field is required
+              {{ $tr('layout.required') }}
             </template>
             <template #minLength="{ min }">
-              Must have a {{ min }} chars minima
+              {{ $tr('layout.minLength', [min]) }}
             </template>
           </input-validation>
         </div>

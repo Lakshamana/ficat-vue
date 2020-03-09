@@ -18,10 +18,10 @@
                       tooltip-label="Type in your name"
                     >
                       <template #required>
-                        Field is required
+                        {{ $tr('layout.required') }}
                       </template>
                       <template #minLength="{ min }">
-                        Must have a {{ min }} chars minima
+                        {{ $tr('layout.minLength', [min]) }}
                       </template>
                     </input-validation>
                     <input-validation
@@ -35,10 +35,10 @@
                       @blur="$v.email.$touch"
                     >
                       <template #required>
-                        Field is required
+                        {{ $tr('layout.required') }}
                       </template>
                       <template #minLength="{ min }">
-                        Must have a {{ min }} chars minima
+                        {{ $tr('layout.minLength', [min]) }}
                       </template>
                       <template #email>
                         It doesn't look like a valid email.
@@ -54,10 +54,10 @@
                       :v="$v"
                     >
                       <template #required>
-                        Field is required
+                        {{ $tr('layout.required') }}
                       </template>
                       <template #minLength="{ min }">
-                        Must have a {{ min }} chars minima
+                        {{ $tr('layout.minLength', [min]) }}
                       </template>
                       <template #pattern>
                         Use numbers or "+" only.
@@ -80,10 +80,10 @@
                     tooltip-label="Type in a message describing the issue"
                   >
                     <template #required>
-                      Field is required
+                      {{ $tr('layout.required') }}
                     </template>
                     <template #minLength="{ min }">
-                      Must have a {{ min }} chars minima
+                      {{ $tr('layout.minLength', [min]) }}
                     </template>
                   </input-validation>
                   <b-field>

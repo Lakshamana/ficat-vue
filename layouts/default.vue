@@ -63,18 +63,17 @@
 
 <script>
 import { mapState } from 'vuex'
-const MessageCodes = require('../shared/messageCodes')
 
 export default {
   computed: {
     ...mapState({
-      lang: state => state.lang.langTag
+      lang: state => state.lang.lang
     }),
 
     paths() {
       return {
-        about: this.$tr(this.lang, MessageCodes.layout.ltAbout),
-        talk: this.$tr(this.lang, MessageCodes.layout.ltTalkUs)
+        about: this.$tr('layout.about'),
+        talk: this.$tr('layout.talkToUs')
       }
     }
   },

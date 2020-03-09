@@ -503,7 +503,7 @@ export default {
 
   computed: {
     ...mapState({
-      lang: state => state.lang.langTag
+      lang: state => state.lang.lang
     }),
 
     translations() {

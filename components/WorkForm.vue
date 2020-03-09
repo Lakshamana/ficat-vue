@@ -12,10 +12,10 @@
             tooltip-label="Work's main title"
           >
             <template #required>
-              Field is required
+              {{ $tr('layout.required') }}
             </template>
             <template #minLength="{ min }">
-              Must have a {{ min }} chars minima
+              {{ $tr('layout.minLength', [min]) }}
             </template>
           </input-validation>
           <input-validation
@@ -28,10 +28,10 @@
             type="text"
           >
             <template #required>
-              Field is required
+              {{ $tr('layout.required') }}
             </template>
             <template #minLength="{ min }">
-              Must have a {{ min }} chars minima
+              {{ $tr('layout.minLength', [min]) }}
             </template>
           </input-validation>
           <div class="columns">
@@ -69,7 +69,7 @@
                   </b-select>
                 </template>
                 <template #required>
-                  Field is required
+                  {{ $tr('layout.required') }}
                 </template>
                 <template #minValue="{ min }">
                   Minimum value is {{ min }}
@@ -96,7 +96,7 @@
               <option value="bw">Preto e branco</option>
             </template>
             <template #required>
-              Field is required
+              {{ $tr('layout.required') }}
             </template>
           </input-validation>
           <input-validation
@@ -115,7 +115,7 @@
               <option value="tccGraduation">TCC (Graduação)</option>
             </template>
             <template #required>
-              Field is required
+              {{ $tr('layout.required') }}
             </template>
           </input-validation>
           <input-validation
@@ -137,7 +137,7 @@
             @select="option => (selectedKnArea = option)"
           >
             <template #required>
-              Field is required
+              {{ $tr('layout.required') }}
             </template>
           </input-validation>
           <input-validation
@@ -159,7 +159,7 @@
             @select="onSelectedAcdUnity"
           >
             <template #required>
-              Field is required
+              {{ $tr('layout.required') }}
             </template>
           </input-validation>
           <template v-if="selectedAcdUnity">
@@ -178,7 +178,7 @@
                 </option>
               </template>
               <template #required>
-                Field is required
+                {{ $tr('layout.required') }}
               </template>
             </input-validation>
           </template>
