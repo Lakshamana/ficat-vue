@@ -1,5 +1,5 @@
 <template>
-  <card title="Keywords">
+  <card :title="$tr('layout.keywords')">
     <div class="columns is-centered">
       <div class="column is-half">
         <div
@@ -9,11 +9,11 @@
         >
           <input-validation
             v-model="kw.text.$model"
-            :label="'Keyword ' + (+i + 1)"
-            field-name="text"
+            :label="$tr('layout.keyword') + (+i + 1)"
             :validations="$options.validations.keywords.$each.text"
             :v="kw"
-            tooltip-label="Type in a scientific work keyword"
+            field-name="text"
+            :tooltip-label="$tr('layout.keywordTooltip')"
           >
             <template #required>
               {{ $tr('layout.required') }}
@@ -23,16 +23,16 @@
             </template>
           </input-validation>
           <div class="btn-block">
-            <WithTooltip text="Add keyword">
+            <WithTooltip :text="$tr('layout.addKeyword')">
               <b-button
+                :disabled="keywords.length > 4"
                 icon-right="plus"
                 class="is-success is-round is-outlined btn"
-                :disabled="keywords.length > 4"
                 @click="keywords.push({ text: '' })"
               >
               </b-button>
             </WithTooltip>
-            <WithTooltip text="Remove keyword">
+            <WithTooltip :text="$tr('layout.removeKeyword')">
               <b-button
                 v-if="i > 0"
                 icon-right="minus"
@@ -111,6 +111,7 @@ export default {
 <style>
 .btn-block {
   display: flex;
+  margin-left: 1em;
   justify-content: space-between;
 }
 

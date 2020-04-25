@@ -21,17 +21,19 @@ export default {
     const children = this.$slots.default.filter(c => c.tag && c.data)
     const Component =
       children[this.slideIndex].componentOptions.Ctor.extendOptions
+    const next = this.$tr('layout.next')
+    const previous = this.$tr('layout.previous')
     return (
       <div class="box-wrapper">
         {this.slideIndex > 0 && (
-          <WithTooltip {...{ props: { text: 'Go to previous slide' } }}>
+          <WithTooltip {...{ props: { text: previous } }}>
             <button
               tabindex="0"
               class="slider-control"
-              aria-label="previous"
+              aria-label={previous}
               onClick={() => this.incrementSlideIndex(-1)}
             >
-              <span class="symbol">&lt;</span>
+              <span class="symbol">&laquo;</span>
             </button>
           </WithTooltip>
         )}
@@ -40,15 +42,15 @@ export default {
           on-preventforward={() => (this.disableNext = true)}
         />
         {this.slideIndex < children.length - 1 && (
-          <WithTooltip {...{ props: { text: 'Go to next slide' } }}>
+          <WithTooltip {...{ props: { text: next } }}>
             <button
               tabindex="0"
               class="slider-control"
-              aria-label="next"
+              aria-label={next}
               onClick={() => this.incrementSlideIndex(1)}
               disabled={this.disableNext}
             >
-              <span class="symbol">&gt;</span>
+              <span class="symbol">&raquo;</span>
             </button>
           </WithTooltip>
         )}

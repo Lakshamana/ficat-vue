@@ -3,7 +3,7 @@
     <div class="wrapper">
       <div class="columns is-centered">
         <div class="column is-10">
-          <Card title="Talk to us!">
+          <Card :title="$tr('layout.talkToUs')">
             <form @submit.prevent="onSubmit">
               <div class="columns">
                 <div class="column is-half">
@@ -11,11 +11,11 @@
                     <input-validation
                       ref="name"
                       v-model="$v.name.$model"
-                      label="Name"
-                      field-name="name"
                       :validations="$options.validations.name"
                       :v="$v"
-                      tooltip-label="Type in your name"
+                      :label="$tr('layout.talkFormName')"
+                      field-name="name"
+                      :tooltip-label="$tr('layout.talkFormNameTooltip')"
                     >
                       <template #required>
                         {{ $tr('layout.required') }}
@@ -27,11 +27,11 @@
                     <input-validation
                       ref="email"
                       v-model.trim="email"
-                      label="Email"
-                      field-name="email"
                       :validations="$options.validations.email"
                       :v="$v"
-                      tooltip-label="Type in your main email address"
+                      :label="$tr('layout.talkFormEmail')"
+                      field-name="email"
+                      :tooltip-label="$tr('layout.talkFormEmailTooltip')"
                       @blur="$v.email.$touch"
                     >
                       <template #required>
@@ -41,17 +41,17 @@
                         {{ $tr('layout.minLength', [min]) }}
                       </template>
                       <template #email>
-                        It doesn't look like a valid email.
+                        {{ $tr('layout.invalidEmail') }}
                       </template>
                     </input-validation>
                     <input-validation
                       ref="fone"
                       v-model="$v.fone.$model"
-                      label="Fone"
-                      field-name="fone"
                       :validations="$options.validations.fone"
-                      tooltip-label="Type in your main phone number"
                       :v="$v"
+                      :label="$tr('layout.talkFormPhone')"
+                      field-name="fone"
+                      :tooltip-label="$tr('layout.talkFormPhoneTooltip')"
                     >
                       <template #required>
                         {{ $tr('layout.required') }}
@@ -60,10 +60,10 @@
                         {{ $tr('layout.minLength', [min]) }}
                       </template>
                       <template #pattern>
-                        Use numbers or "+" only.
+                        {{ $tr('layout.numbersOnly') }}
                       </template>
                       <template #message>
-                        Use +[your country code here] for international numbers
+                        {{ $tr('layout.internationalNumber') }}
                       </template>
                     </input-validation>
                   </div>
@@ -72,12 +72,12 @@
                   <input-validation
                     ref="msg"
                     v-model="$v.msg.$model"
-                    label="Message"
-                    field-name="msg"
                     :validations="$options.validations.msg"
                     :v="$v"
+                    :label="$tr('layout.talkFormMessage')"
+                    field-name="msg"
                     type="textarea"
-                    tooltip-label="Type in a message describing the issue"
+                    :tooltip-label="$tr('layout.talkFormMessageTooltip')"
                   >
                     <template #required>
                       {{ $tr('layout.required') }}
@@ -87,15 +87,13 @@
                     </template>
                   </input-validation>
                   <b-field>
-                    <WithTooltip
-                      text="Just drop or push to insert any files attachments you want"
-                    >
+                    <WithTooltip :text="$tr('layout.talkFormUploadTooltip')">
                       <b-upload v-model="files" multiple drag-drop>
                         <div class="content has-text-centered">
                           <p>
                             <b-icon icon="upload" size="is-small"></b-icon>
                           </p>
-                          <p>Drop your files here or click to upload</p>
+                          <p>{{ $tr('layout.talkFormUpload') }}</p>
                         </div>
                       </b-upload>
                     </WithTooltip>
@@ -115,7 +113,7 @@
                       </b-tag>
                     </template>
                   </b-taglist>
-                  <div style="display:flex;margin:.5em">
+                  <div class="flex-submit">
                     <WithTooltip text="Solve the captcha">
                       <div style="margin:auto">
                         <recaptcha
@@ -125,15 +123,15 @@
                         />
                       </div>
                     </WithTooltip>
-                    <WithTooltip text="Ready? Send the message to us">
+                    <WithTooltip :text="$tr('layout.submitBtnTooltip')">
                       <b-button
-                        class="is-success"
                         :disabled="disabled"
-                        rounded
                         :loading="loading"
+                        class="is-success"
+                        rounded
                         native-type="submit"
                       >
-                        Submit
+                        {{ $tr('layout.submitBtn') }}
                       </b-button>
                     </WithTooltip>
                   </div>
@@ -149,10 +147,10 @@
 
 <script>
 import { required, minLength, maxLength, email } from 'vuelidate/lib/validators'
+import handler from '@/mixins/handler'
 import Card from '~/components/Card'
 import InputValidation from '~/components/InputValidation.js'
 import WithTooltip from '~/components/WithTooltip'
-import handler from '@/mixins/handler'
 
 const defaultData = () => ({
   name: '',
@@ -306,5 +304,12 @@ export default {
 
 .with-margin {
   margin: auto 0.5em;
+}
+
+.flex-submit {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0.5em;
 }
 </style>

@@ -1,15 +1,15 @@
 <template>
-  <Card title="Work Data">
+  <Card :title="$tr('layout.workData')">
     <div class="columns">
       <div class="column is-half">
         <div class="input-float">
           <input-validation
             v-model="$v.workTitle.$model"
-            label="Work Title"
-            field-name="workTitle"
             :validations="$options.validations.workTitle"
             :v="$v"
-            tooltip-label="Work's main title"
+            :label="$tr('layout.workTitle')"
+            field-name="workTitle"
+            :tooltip-label="$tr('layout.workTitleTooltip')"
           >
             <template #required>
               {{ $tr('layout.required') }}
@@ -20,11 +20,11 @@
           </input-validation>
           <input-validation
             v-model="$v.workSubtitle.$model"
-            label="Work Subtitle"
-            field-name="workSubtitle"
             :validations="$options.validations.workSubtitle"
             :v="$v"
-            tooltip-label="Work's secondary title/subtitle"
+            :label="$tr('layout.workSubtitle')"
+            field-name="workSubtitle"
+            :tooltip-label="$tr('layout.workSubtitleTooltip')"
             type="text"
           >
             <template #required>
@@ -38,14 +38,15 @@
             <div class="column is-4">
               <input-validation
                 v-model="$v.presentationYear.$model"
-                use-component="b-select"
-                field-name="presentationYear"
-                label="Year"
                 :validations="$options.validations.presentationYear"
                 :v="$v"
+                use-component="b-select"
+                field-name="presentationYear"
+                :label="$tr('layout.year')"
+                :tooltip-label="$tr('layout.yearTooltip')"
               >
                 <template #component>
-                  <option v-for="y in 10" :key="y">
+                  <option v-for="y in 11" :key="y">
                     {{ getYear(y - 1) }}
                   </option>
                 </template>
@@ -54,25 +55,24 @@
             <div class="column is-8">
               <input-validation
                 v-model="$v.totalPages.$model"
-                label="Pages Count"
-                field-name="totalPages"
                 :validations="$options.validations.totalPages"
                 :v="$v"
-                :use-label="false"
-                tooltip-label="Write roman/arabic numerals on the card"
+                :label="$tr('layout.totalPages')"
+                field-name="totalPages"
+                :tooltip-label="$tr('layout.numberTypeTooltip')"
                 type="number"
               >
                 <template #addon>
                   <b-select v-model="numberType" rounded @input="onChangeType">
-                    <option value="arabic">Arabic</option>
-                    <option value="roman">Roman</option>
+                    <option value="arabic">{{ $tr('layout.arabic') }}</option>
+                    <option value="roman">{{ $tr('layout.roman') }}</option>
                   </b-select>
                 </template>
                 <template #required>
                   {{ $tr('layout.required') }}
                 </template>
                 <template #minValue="{ min }">
-                  Minimum value is {{ min }}
+                  {{ $tr('layout.minValue', [min]) }}
                 </template>
               </input-validation>
             </div>
@@ -83,17 +83,17 @@
         <div class="input-float">
           <input-validation
             v-model="$v.workImagesType.$model"
-            label="Illustrations"
-            use-component="b-select"
-            field-name="workImagesType"
             :validations="$options.validations.workImagesType"
             :v="$v"
-            tooltip-label="Select a kind of pictures present in your work or none"
+            :label="$tr('layout.pictures')"
+            use-component="b-select"
+            field-name="workImagesType"
+            :tooltip-label="$tr('layout.picturesTooltip')"
           >
             <template #component>
-              <option value="nocolor">Não possui</option>
-              <option value="color">Coloridas</option>
-              <option value="bw">Preto e branco</option>
+              <option value="nocolor">{{ $tr('layout.nocolor') }}</option>
+              <option value="color">{{ $tr('layout.color') }}</option>
+              <option value="bw">{{ $tr('layout.bw') }}</option>
             </template>
             <template #required>
               {{ $tr('layout.required') }}
@@ -101,18 +101,22 @@
           </input-validation>
           <input-validation
             v-model="$v.workType.$model"
-            label="Work Type"
-            field-name="workType"
             :validations="$options.validations.workType"
             :v="$v"
+            :label="$tr('layout.workType')"
+            field-name="workType"
             use-component="b-select"
-            tooltip-label="Select your work's scientific work category"
+            :tooltip-label="$tr('layout.workTypeTooltip')"
           >
             <template #component>
-              <option value="thesis">Tese</option>
-              <option value="dissertation">Dissertação</option>
-              <option value="tccExpert">TCC (Especialização)</option>
-              <option value="tccGraduation">TCC (Graduação)</option>
+              <option value="thesis">{{ $tr('layout.thesis') }}</option>
+              <option value="dissertation">
+                {{ $tr('layout.dissertation') }}
+              </option>
+              <option value="tccExpert">{{ $tr('layout.tccExpert') }}</option>
+              <option value="tccGraduation">
+                {{ $tr('layout.tccGraduation') }}
+              </option>
             </template>
             <template #required>
               {{ $tr('layout.required') }}
@@ -120,19 +124,19 @@
           </input-validation>
           <input-validation
             v-model="$v.knArea.$model"
-            use-component="b-autocomplete"
-            field-name="knArea"
             :validations="$options.validations.knArea"
             :v="$v"
-            label="Knowledge Area"
             :options="{
               loading,
               field: 'description',
               data: knAreas,
               icon: 'magnify'
             }"
-            tooltip-label="Type in either knowledge area CDD or description"
             :wrapped-slots="h => renderTemplates(h, 'description')"
+            use-component="b-autocomplete"
+            field-name="knArea"
+            :label="$tr('layout.knArea')"
+            :tooltip-label="$tr('layout.knAreaTooltip')"
             @typing="getKnAreas"
             @select="option => (selectedKnArea = option)"
           >
@@ -142,12 +146,8 @@
           </input-validation>
           <input-validation
             v-model="$v.acdUnity.$model"
-            use-component="b-autocomplete"
-            field-name="acdUnity"
             :validations="$options.validations.acdUnity"
             :v="$v"
-            label="Academic Unity"
-            tooltip-label="Type in either your academic unity name or acronym"
             :options="{
               loading,
               field: 'name',
@@ -155,6 +155,10 @@
               icon: 'magnify'
             }"
             :wrapped-slots="h => renderTemplates(h, 'name')"
+            use-component="b-autocomplete"
+            field-name="acdUnity"
+            :label="$tr('layout.acdUnity')"
+            :tooltip-label="$tr('layout.acdUnityTooltip')"
             @typing="getAcdUnities"
             @select="onSelectedAcdUnity"
           >
@@ -165,12 +169,12 @@
           <template v-if="selectedAcdUnity">
             <input-validation
               v-model="$v.course.$model"
-              label="Course"
-              field-name="course"
               :validations="$options.validations.course"
               :v="$v"
+              :label="$tr('layout.course')"
+              field-name="course"
               use-component="b-select"
-              tooltip-label="Select your course"
+              :tooltip-label="$tr('layout.course')"
             >
               <template #component>
                 <option v-for="c in courses" :key="c.id" :value="'' + c.id">
@@ -277,7 +281,7 @@ export default {
           {
             slot: 'empty'
           },
-          'No result found'
+          this.$tr('layout.noResultFound')
         )
       ]
     },

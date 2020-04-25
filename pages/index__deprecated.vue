@@ -111,16 +111,16 @@
                     <b-field>
                       <b-autocomplete
                         :data="academicUnities"
+                        :loading="loading"
+                        @typing="getAcdUnities"
+                        @select="onSelectedAcdUnity"
                         placeholder="Unidade acadêmica"
                         aria-placeholder="Unidade acadêmica"
-                        :loading="loading"
                         field="name"
                         required
                         aria-required="true"
                         rounded
                         icon="magnify"
-                        @typing="getAcdUnities"
-                        @select="onSelectedAcdUnity"
                       >
                         <template slot="empty">
                           Nenhum resultado encontrado
@@ -130,16 +130,16 @@
                     <b-field>
                       <b-autocomplete
                         :data="knAreas"
+                        :loading="loading"
+                        @typing="getKnAreas"
+                        @select="option => (selectedKnArea = option)"
                         placeholder="Área de conhecimento"
                         aria-placeholder="Área de conhecimento"
-                        :loading="loading"
                         field="description"
                         rounded
                         required
                         aria-required="true"
                         icon="magnify"
-                        @typing="getKnAreas"
-                        @select="option => (selectedKnArea = option)"
                       >
                         <template slot="empty">
                           Nenhum resultado encontrado
@@ -262,16 +262,16 @@
                       ></input-validation>
                       <div style="padding-left: 1em; display: inline;">
                         <b-button
-                          icon-right="plus"
-                          class="is-success is-round is-outlined"
                           :disabled="keywords.length > 4"
                           @click="keywords.push(newKeyword())"
+                          icon-right="plus"
+                          class="is-success is-round is-outlined"
                         ></b-button>
                         <b-button
                           v-if="idx > 0"
+                          @click="keywords.splice(idx, 1)"
                           icon-right="minus"
                           class="is-danger is-round btn-margin is-outlined"
-                          @click="keywords.splice(idx, 1)"
                         ></b-button>
                       </div>
                     </div>

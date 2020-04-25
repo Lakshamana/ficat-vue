@@ -22,8 +22,8 @@
             v-for="(path, key) in paths"
             :key="key"
             :aria-roledescription="path"
-            class="navbar-item"
             :aria-label="path"
+            class="navbar-item"
           >
             <nuxt-link :to="key" exact-active-class="is-active">
               {{ path }}
@@ -32,17 +32,17 @@
         </div>
         <div class="navbar-end">
           <a
+            @click="setLang('pt')"
             class="navbar-item"
             exact-active-class="is-active"
-            @click="setLang('pt')"
           >
             pt
           </a>
           <div class="navbar-item is-paddingless">|</div>
           <a
+            @click="setLang('en')"
             class="navbar-item"
             exact-active-class="is-active"
-            @click="setLang('en')"
           >
             en
           </a>

@@ -30,9 +30,9 @@
             <div class="field">
               <b-radio
                 v-model="searchPeriod"
+                :disabled="!selectedAcdUnity"
                 size="is-small"
                 native-value="monthly"
-                :disabled="!selectedAcdUnity"
               >
                 Mensal
               </b-radio>
@@ -40,9 +40,9 @@
             <div class="field">
               <b-radio
                 v-model="searchPeriod"
+                :disabled="!selectedAcdUnity"
                 size="is-small"
                 native-value="semiannually"
-                :disabled="!selectedAcdUnity"
               >
                 Semestral
               </b-radio>
@@ -84,21 +84,21 @@
             <div class="column is-half">
               <b-field>
                 <b-tooltip
-                  position="is-right"
                   :label="tooltip"
                   :active="!!acdUnityPreviousSearch.length"
+                  position="is-right"
                 >
                   <b-autocomplete
                     :data="academicUnities"
+                    :loading="loading"
+                    @typing="getAcdUnitiesByTerm"
+                    @select="onSelectedAcdUnity"
                     field="acronym"
                     placeholder="Buscar"
                     aria-placeholder="Buscar"
-                    :loading="loading"
                     rounded
                     icon="magnify"
                     size="is-small"
-                    @typing="getAcdUnitiesByTerm"
-                    @select="onSelectedAcdUnity"
                   >
                     <template #default="{ option }">
                       <span @mouseover="tooltip = option.name">

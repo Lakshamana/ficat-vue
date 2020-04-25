@@ -5,11 +5,13 @@
         <div class="input-float">
           <input-validation
             v-model="$v.authorName.$model"
-            :label="$tr('layout.whosName', ['autor'])"
+            :label="$tr('layout.whosName', ['author'])"
             field-name="authorName"
             :validations="$options.validations.authorName"
             :v="$v"
-            :tooltip-label="$tr('layout.writeName', ['autor'])"
+            :tooltip-label="
+              $tr('layout.nameTooltip', [{ pt: 'author', en: 'lowAuthor' }])
+            "
           >
             <template #required>
               {{ $tr('layout.required') }}
@@ -20,10 +22,12 @@
           </input-validation>
           <input-validation
             v-model="$v.authorSurname.$model"
-            :label="$tr('layout.authorSurname')"
+            :label="$tr('layout.whosSurname', ['author'])"
             field-name="authorSurname"
             :validations="$options.validations.authorSurname"
-            :tooltip-label="$tr('layout.writeSurname', ['autor'])"
+            :tooltip-label="
+              $tr('layout.surnameTooltip', [{ pt: 'author', en: 'lowAuthor' }])
+            "
             :v="$v"
             type="text"
           >
@@ -40,10 +44,14 @@
         <div class="input-float">
           <input-validation
             v-model="$v.author2Name.$model"
-            :label="$tr('layout.whosName', ['segundo autor'])"
+            :label="$tr('layout.whosName', ['secondaryAuthor'])"
             field-name="author2Name"
             :validations="$options.validations.author2Name"
-            :tooltip-label="$tr('layout.writeName', ['segundo autor'])"
+            :tooltip-label="
+              $tr('layout.nameTooltip', [
+                { pt: 'secondaryAuthor', en: 'lowSecondaryAuthor' }
+              ])
+            "
             :v="$v"
             type="text"
           >
@@ -56,10 +64,14 @@
           </input-validation>
           <input-validation
             v-model="$v.author2Surname.$model"
-            label="Second Author Surname"
+            :label="$tr('layout.whosSurname', ['secondaryAuthor'])"
             field-name="author2Surname"
             :validations="$options.validations.author2Surname"
-            :tooltip-label="$tr('layout.writeSurname', ['segundo autor'])"
+            :tooltip-label="
+              $tr('layout.surnameTooltip', [
+                { pt: 'secondaryAuthor', en: 'lowSecondaryAuthor' }
+              ])
+            "
             :v="$v"
             type="text"
           >

@@ -13,10 +13,10 @@
                 </div>
                 <input-validation
                   v-model="$v.username.$model"
-                  label="Username"
-                  field-name="username"
                   :validations="$options.validations.username"
                   :v="$v"
+                  label="Username"
+                  field-name="username"
                 >
                   <template #required>
                     Nome de usuário é obrigatório
@@ -27,15 +27,15 @@
                 </input-validation>
                 <input-validation
                   v-model="$v.password.$model"
-                  label="Password"
-                  field-name="password"
                   :validations="$options.validations.password"
                   :v="$v"
-                  type="password"
                   :options="{
                     expanded: true,
                     passwordReveal: true
                   }"
+                  label="Password"
+                  field-name="password"
+                  type="password"
                 >
                   <template #required>
                     Senha é obrigatória

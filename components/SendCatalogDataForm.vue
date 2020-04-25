@@ -1,10 +1,10 @@
 <template>
-  <Card title="Prepare Card">
+  <Card :title="$tr('layout.prepareCard')">
     <div class="columns is-centered">
       <div class="column is-center is-5">
         <form @submit.prevent="onSubmit">
           <b-field>
-            <WithTooltip text="Select this card's final font family">
+            <WithTooltip :text="$tr('layout.fontFamilyTooltip')">
               <b-select
                 v-model="catalogFont"
                 placeholder="Font"
@@ -18,7 +18,7 @@
             </WithTooltip>
           </b-field>
           <div style="display:flex;margin:.5em">
-            <WithTooltip text="Solve the captcha">
+            <WithTooltip :text="$tr('layout.solveCaptcha')">
               <div style="margin:auto">
                 <recaptcha
                   @success="onSuccess"
@@ -29,14 +29,15 @@
             </WithTooltip>
           </div>
           <b-field>
-            <WithTooltip text="Generate your card!">
+            <WithTooltip :text="$tr('layout.generateTooltip')">
               <b-button
+                :disabled="disabled"
                 class="is-success"
                 rounded
+                expanded
                 native-type="submit"
-                :disabled="disabled"
               >
-                Generate
+                {{ $tr('layout.generate') }}
               </b-button>
             </WithTooltip>
           </b-field>

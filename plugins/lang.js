@@ -7,6 +7,7 @@ const translations = {
 }
 
 const DEFAULT_TR = '_Translation Not Found_'
+// const DEFAULT_ARG = '_i18n argument not found_'
 
 export default ({ store }, inject) => {
   // key = String that fits the form 'string.string'
@@ -17,11 +18,28 @@ export default ({ store }, inject) => {
 
     // trResult could be a function as well as a string
     const translation = translations[lang][subject][trKey]
+    if (key === 'layout.authorSurname') console.log(translation)
+
+    // Maps arguments translations
+    // i.e., arguments can be i18n keys or the values itself
+    // arguments and whole translation should be below the same subject
+    const mapArgs =
+      args &&
+      args.map(arg => {
+        // Allows using objects as differents language forms for same phrases
+        const useKey = typeof arg === 'object' ? arg[lang] : arg
+        return translations[lang][subject][useKey] || useKey
+      })
 
     // Return fn evaluation of the value itself (if it's a string)
+    console.log(
+      (typeof translation === 'function'
+        ? translation(...mapArgs)
+        : translation) || DEFAULT_TR
+    )
     return (
       (typeof translation === 'function'
-        ? translation(...args)
+        ? translation(...mapArgs)
         : translation) || DEFAULT_TR
     )
   })

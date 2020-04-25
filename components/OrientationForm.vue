@@ -1,15 +1,15 @@
 <template>
-  <Card title="Orientation Data">
+  <Card :title="$tr('layout.orientationData')">
     <div class="columns">
       <div class="column is-half">
         <div class="input-float">
           <input-validation
             v-model="$v.advisorName.$model"
-            label="Advisor Name"
-            field-name="advisorName"
             :validations="$options.validations.advisorName"
             :v="$v"
-            tooltip-label="Type in your work's advisor name"
+            :label="$tr('layout.whosName', ['advisor'])"
+            field-name="advisorName"
+            :tooltip-label="$tr('layout.nameTooltip', ['lowAdvisor'])"
           >
             <template #required>
               {{ $tr('layout.required') }}
@@ -20,12 +20,12 @@
           </input-validation>
           <input-validation
             v-model="$v.advisorSurname.$model"
-            label="Advisor Surname"
-            field-name="advisorSurname"
             :validations="$options.validations.advisorSurname"
             :v="$v"
+            :label="$tr('layout.whosSurname', ['advisor'])"
+            field-name="advisorSurname"
             type="text"
-            tooltip-label="Type in your work's advisor surname"
+            :tooltip-label="$tr('layout.surnameTooltip', ['lowAdvisor'])"
           >
             <template #required>
               {{ $tr('layout.required') }}
@@ -37,9 +37,11 @@
           <div class="columns vcenter">
             <div class="column is-half">
               <div class="vcenter">
-                <WithTooltip text="Check if is your advisor a woman">
+                <WithTooltip
+                  :text="$tr('layout.whosFemaleTooltip', ['lowAdvisor'])"
+                >
                   <b-checkbox v-model="isFemaleAdvisor">
-                    Female
+                    {{ $tr('layout.femaleAdvisor') }}
                   </b-checkbox>
                 </WithTooltip>
               </div>
@@ -47,18 +49,18 @@
             <div class="column is-half">
               <input-validation
                 v-model="$v.advisorTitle.$model"
-                label="Advisor Title"
-                field-name="advisorTitle"
                 :validations="$options.validations.advisorTitle"
                 :v="$v"
+                :label="$tr('layout.title')"
+                field-name="advisorTitle"
                 use-component="b-select"
-                tooltip-label="Select the advisor's title"
+                :tooltip-label="$tr('layout.whosTitle', ['lowCoadvisor'])"
               >
                 <template #component>
-                  <option value="graduate">Graduado</option>
-                  <option value="expert">Especialista</option>
-                  <option value="master">Mestre</option>
-                  <option value="doctor">Doutor</option>
+                  <option value="graduate">{{ $tr('layout.graduate') }}</option>
+                  <option value="expert">{{ $tr('layout.expert') }}</option>
+                  <option value="master">{{ $tr('layout.master') }}</option>
+                  <option value="doctor">{{ $tr('layout.doctor') }}</option>
                 </template>
                 <template #required>
                   {{ $tr('layout.required') }}
@@ -72,12 +74,12 @@
         <div class="input-float">
           <input-validation
             v-model="$v.coadvisorName.$model"
-            label="Coadvisor Name"
-            field-name="coadvisorName"
             :validations="$options.validations.coadvisorName"
             :v="$v"
+            :label="$tr('layout.whosName', ['coadvisor'])"
+            field-name="coadvisorName"
             type="text"
-            tooltip-label="Type in your work's coadvisor name"
+            :tooltip-label="$tr('layout.nameTooltip', ['lowCoadvisor'])"
           >
             <template #required>
               {{ $tr('layout.required') }}
@@ -88,12 +90,12 @@
           </input-validation>
           <input-validation
             v-model="$v.coadvisorSurname.$model"
-            label="Coadvisor Surname"
-            field-name="coadvisorSurname"
             :validations="$options.validations.coadvisorSurname"
             :v="$v"
+            :label="$tr('layout.whosSurname', ['coadvisor'])"
+            field-name="coadvisorSurname"
             type="text"
-            tooltip-label="Type in your work's coadvisor surname"
+            :tooltip-label="$tr('layout.surnameTooltip', ['lowCoadvisor'])"
           >
             <template #required>
               {{ $tr('layout.required') }}
@@ -105,12 +107,14 @@
           <div class="columns vcenter">
             <div class="column is-half">
               <div class="vcenter">
-                <WithTooltip text="Check if is your coadvisor a woman">
+                <WithTooltip
+                  :text="$tr('layout.whosFemaleTooltip', ['lowCoadvisor'])"
+                >
                   <b-checkbox
                     v-model="isFemaleCoadvisor"
                     :disabled="!coadvisorName"
                   >
-                    Female
+                    {{ $tr('layout.femaleCoadvisor') }}
                   </b-checkbox>
                 </WithTooltip>
               </div>
@@ -118,19 +122,19 @@
             <div class="column is-half">
               <input-validation
                 v-model="$v.coadvisorTitle.$model"
-                label="Coadvisor Title"
-                field-name="coadvisorTitle"
                 :validations="$options.validations.coadvisorTitle"
                 :v="$v"
-                use-component="b-select"
-                tooltip-label="Select the coadvisor's title"
                 :disabled="!coadvisorName"
+                :label="$tr('layout.title')"
+                field-name="coadvisorTitle"
+                use-component="b-select"
+                :tooltip-label="$tr('layout.whosTitle', ['lowCoadvisor'])"
               >
                 <template #component>
-                  <option value="graduate">Graduado</option>
-                  <option value="expert">Especialista</option>
-                  <option value="master">Mestre</option>
-                  <option value="doctor">Doutor</option>
+                  <option value="graduate">{{ $tr('layout.graduate') }}</option>
+                  <option value="expert">{{ $tr('layout.expert') }}</option>
+                  <option value="master">{{ $tr('layout.master') }}</option>
+                  <option value="doctor">{{ $tr('layout.doctor') }}</option>
                 </template>
                 <template #required>
                   {{ $tr('layout.required') }}
