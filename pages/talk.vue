@@ -114,7 +114,7 @@
                     </template>
                   </b-taglist>
                   <div class="flex-submit">
-                    <WithTooltip text="Solve the captcha">
+                    <WithTooltip :text="$tr('layout.solveCaptcha')">
                       <div style="margin:auto">
                         <recaptcha
                           @success="onSuccess"
