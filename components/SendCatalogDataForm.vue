@@ -6,6 +6,7 @@
           <b-field>
             <WithTooltip :text="$tr('layout.fontFamilyTooltip')">
               <b-select
+                ref="font"
                 v-model="catalogFont"
                 placeholder="Font"
                 aria-placeholder="Font"
@@ -50,6 +51,7 @@
 <script>
 import Card from '~/components/Card'
 import WithTooltip from '~/components/WithTooltip'
+import helper from '~/mixins/helper'
 import { recovery, replace } from '~/front/persistence'
 import { maybe, romanize } from '~/shared/frontUtils'
 
@@ -59,6 +61,7 @@ export default {
     Card,
     WithTooltip
   },
+  mixins: [helper],
 
   data() {
     const { catalogFont } = recovery('form')
@@ -66,7 +69,8 @@ export default {
       catalogFont,
       touchedCaptcha: false,
       captchaHasError: false,
-      captchaHasExpired: false
+      captchaHasExpired: false,
+      initialRef: 'font'
     }
   },
 

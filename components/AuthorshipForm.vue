@@ -109,7 +109,8 @@ export default {
       authorName: authors.authorName,
       authorSurname: authors.authorSurname,
       author2Name: authors.author2Name,
-      author2Surname: authors.author2Surname
+      author2Surname: authors.author2Surname,
+      initialRef: 'authorName'
     }
   },
 

@@ -230,7 +230,8 @@ export default {
       acdUnity: work.acdUnity,
       knArea: work.knArea,
       knAreaPreviousSearch: '',
-      acdUnityPreviousSearch: ''
+      acdUnityPreviousSearch: '',
+      initialRef: 'workTitle'
     }
   },
 
@@ -263,7 +264,8 @@ export default {
           selectedAcdUnity: undefined,
           selectedCourse: undefined,
           acdUnity: '',
-          knArea: ''
+          knArea: '',
+          initialRef: 'workTitle'
         }
       })
   },

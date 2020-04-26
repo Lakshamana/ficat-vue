@@ -1,4 +1,8 @@
 export default {
+  mounted() {
+    this.$refs[this.initialRef].focus()
+  },
+
   methods: {
     checkNext() {
       const { validations } = this.$options

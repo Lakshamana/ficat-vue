@@ -81,6 +81,10 @@ export default {
       })
   },
 
+  mounted() {
+    this.$refs.keywords[0].focus()
+  },
+
   methods: {
     onHover(evt, action) {
       const btn = evt.target

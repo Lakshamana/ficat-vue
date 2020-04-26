@@ -176,7 +176,8 @@ export default {
       isFemaleAdvisor: advisors.isFemaleAdvisor,
       advisorTitle: advisors.advisorTitle,
       coadvisorTitle: advisors.coadvisorTitle,
-      isFemaleCoadvisor: advisors.isFemaleCoadvisor
+      isFemaleCoadvisor: advisors.isFemaleCoadvisor,
+      initialRef: 'advisorName'
     }
   },
 
