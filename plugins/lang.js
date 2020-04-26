@@ -32,11 +32,6 @@ export default ({ store }, inject) => {
       })
 
     // Return fn evaluation of the value itself (if it's a string)
-    console.log(
-      (typeof translation === 'function'
-        ? translation(...mapArgs)
-        : translation) || DEFAULT_TR
-    )
     return (
       (typeof translation === 'function'
         ? translation(...mapArgs)

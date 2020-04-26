@@ -8,12 +8,13 @@
           class="field is-grouped is-grouped"
         >
           <input-validation
+            ref="keywords"
             v-model="kw.text.$model"
             :label="$tr('layout.keyword') + (+i + 1)"
             :validations="$options.validations.keywords.$each.text"
             :v="kw"
-            field-name="text"
             :tooltip-label="$tr('layout.keywordTooltip')"
+            field-name="text"
           >
             <template #required>
               {{ $tr('layout.required') }}
@@ -26,18 +27,18 @@
             <WithTooltip :text="$tr('layout.addKeyword')">
               <b-button
                 :disabled="keywords.length > 4"
+                @click="keywords.push({ text: '' })"
                 icon-right="plus"
                 class="is-success is-round is-outlined btn"
-                @click="keywords.push({ text: '' })"
               >
               </b-button>
             </WithTooltip>
             <WithTooltip :text="$tr('layout.removeKeyword')">
               <b-button
                 v-if="i > 0"
+                @click="keywords.splice(i, 1)"
                 icon-right="minus"
                 class="is-danger is-round btn-margin is-outlined btn"
-                @click="keywords.splice(i, 1)"
               ></b-button>
             </WithTooltip>
           </div>
@@ -69,13 +70,8 @@ export default {
       deep: true,
       handler($v) {
         replace('form', { keywords: this.keywords })
-        ;(!$v.$invalid && this.$emit('ready')) || this.$emit('preventforward')
       }
     }
-  },
-
-  mounted() {
-    ;(!this.$v.$invalid && this.$emit('ready')) || this.$emit('preventforward')
   },
 
   beforeCreate() {
@@ -90,6 +86,19 @@ export default {
       const btn = evt.target
       console.log(btn.classList)
       btn.classList.add('tt-btn-visible')
+    },
+
+    checkNext() {
+      const { keywords } = this.$refs
+      this.$v.$touch()
+      for (const i in keywords) {
+        console.log(i, this.$refs.keywords[i])
+        if (this.$v.keywords.$each[i].$invalid) {
+          this.$refs.keywords[i].focus()
+          return false
+        }
+      }
+      return true
     }
   },
 

@@ -4,12 +4,13 @@
       <div class="column is-half">
         <div class="input-float">
           <input-validation
+            ref="advisorName"
             v-model="$v.advisorName.$model"
             :validations="$options.validations.advisorName"
             :v="$v"
             :label="$tr('layout.whosName', ['advisor'])"
-            field-name="advisorName"
             :tooltip-label="$tr('layout.nameTooltip', ['lowAdvisor'])"
+            field-name="advisorName"
           >
             <template #required>
               {{ $tr('layout.required') }}
@@ -19,13 +20,14 @@
             </template>
           </input-validation>
           <input-validation
+            ref="advisorSurname"
             v-model="$v.advisorSurname.$model"
             :validations="$options.validations.advisorSurname"
             :v="$v"
             :label="$tr('layout.whosSurname', ['advisor'])"
+            :tooltip-label="$tr('layout.surnameTooltip', ['lowAdvisor'])"
             field-name="advisorSurname"
             type="text"
-            :tooltip-label="$tr('layout.surnameTooltip', ['lowAdvisor'])"
           >
             <template #required>
               {{ $tr('layout.required') }}
@@ -48,13 +50,14 @@
             </div>
             <div class="column is-half">
               <input-validation
+                ref="advisorTitle"
                 v-model="$v.advisorTitle.$model"
                 :validations="$options.validations.advisorTitle"
                 :v="$v"
                 :label="$tr('layout.title')"
+                :tooltip-label="$tr('layout.whosTitle', ['lowCoadvisor'])"
                 field-name="advisorTitle"
                 use-component="b-select"
-                :tooltip-label="$tr('layout.whosTitle', ['lowCoadvisor'])"
               >
                 <template #component>
                   <option value="graduate">{{ $tr('layout.graduate') }}</option>
@@ -73,13 +76,14 @@
       <div class="column is-half">
         <div class="input-float">
           <input-validation
+            ref="coadvisorName"
             v-model="$v.coadvisorName.$model"
             :validations="$options.validations.coadvisorName"
             :v="$v"
             :label="$tr('layout.whosName', ['coadvisor'])"
+            :tooltip-label="$tr('layout.nameTooltip', ['lowCoadvisor'])"
             field-name="coadvisorName"
             type="text"
-            :tooltip-label="$tr('layout.nameTooltip', ['lowCoadvisor'])"
           >
             <template #required>
               {{ $tr('layout.required') }}
@@ -89,13 +93,14 @@
             </template>
           </input-validation>
           <input-validation
+            ref="coadvisorSurname"
             v-model="$v.coadvisorSurname.$model"
             :validations="$options.validations.coadvisorSurname"
             :v="$v"
             :label="$tr('layout.whosSurname', ['coadvisor'])"
+            :tooltip-label="$tr('layout.surnameTooltip', ['lowCoadvisor'])"
             field-name="coadvisorSurname"
             type="text"
-            :tooltip-label="$tr('layout.surnameTooltip', ['lowCoadvisor'])"
           >
             <template #required>
               {{ $tr('layout.required') }}
@@ -121,14 +126,15 @@
             </div>
             <div class="column is-half">
               <input-validation
+                ref="coadvisorTitle"
                 v-model="$v.coadvisorTitle.$model"
                 :validations="$options.validations.coadvisorTitle"
                 :v="$v"
                 :disabled="!coadvisorName"
                 :label="$tr('layout.title')"
+                :tooltip-label="$tr('layout.whosTitle', ['lowCoadvisor'])"
                 field-name="coadvisorTitle"
                 use-component="b-select"
-                :tooltip-label="$tr('layout.whosTitle', ['lowCoadvisor'])"
               >
                 <template #component>
                   <option value="graduate">{{ $tr('layout.graduate') }}</option>
@@ -150,6 +156,7 @@
 
 <script>
 import { required, minLength } from 'vuelidate/lib/validators'
+import helper from '~/mixins/helper'
 import { recovery, replace } from '~/front/persistence'
 import Card from '~/components/Card'
 import InputValidation from '~/components/InputValidation.js'
@@ -158,6 +165,7 @@ import WithTooltip from '~/components/WithTooltip'
 export default {
   name: 'AuthorshipForm',
   components: { Card, InputValidation, WithTooltip },
+  mixins: [helper],
   data() {
     const { advisors } = recovery('form')
     return {
@@ -176,14 +184,9 @@ export default {
     $v: {
       deep: true,
       handler($v) {
-        replace('form', { advisors: { ...this.$data } })
-        ;(!$v.$invalid && this.$emit('ready')) || this.$emit('preventforward')
+        replace('form', { advisors: this.$data })
       }
     }
-  },
-
-  mounted() {
-    ;(!this.$v.$invalid && this.$emit('ready')) || this.$emit('preventforward')
   },
 
   beforeCreate() {

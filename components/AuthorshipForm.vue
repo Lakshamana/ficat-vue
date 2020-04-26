@@ -4,14 +4,15 @@
       <div class="column is-half">
         <div class="input-float">
           <input-validation
+            ref="authorName"
             v-model="$v.authorName.$model"
             :label="$tr('layout.whosName', ['author'])"
-            field-name="authorName"
             :validations="$options.validations.authorName"
             :v="$v"
             :tooltip-label="
               $tr('layout.nameTooltip', [{ pt: 'author', en: 'lowAuthor' }])
             "
+            field-name="authorName"
           >
             <template #required>
               {{ $tr('layout.required') }}
@@ -21,14 +22,15 @@
             </template>
           </input-validation>
           <input-validation
+            ref="authorSurname"
             v-model="$v.authorSurname.$model"
             :label="$tr('layout.whosSurname', ['author'])"
-            field-name="authorSurname"
             :validations="$options.validations.authorSurname"
             :tooltip-label="
               $tr('layout.surnameTooltip', [{ pt: 'author', en: 'lowAuthor' }])
             "
             :v="$v"
+            field-name="authorSurname"
             type="text"
           >
             <template #required>
@@ -43,9 +45,9 @@
       <div class="column is-half">
         <div class="input-float">
           <input-validation
+            ref="author2Name"
             v-model="$v.author2Name.$model"
             :label="$tr('layout.whosName', ['secondaryAuthor'])"
-            field-name="author2Name"
             :validations="$options.validations.author2Name"
             :tooltip-label="
               $tr('layout.nameTooltip', [
@@ -53,6 +55,7 @@
               ])
             "
             :v="$v"
+            field-name="author2Name"
             type="text"
           >
             <template #required>
@@ -63,9 +66,9 @@
             </template>
           </input-validation>
           <input-validation
+            ref="author2Surname"
             v-model="$v.author2Surname.$model"
             :label="$tr('layout.whosSurname', ['secondaryAuthor'])"
-            field-name="author2Surname"
             :validations="$options.validations.author2Surname"
             :tooltip-label="
               $tr('layout.surnameTooltip', [
@@ -73,6 +76,7 @@
               ])
             "
             :v="$v"
+            field-name="author2Surname"
             type="text"
           >
             <template #required>
@@ -90,6 +94,7 @@
 
 <script>
 import { required, minLength } from 'vuelidate/lib/validators'
+import helper from '~/mixins/helper'
 import { recovery, replace } from '~/front/persistence'
 import Card from '~/components/Card'
 import InputValidation from '~/components/InputValidation.js'
@@ -97,6 +102,7 @@ import InputValidation from '~/components/InputValidation.js'
 export default {
   name: 'AuthorshipForm',
   components: { Card, InputValidation },
+  mixins: [helper],
   data() {
     const { authors } = recovery('form')
     return {
@@ -111,8 +117,7 @@ export default {
     $v: {
       deep: true,
       handler($v) {
-        replace('form', { authors: { ...this.$data } })
-        ;(!$v.$invalid && this.$emit('ready')) || this.$emit('preventforward')
+        replace('form', { authors: this.$data })
       }
     }
   },
@@ -127,10 +132,6 @@ export default {
           author2Surname: ''
         }
       })
-  },
-
-  mounted() {
-    ;(!this.$v.$invalid && this.$emit('ready')) || this.$emit('preventforward')
   },
 
   methods: {

@@ -81,6 +81,17 @@ export default {
       },
 
       set() {}
+    },
+
+    innerIptRef() {
+      return this.$refs.innerIpt && this.$refs.innerIpt
+    }
+  },
+
+  methods: {
+    focus() {
+      console.log('called focus')
+      this.innerIptRef.focus()
     }
   },
 
@@ -122,6 +133,7 @@ export default {
           >
             {this.$slots.addon}
             <Component
+              ref="innerIpt"
               vModel={this.iptValue}
               aria-label={tooltipLabel}
               aria-required={!!validations.required}

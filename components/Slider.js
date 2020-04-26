@@ -9,12 +9,17 @@ export default {
   data() {
     return {
       slideIndex: 0,
-      disableNext: true
+      disableNext: false
     }
   },
   methods: {
     incrementSlideIndex(n) {
       this.slideIndex += n
+    },
+    handleNext() {
+      if (this.$refs.component.checkNext()) {
+        this.incrementSlideIndex(1)
+      }
     }
   },
   render() {
@@ -37,18 +42,14 @@ export default {
             </button>
           </WithTooltip>
         )}
-        <Component
-          on-ready={() => (this.disableNext = false)}
-          on-preventforward={() => (this.disableNext = true)}
-        />
+        <Component ref="component" />
         {this.slideIndex < children.length - 1 && (
           <WithTooltip {...{ props: { text: next } }}>
             <button
               tabindex="0"
               class="slider-control"
               aria-label={next}
-              onClick={() => this.incrementSlideIndex(1)}
-              disabled={this.disableNext}
+              onClick={this.handleNext}
             >
               <span class="symbol">&raquo;</span>
             </button>
