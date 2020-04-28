@@ -1,174 +1,186 @@
 <template>
-  <Card title="Work Data">
+  <Card :title="$tr('layout.workData')">
     <div class="columns">
       <div class="column is-half">
         <div class="input-float">
           <input-validation
+            ref="workTitle"
             v-model="$v.workTitle.$model"
-            label="Work Title"
-            field-name="workTitle"
             :validations="$options.validations.workTitle"
             :v="$v"
+            :label="$tr('layout.workTitle')"
+            :tooltip-label="$tr('layout.workTitleTooltip')"
+            field-name="workTitle"
           >
             <template #required>
-              Field is required
+              {{ $tr('layout.required') }}
             </template>
             <template #minLength="{ min }">
-              Must have a {{ min }} chars minima
+              {{ $tr('layout.minLength', [min]) }}
             </template>
           </input-validation>
           <input-validation
+            ref="workSubtitle"
             v-model="$v.workSubtitle.$model"
-            label="Work Subtitle"
-            field-name="workSubtitle"
             :validations="$options.validations.workSubtitle"
             :v="$v"
+            :label="$tr('layout.workSubtitle')"
+            :tooltip-label="$tr('layout.workSubtitleTooltip')"
+            field-name="workSubtitle"
             type="text"
           >
-            <template #required>
-              Field is required
-            </template>
             <template #minLength="{ min }">
-              Must have a {{ min }} chars minima
+              {{ $tr('layout.minLength', [min]) }}
             </template>
           </input-validation>
-          <b-field label="Ano" label-position="on-border" grouped>
-            <input-validation
-              v-model="$v.presentationYear.$model"
-              use-component="b-select"
-              field-name="presentationYear"
-              label="Ano"
-              :validations="$options.validations.presentationYear"
-              :v="$v"
-            >
-              <template #component>
-                <option v-for="y in 10" :key="y">
-                  {{ getYear(y - 1) }}
-                </option>
-              </template>
-            </input-validation>
-            <input-validation
-              v-model="$v.totalPages.$model"
-              label="Pages Count"
-              field-name="totalPages"
-              :validations="$options.validations.totalPages"
-              :v="$v"
-              type="number"
-            >
-              <template #addon>
-                <b-select v-model="numberType" rounded>
-                  <option value="arabic">Arabic</option>
-                  <option value="roman">Roman</option>
-                </b-select>
-              </template>
-              <template #required>
-                Field is required
-              </template>
-              <template #minValue="{ min }">
-                Minimum value is {{ min }}
-              </template>
-            </input-validation>
-          </b-field>
+          <div class="columns">
+            <div class="column is-4">
+              <input-validation
+                ref="presentationYear"
+                v-model="$v.presentationYear.$model"
+                :validations="$options.validations.presentationYear"
+                :v="$v"
+                :label="$tr('layout.year')"
+                :tooltip-label="$tr('layout.yearTooltip')"
+                use-component="b-select"
+                field-name="presentationYear"
+              >
+                <template #component>
+                  <option v-for="y in 11" :key="y">
+                    {{ getYear(y - 1) }}
+                  </option>
+                </template>
+              </input-validation>
+            </div>
+            <div class="column is-8">
+              <input-validation
+                ref="totalPages"
+                v-model="$v.totalPages.$model"
+                :validations="$options.validations.totalPages"
+                :v="$v"
+                :label="$tr('layout.totalPages')"
+                :tooltip-label="$tr('layout.numberTypeTooltip')"
+                field-name="totalPages"
+                type="number"
+              >
+                <template #addon>
+                  <b-select v-model="numberType" @input="onChangeType" rounded>
+                    <option value="arabic">{{ $tr('layout.arabic') }}</option>
+                    <option value="roman">{{ $tr('layout.roman') }}</option>
+                  </b-select>
+                </template>
+                <template #required>
+                  {{ $tr('layout.required') }}
+                </template>
+                <template #minValue="{ min }">
+                  {{ $tr('layout.minValue', [min]) }}
+                </template>
+              </input-validation>
+            </div>
+          </div>
         </div>
       </div>
       <div class="column is-half">
         <div class="input-float">
           <input-validation
+            ref="workImagesType"
             v-model="$v.workImagesType.$model"
-            label="Illustrations"
-            use-component="b-select"
-            field-name="workImagesType"
             :validations="$options.validations.workImagesType"
             :v="$v"
-            :options="{
-              expanded: true
-            }"
+            :label="$tr('layout.pictures')"
+            :tooltip-label="$tr('layout.picturesTooltip')"
+            use-component="b-select"
+            field-name="workImagesType"
           >
             <template #component>
-              <option value="nocolor">Não possui</option>
-              <option value="color">Coloridas</option>
-              <option value="bw">Preto e branco</option>
+              <option value="nocolor">{{ $tr('layout.nocolor') }}</option>
+              <option value="color">{{ $tr('layout.color') }}</option>
+              <option value="bw">{{ $tr('layout.bw') }}</option>
             </template>
             <template #required>
-              Field is required
+              {{ $tr('layout.required') }}
             </template>
           </input-validation>
           <input-validation
+            ref="workType"
             v-model="$v.workType.$model"
-            label="Work Type"
-            field-name="workType"
             :validations="$options.validations.workType"
             :v="$v"
+            :label="$tr('layout.workType')"
+            :tooltip-label="$tr('layout.workTypeTooltip')"
+            field-name="workType"
             use-component="b-select"
-            :options="{
-              expanded: true
-            }"
           >
             <template #component>
-              <option value="thesis">Tese</option>
-              <option value="dissertation">Dissertação</option>
-              <option value="tccExpert">TCC (Especialização)</option>
-              <option value="tccGraduation">TCC (Graduação)</option>
+              <option value="thesis">{{ $tr('layout.thesis') }}</option>
+              <option value="dissertation">
+                {{ $tr('layout.dissertation') }}
+              </option>
+              <option value="tccExpert">{{ $tr('layout.tccExpert') }}</option>
+              <option value="tccGraduation">
+                {{ $tr('layout.tccGraduation') }}
+              </option>
             </template>
             <template #required>
-              Field is required
+              {{ $tr('layout.required') }}
             </template>
           </input-validation>
           <input-validation
+            ref="knArea"
             v-model="$v.knArea.$model"
-            use-component="b-autocomplete"
-            field-name="knArea"
             :validations="$options.validations.knArea"
             :v="$v"
-            label="Knowledge Area"
             :options="{
-              expanded: true,
               loading,
               field: 'description',
               data: knAreas,
               icon: 'magnify'
             }"
             :wrapped-slots="h => renderTemplates(h, 'description')"
+            :label="$tr('layout.knArea')"
+            :tooltip-label="$tr('layout.knAreaTooltip')"
             @typing="getKnAreas"
             @select="option => (selectedKnArea = option)"
+            use-component="b-autocomplete"
+            field-name="knArea"
           >
             <template #required>
-              Field is required
+              {{ $tr('layout.required') }}
             </template>
           </input-validation>
           <input-validation
+            ref="acdUnity"
             v-model="$v.acdUnity.$model"
-            use-component="b-autocomplete"
-            field-name="acdUnity"
             :validations="$options.validations.acdUnity"
             :v="$v"
-            label="Academic Unity"
             :options="{
-              expanded: true,
               loading,
               field: 'name',
               data: academicUnities,
               icon: 'magnify'
             }"
             :wrapped-slots="h => renderTemplates(h, 'name')"
+            :label="$tr('layout.acdUnity')"
+            :tooltip-label="$tr('layout.acdUnityTooltip')"
             @typing="getAcdUnities"
             @select="onSelectedAcdUnity"
+            use-component="b-autocomplete"
+            field-name="acdUnity"
           >
             <template #required>
-              Field is required
+              {{ $tr('layout.required') }}
             </template>
           </input-validation>
           <template v-if="selectedAcdUnity">
             <input-validation
+              ref="course"
               v-model="$v.course.$model"
-              label="Course"
-              field-name="course"
               :validations="$options.validations.course"
               :v="$v"
+              :label="$tr('layout.course')"
+              :tooltip-label="$tr('layout.course')"
+              field-name="course"
               use-component="b-select"
-              :options="{
-                expanded: true
-              }"
             >
               <template #component>
                 <option v-for="c in courses" :key="c.id" :value="'' + c.id">
@@ -176,7 +188,7 @@
                 </option>
               </template>
               <template #required>
-                Field is required
+                {{ $tr('layout.required') }}
               </template>
             </input-validation>
           </template>
@@ -189,6 +201,7 @@
 <script>
 import pDebounce from 'p-debounce'
 import { required, minLength, minValue } from 'vuelidate/lib/validators'
+import helper from '~/mixins/helper'
 import { recovery, replace } from '~/front/persistence'
 import Card from '~/components/Card'
 import InputValidation from '~/components/InputValidation.js'
@@ -196,6 +209,7 @@ import InputValidation from '~/components/InputValidation.js'
 export default {
   name: 'WorkForm',
   components: { Card, InputValidation },
+  mixins: [helper],
   data() {
     const { work } = recovery('form')
     return {
@@ -207,7 +221,7 @@ export default {
       workImagesType: work.workImagesType,
       workType: work.workType,
       course: work.course,
-      loading: work.loading,
+      loading: false,
       knAreas: work.knAreas,
       academicUnities: work.academicUnities,
       courses: work.courses,
@@ -216,7 +230,8 @@ export default {
       acdUnity: work.acdUnity,
       knArea: work.knArea,
       knAreaPreviousSearch: '',
-      acdUnityPreviousSearch: ''
+      acdUnityPreviousSearch: '',
+      initialRef: 'workTitle'
     }
   },
 
@@ -225,13 +240,8 @@ export default {
       deep: true,
       handler($v) {
         replace('form', { work: this.$data })
-        ;(!$v.$invalid && this.$emit('ready')) || this.$emit('preventforward')
       }
     }
-  },
-
-  mounted() {
-    ;(!this.$v.$invalid && this.$emit('ready')) || this.$emit('preventforward')
   },
 
   beforeCreate() {
@@ -254,7 +264,8 @@ export default {
           selectedAcdUnity: undefined,
           selectedCourse: undefined,
           acdUnity: '',
-          knArea: ''
+          knArea: '',
+          initialRef: 'workTitle'
         }
       })
   },
@@ -275,7 +286,7 @@ export default {
           {
             slot: 'empty'
           },
-          'No result found'
+          this.$tr('layout.noResultFound')
         )
       ]
     },
@@ -342,6 +353,10 @@ export default {
         })
         .catch()
         .finally(() => (this.loading = false))
+    },
+
+    onChangeType(e) {
+      replace('form', { work: this.$data })
     }
   },
 
@@ -381,7 +396,7 @@ export default {
 
 <style scoped>
 .input-float {
-  height: 100%;
+  min-height: 100%;
   display: flex;
   flex-direction: column;
   justify-content: space-around;

@@ -7,15 +7,15 @@
         <div class="level-left"></div>
         <div class="level-right">
           <b-button
+            @click="downloadImage"
             class="btn-margin"
             icon-right="download"
-            @click="downloadImage"
           />
           <b-button
-            class="btn-margin"
-            icon-right="file-pdf"
             :disabled="!searchId"
             @click="getReport"
+            class="btn-margin"
+            icon-right="file-pdf"
           />
         </div>
       </div>

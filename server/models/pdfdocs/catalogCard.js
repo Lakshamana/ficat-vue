@@ -73,12 +73,16 @@ function catalogCard(
   console.log(advisors)
   const femaleAdvisor = +!!advisors.isFemaleAdvisor
   const femaleCoadvisor = +!!advisors.isFemaleCoadvisor
-  const advisorHeader = `Orientador(a): ${title[advisors.advisorTitle][femaleAdvisor]}${advisors.advisorName} ${advisors.advisorSurname}`
+  const advisorHeader = `Orientador(a): ${
+    title[advisors.advisorTitle][femaleAdvisor]
+  }${advisors.advisorName} ${advisors.advisorSurname}`
   const coadvisorHeader = advisors.coadvisorName
-    ? `Coorientador(a): ${title[advisors.coadvisorTitle][femaleCoadvisor]} ${advisors.coadvisorName} ${advisors.coadvisorSurname}`
+    ? `Coorientador(a): ${title[advisors.coadvisorTitle][femaleCoadvisor]} ${
+        advisors.coadvisorName
+      } ${advisors.coadvisorSurname}`
     : ''
 
-  const fontSize = catalogFont === 'times' ? 9 : 10
+  const fontSize = 10 // catalogFont === 'times' ? 9 : 10
   const withCoadvisorHeader = coadvisorHeader
     ? `<p class="ml">${coadvisorHeader}</p>`
     : ''
@@ -109,7 +113,7 @@ function catalogCard(
   const templatePath = join(__dirname, 'catalogCard.html')
 
   const fontFamily =
-    catalogFont === 'times' ? "'Noto Serif TC', serif" : "'Arimo', sans-serif"
+    catalogFont === 'times' ? "'Nimbus Roman', serif" : "'Arimo', sans-serif"
 
   // HTML model and script should always have same file name
   const htmlTemplate = readFileSync(templatePath, 'utf8')
@@ -131,7 +135,7 @@ function catalogCard(
 }
 
 function getLocal(acdUnityName) {
-  const arr = acdUnityName.split('')
+  const arr = acdUnityName.split(' ')
   return arr[arr.length - 1]
 }
 

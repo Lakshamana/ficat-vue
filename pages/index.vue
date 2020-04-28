@@ -59,8 +59,3 @@ export default {
   overflow-y: hidden;
 }
 </style>
-
-<style>
-.select:not(.is-multiple):not(.is-loading)::after {
-}
-</style>

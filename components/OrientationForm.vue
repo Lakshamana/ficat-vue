@@ -1,68 +1,72 @@
 <template>
-  <Card title="Orientation Data">
+  <Card :title="$tr('layout.orientationData')">
     <div class="columns">
       <div class="column is-half">
         <div class="input-float">
           <input-validation
+            ref="advisorName"
             v-model="$v.advisorName.$model"
-            label="Advisor Name"
-            field-name="advisorName"
             :validations="$options.validations.advisorName"
             :v="$v"
-            :options="{
-              expanded: true
-            }"
+            :label="$tr('layout.whosName', ['advisor'])"
+            :tooltip-label="$tr('layout.nameTooltip', ['lowAdvisor'])"
+            field-name="advisorName"
           >
             <template #required>
-              Field is required
+              {{ $tr('layout.required') }}
             </template>
             <template #minLength="{ min }">
-              Must have a {{ min }} chars minima
+              {{ $tr('layout.minLength', [min]) }}
             </template>
           </input-validation>
           <input-validation
+            ref="advisorSurname"
             v-model="$v.advisorSurname.$model"
-            label="Advisor Surname"
-            field-name="advisorSurname"
             :validations="$options.validations.advisorSurname"
             :v="$v"
+            :label="$tr('layout.whosSurname', ['advisor'])"
+            :tooltip-label="$tr('layout.surnameTooltip', ['lowAdvisor'])"
+            field-name="advisorSurname"
             type="text"
           >
             <template #required>
-              Field is required
+              {{ $tr('layout.required') }}
             </template>
             <template #minLength="{ min }">
-              Must have a {{ min }} chars minima
+              {{ $tr('layout.minLength', [min]) }}
             </template>
           </input-validation>
           <div class="columns vcenter">
             <div class="column is-half">
-              <b-field class="field">
-                <b-checkbox v-model="isFemaleAdvisor">
-                  Orientadora
-                </b-checkbox>
-              </b-field>
+              <div class="vcenter">
+                <WithTooltip
+                  :text="$tr('layout.whosFemaleTooltip', ['lowAdvisor'])"
+                >
+                  <b-checkbox v-model="isFemaleAdvisor">
+                    {{ $tr('layout.femaleAdvisor') }}
+                  </b-checkbox>
+                </WithTooltip>
+              </div>
             </div>
             <div class="column is-half">
               <input-validation
+                ref="advisorTitle"
                 v-model="$v.advisorTitle.$model"
-                label="Advisor Title"
-                field-name="advisorTitle"
                 :validations="$options.validations.advisorTitle"
                 :v="$v"
+                :label="$tr('layout.title')"
+                :tooltip-label="$tr('layout.whosTitle', ['lowCoadvisor'])"
+                field-name="advisorTitle"
                 use-component="b-select"
-                :options="{
-                  expanded: true
-                }"
               >
                 <template #component>
-                  <option value="graduate">Graduado</option>
-                  <option value="expert">Especialista</option>
-                  <option value="master">Mestre</option>
-                  <option value="doctor">Doutor</option>
+                  <option value="graduate">{{ $tr('layout.graduate') }}</option>
+                  <option value="expert">{{ $tr('layout.expert') }}</option>
+                  <option value="master">{{ $tr('layout.master') }}</option>
+                  <option value="doctor">{{ $tr('layout.doctor') }}</option>
                 </template>
                 <template #required>
-                  Field is required
+                  {{ $tr('layout.required') }}
                 </template>
               </input-validation>
             </div>
@@ -72,66 +76,74 @@
       <div class="column is-half">
         <div class="input-float">
           <input-validation
+            ref="coadvisorName"
             v-model="$v.coadvisorName.$model"
-            label="Coadvisor Name"
-            field-name="coadvisorName"
             :validations="$options.validations.coadvisorName"
             :v="$v"
+            :label="$tr('layout.whosName', ['coadvisor'])"
+            :tooltip-label="$tr('layout.nameTooltip', ['lowCoadvisor'])"
+            field-name="coadvisorName"
             type="text"
           >
             <template #required>
-              Field is required
+              {{ $tr('layout.required') }}
             </template>
             <template #minLength="{ min }">
-              Must have a {{ min }} chars minima
+              {{ $tr('layout.minLength', [min]) }}
             </template>
           </input-validation>
           <input-validation
+            ref="coadvisorSurname"
             v-model="$v.coadvisorSurname.$model"
-            label="Coadvisor Surname"
-            field-name="coadvisorSurname"
             :validations="$options.validations.coadvisorSurname"
             :v="$v"
+            :label="$tr('layout.whosSurname', ['coadvisor'])"
+            :tooltip-label="$tr('layout.surnameTooltip', ['lowCoadvisor'])"
+            field-name="coadvisorSurname"
             type="text"
           >
             <template #required>
-              Field is required
+              {{ $tr('layout.required') }}
             </template>
             <template #minLength="{ min }">
-              Must have a {{ min }} chars minima
+              {{ $tr('layout.minLength', [min]) }}
             </template>
           </input-validation>
           <div class="columns vcenter">
             <div class="column is-half">
-              <b-field class="field">
-                <b-checkbox
-                  v-model="isFemaleCoadvisor"
-                  :disabled="!coadvisorName"
+              <div class="vcenter">
+                <WithTooltip
+                  :text="$tr('layout.whosFemaleTooltip', ['lowCoadvisor'])"
                 >
-                  Co-orientadora
-                </b-checkbox>
-              </b-field>
+                  <b-checkbox
+                    v-model="isFemaleCoadvisor"
+                    :disabled="!coadvisorName"
+                  >
+                    {{ $tr('layout.femaleCoadvisor') }}
+                  </b-checkbox>
+                </WithTooltip>
+              </div>
             </div>
             <div class="column is-half">
               <input-validation
+                ref="coadvisorTitle"
                 v-model="$v.coadvisorTitle.$model"
-                label="Coadvisor Title"
-                field-name="coadvisorTitle"
                 :validations="$options.validations.coadvisorTitle"
                 :v="$v"
+                :disabled="!coadvisorName"
+                :label="$tr('layout.title')"
+                :tooltip-label="$tr('layout.whosTitle', ['lowCoadvisor'])"
+                field-name="coadvisorTitle"
                 use-component="b-select"
-                :options="{
-                  expanded: true
-                }"
               >
                 <template #component>
-                  <option value="graduate">Graduado</option>
-                  <option value="expert">Especialista</option>
-                  <option value="master">Mestre</option>
-                  <option value="doctor">Doutor</option>
+                  <option value="graduate">{{ $tr('layout.graduate') }}</option>
+                  <option value="expert">{{ $tr('layout.expert') }}</option>
+                  <option value="master">{{ $tr('layout.master') }}</option>
+                  <option value="doctor">{{ $tr('layout.doctor') }}</option>
                 </template>
                 <template #required>
-                  Field is required
+                  {{ $tr('layout.required') }}
                 </template>
               </input-validation>
             </div>
@@ -144,13 +156,16 @@
 
 <script>
 import { required, minLength } from 'vuelidate/lib/validators'
+import helper from '~/mixins/helper'
 import { recovery, replace } from '~/front/persistence'
 import Card from '~/components/Card'
 import InputValidation from '~/components/InputValidation.js'
+import WithTooltip from '~/components/WithTooltip'
 
 export default {
   name: 'AuthorshipForm',
-  components: { Card, InputValidation },
+  components: { Card, InputValidation, WithTooltip },
+  mixins: [helper],
   data() {
     const { advisors } = recovery('form')
     return {
@@ -161,7 +176,8 @@ export default {
       isFemaleAdvisor: advisors.isFemaleAdvisor,
       advisorTitle: advisors.advisorTitle,
       coadvisorTitle: advisors.coadvisorTitle,
-      isFemaleCoadvisor: advisors.isFemaleCoadvisor
+      isFemaleCoadvisor: advisors.isFemaleCoadvisor,
+      initialRef: 'advisorName'
     }
   },
 
@@ -169,14 +185,9 @@ export default {
     $v: {
       deep: true,
       handler($v) {
-        replace('form', { advisors: { ...this.$data } })
-        ;(!$v.$invalid && this.$emit('ready')) || this.$emit('preventforward')
+        replace('form', { advisors: this.$data })
       }
     }
-  },
-
-  mounted() {
-    ;(!this.$v.$invalid && this.$emit('ready')) || this.$emit('preventforward')
   },
 
   beforeCreate() {

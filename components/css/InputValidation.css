@@ -9,9 +9,8 @@
   min-width: 100%;
   text-align: left;
   display: block;
-  height: 1rem;
+  height: 1em;
   margin-top: -1em;
-  margin-bottom: 1em;
 }
 
 .optional {
@@ -20,7 +19,40 @@
   min-width: 100%;
   text-align: left;
   display: block;
-  height: 1rem;
+  height: 1em;
   margin-top: -1em;
-  margin-bottom: 1em;
 }
+
+/* .with-tooltip {
+  position: relative;
+  margin: 1em 0;
+}
+
+.with-tooltip .tooltip {
+  visibility: hidden;
+  padding: .5em;
+  background-color: #555c;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  position: absolute;
+  top: -150%;
+  z-index: 64;
+  opacity: 0;
+  transition: opacity .5s ease-in;
+}
+
+.with-tooltip .tooltip::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  border-width: 5px;
+  border-style: solid;
+  border-color: #555c transparent transparent transparent;
+}
+
+.with-tooltip:hover .tooltip {
+  visibility: visible;
+  opacity: 1;
+} */

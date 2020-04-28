@@ -3,7 +3,7 @@
     <div class="wrapper">
       <div class="columns is-centered">
         <div class="column is-10">
-          <Card title="Talk to us!">
+          <Card :title="$tr('layout.talkToUs')">
             <form @submit.prevent="onSubmit">
               <div class="columns">
                 <div class="column is-half">
@@ -11,59 +11,59 @@
                     <input-validation
                       ref="name"
                       v-model="$v.name.$model"
-                      label="Name"
-                      field-name="name"
                       :validations="$options.validations.name"
                       :v="$v"
-                      :options="{
-                        expanded: true
-                      }"
+                      :label="$tr('layout.talkFormName')"
+                      field-name="name"
+                      :tooltip-label="$tr('layout.talkFormNameTooltip')"
                     >
                       <template #required>
-                        Field is required
+                        {{ $tr('layout.required') }}
                       </template>
                       <template #minLength="{ min }">
-                        Must have a {{ min }} chars minima
+                        {{ $tr('layout.minLength', [min]) }}
                       </template>
                     </input-validation>
                     <input-validation
                       ref="email"
                       v-model.trim="email"
-                      label="Email"
-                      field-name="email"
                       :validations="$options.validations.email"
                       :v="$v"
+                      :label="$tr('layout.talkFormEmail')"
+                      field-name="email"
+                      :tooltip-label="$tr('layout.talkFormEmailTooltip')"
                       @blur="$v.email.$touch"
                     >
                       <template #required>
-                        Field is required
+                        {{ $tr('layout.required') }}
                       </template>
                       <template #minLength="{ min }">
-                        Must have a {{ min }} chars minima
+                        {{ $tr('layout.minLength', [min]) }}
                       </template>
                       <template #email>
-                        It doesn't look like a valid email.
+                        {{ $tr('layout.invalidEmail') }}
                       </template>
                     </input-validation>
                     <input-validation
                       ref="fone"
                       v-model="$v.fone.$model"
-                      label="Fone"
-                      field-name="fone"
                       :validations="$options.validations.fone"
                       :v="$v"
+                      :label="$tr('layout.talkFormPhone')"
+                      field-name="fone"
+                      :tooltip-label="$tr('layout.talkFormPhoneTooltip')"
                     >
                       <template #required>
-                        Field is required
+                        {{ $tr('layout.required') }}
                       </template>
                       <template #minLength="{ min }">
-                        Must have a {{ min }} chars minima
+                        {{ $tr('layout.minLength', [min]) }}
                       </template>
                       <template #pattern>
-                        Use numbers or "+" only.
+                        {{ $tr('layout.numbersOnly') }}
                       </template>
                       <template #message>
-                        Use +[your country code here] if you need it
+                        {{ $tr('layout.internationalNumber') }}
                       </template>
                     </input-validation>
                   </div>
@@ -72,28 +72,31 @@
                   <input-validation
                     ref="msg"
                     v-model="$v.msg.$model"
-                    label="Message"
-                    field-name="msg"
                     :validations="$options.validations.msg"
                     :v="$v"
+                    :label="$tr('layout.talkFormMessage')"
+                    field-name="msg"
                     type="textarea"
+                    :tooltip-label="$tr('layout.talkFormMessageTooltip')"
                   >
                     <template #required>
-                      Field is required
+                      {{ $tr('layout.required') }}
                     </template>
                     <template #minLength="{ min }">
-                      Must have a {{ min }} chars minima
+                      {{ $tr('layout.minLength', [min]) }}
                     </template>
                   </input-validation>
                   <b-field>
-                    <b-upload v-model="files" multiple drag-drop>
-                      <div class="content has-text-centered">
-                        <p>
-                          <b-icon icon="upload" size="is-small"></b-icon>
-                        </p>
-                        <p>Drop your files here or click to upload</p>
-                      </div>
-                    </b-upload>
+                    <WithTooltip :text="$tr('layout.talkFormUploadTooltip')">
+                      <b-upload v-model="files" multiple drag-drop>
+                        <div class="content has-text-centered">
+                          <p>
+                            <b-icon icon="upload" size="is-small"></b-icon>
+                          </p>
+                          <p>{{ $tr('layout.talkFormUpload') }}</p>
+                        </div>
+                      </b-upload>
+                    </WithTooltip>
                   </b-field>
                   <b-taglist>
                     <template v-for="(file, i) in files">
@@ -110,24 +113,28 @@
                       </b-tag>
                     </template>
                   </b-taglist>
-                  <div style="display:flex;margin:.5em">
-                    <div style="margin:auto">
-                      <recaptcha
-                        @success="onSuccess"
-                        @error="onSomeError('error')"
-                        @expired="onSomeError('exp')"
-                      />
-                    </div>
+                  <div class="flex-submit">
+                    <WithTooltip :text="$tr('layout.solveCaptcha')">
+                      <div style="margin:auto">
+                        <recaptcha
+                          @success="onSuccess"
+                          @error="onSomeError('error')"
+                          @expired="onSomeError('exp')"
+                        />
+                      </div>
+                    </WithTooltip>
+                    <WithTooltip :text="$tr('layout.submitBtnTooltip')">
+                      <b-button
+                        :disabled="disabled"
+                        :loading="loading"
+                        class="is-success"
+                        rounded
+                        native-type="submit"
+                      >
+                        {{ $tr('layout.submitBtn') }}
+                      </b-button>
+                    </WithTooltip>
                   </div>
-                  <b-button
-                    class="is-success"
-                    :disabled="disabled"
-                    rounded
-                    :loading="loading"
-                    native-type="submit"
-                  >
-                    Submit
-                  </b-button>
                 </div>
               </div>
             </form>
@@ -140,9 +147,10 @@
 
 <script>
 import { required, minLength, maxLength, email } from 'vuelidate/lib/validators'
+import handler from '@/mixins/handler'
 import Card from '~/components/Card'
 import InputValidation from '~/components/InputValidation.js'
-import handler from '@/mixins/handler'
+import WithTooltip from '~/components/WithTooltip'
 
 const defaultData = () => ({
   name: '',
@@ -158,7 +166,7 @@ const defaultData = () => ({
 
 export default {
   name: 'Talk',
-  components: { Card, InputValidation },
+  components: { Card, InputValidation, WithTooltip },
   mixins: [handler],
   data() {
     return defaultData()
@@ -277,15 +285,13 @@ export default {
 <style scoped>
 .vcenter {
   display: flex;
-  align-items: flex-end;
   align-items: center;
-  height: 90vh;
+  align-items: center;
 }
 
 .wrapper {
   flex: 1 0 auto;
   margin: auto;
-  height: 60vh;
 }
 
 .input-float {
@@ -298,5 +304,12 @@ export default {
 
 .with-margin {
   margin: auto 0.5em;
+}
+
+.flex-submit {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0.5em;
 }
 </style>

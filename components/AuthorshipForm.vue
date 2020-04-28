@@ -1,38 +1,43 @@
 <template>
-  <Card title="Authorship Data">
+  <Card :title="$tr('layout.authorshipData')">
     <div class="columns">
       <div class="column is-half">
         <div class="input-float">
           <input-validation
+            ref="authorName"
             v-model="$v.authorName.$model"
-            label="Author Name"
-            field-name="authorName"
+            :label="$tr('layout.whosName', ['author'])"
             :validations="$options.validations.authorName"
             :v="$v"
-            :options="{
-              expanded: true
-            }"
+            :tooltip-label="
+              $tr('layout.nameTooltip', [{ pt: 'author', en: 'lowAuthor' }])
+            "
+            field-name="authorName"
           >
             <template #required>
-              Field is required
+              {{ $tr('layout.required') }}
             </template>
             <template #minLength="{ min }">
-              Must have a {{ min }} chars minima
+              {{ $tr('layout.minLength', [min]) }}
             </template>
           </input-validation>
           <input-validation
+            ref="authorSurname"
             v-model="$v.authorSurname.$model"
-            label="Author Surname"
-            field-name="authorSurname"
+            :label="$tr('layout.whosSurname', ['author'])"
             :validations="$options.validations.authorSurname"
+            :tooltip-label="
+              $tr('layout.surnameTooltip', [{ pt: 'author', en: 'lowAuthor' }])
+            "
             :v="$v"
+            field-name="authorSurname"
             type="text"
           >
             <template #required>
-              Field is required
+              {{ $tr('layout.required') }}
             </template>
             <template #minLength="{ min }">
-              Must have a {{ min }} chars minima
+              {{ $tr('layout.minLength', [min]) }}
             </template>
           </input-validation>
         </div>
@@ -40,33 +45,45 @@
       <div class="column is-half">
         <div class="input-float">
           <input-validation
+            ref="author2Name"
             v-model="$v.author2Name.$model"
-            label="Second Author Name"
-            field-name="author2Name"
+            :label="$tr('layout.whosName', ['secondaryAuthor'])"
             :validations="$options.validations.author2Name"
+            :tooltip-label="
+              $tr('layout.nameTooltip', [
+                { pt: 'secondaryAuthor', en: 'lowSecondaryAuthor' }
+              ])
+            "
             :v="$v"
+            field-name="author2Name"
             type="text"
           >
             <template #required>
-              Field is required
+              {{ $tr('layout.required') }}
             </template>
             <template #minLength="{ min }">
-              Must have a {{ min }} chars minima
+              {{ $tr('layout.minLength', [min]) }}
             </template>
           </input-validation>
           <input-validation
+            ref="author2Surname"
             v-model="$v.author2Surname.$model"
-            label="Second Author Surname"
-            field-name="author2Surname"
+            :label="$tr('layout.whosSurname', ['secondaryAuthor'])"
             :validations="$options.validations.author2Surname"
+            :tooltip-label="
+              $tr('layout.surnameTooltip', [
+                { pt: 'secondaryAuthor', en: 'lowSecondaryAuthor' }
+              ])
+            "
             :v="$v"
+            field-name="author2Surname"
             type="text"
           >
             <template #required>
-              Field is required
+              {{ $tr('layout.required') }}
             </template>
             <template #minLength="{ min }">
-              Must have a {{ min }} chars minima
+              {{ $tr('layout.minLength', [min]) }}
             </template>
           </input-validation>
         </div>
@@ -77,6 +94,7 @@
 
 <script>
 import { required, minLength } from 'vuelidate/lib/validators'
+import helper from '~/mixins/helper'
 import { recovery, replace } from '~/front/persistence'
 import Card from '~/components/Card'
 import InputValidation from '~/components/InputValidation.js'
@@ -84,13 +102,15 @@ import InputValidation from '~/components/InputValidation.js'
 export default {
   name: 'AuthorshipForm',
   components: { Card, InputValidation },
+  mixins: [helper],
   data() {
     const { authors } = recovery('form')
     return {
       authorName: authors.authorName,
       authorSurname: authors.authorSurname,
       author2Name: authors.author2Name,
-      author2Surname: authors.author2Surname
+      author2Surname: authors.author2Surname,
+      initialRef: 'authorName'
     }
   },
 
@@ -98,8 +118,7 @@ export default {
     $v: {
       deep: true,
       handler($v) {
-        replace('form', { authors: { ...this.$data } })
-        ;(!$v.$invalid && this.$emit('ready')) || this.$emit('preventforward')
+        replace('form', { authors: this.$data })
       }
     }
   },
@@ -114,10 +133,6 @@ export default {
           author2Surname: ''
         }
       })
-  },
-
-  mounted() {
-    ;(!this.$v.$invalid && this.$emit('ready')) || this.$emit('preventforward')
   },
 
   methods: {
@@ -151,9 +166,5 @@ export default {
   display: flex;
   flex-direction: column;
   justify-content: space-evenly;
-}
-
-.columns {
-  height: 30vh;
 }
 </style>

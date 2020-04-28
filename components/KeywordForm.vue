@@ -1,5 +1,5 @@
 <template>
-  <card title="Keywords">
+  <card :title="$tr('layout.keywords')">
     <div class="columns is-centered">
       <div class="column is-half">
         <div
@@ -8,35 +8,39 @@
           class="field is-grouped is-grouped"
         >
           <input-validation
+            ref="keywords"
             v-model="kw.text.$model"
-            :label="'Keyword ' + (+i + 1)"
-            field-name="text"
+            :label="$tr('layout.keyword') + (+i + 1)"
             :validations="$options.validations.keywords.$each.text"
             :v="kw"
-            :options="{
-              expanded: true
-            }"
+            :tooltip-label="$tr('layout.keywordTooltip')"
+            field-name="text"
           >
             <template #required>
-              Field is required
+              {{ $tr('layout.required') }}
             </template>
             <template #minLength="{ min }">
-              Must have a {{ min }} chars minima
+              {{ $tr('layout.minLength', [min]) }}
             </template>
           </input-validation>
           <div class="btn-block">
-            <b-button
-              icon-right="plus"
-              class="is-success is-round is-outlined btn"
-              :disabled="keywords.length > 4"
-              @click="keywords.push({ text: '' })"
-            ></b-button>
-            <b-button
-              v-if="i > 0"
-              icon-right="minus"
-              class="is-danger is-round btn-margin is-outlined btn"
-              @click="keywords.splice(i, 1)"
-            ></b-button>
+            <WithTooltip :text="$tr('layout.addKeyword')">
+              <b-button
+                :disabled="keywords.length > 4"
+                @click="keywords.push({ text: '' })"
+                icon-right="plus"
+                class="is-success is-round is-outlined btn"
+              >
+              </b-button>
+            </WithTooltip>
+            <WithTooltip :text="$tr('layout.removeKeyword')">
+              <b-button
+                v-if="i > 0"
+                @click="keywords.splice(i, 1)"
+                icon-right="minus"
+                class="is-danger is-round btn-margin is-outlined btn"
+              ></b-button>
+            </WithTooltip>
           </div>
         </div>
       </div>
@@ -49,9 +53,11 @@ import { required, minLength } from 'vuelidate/lib/validators'
 import Card from '~/components/Card'
 import { recovery, replace } from '~/front/persistence'
 import InputValidation from '~/components/InputValidation.js'
+import WithTooltip from '~/components/WithTooltip'
+
 export default {
   name: 'KeywordForm',
-  components: { Card, InputValidation },
+  components: { Card, InputValidation, WithTooltip },
   data() {
     const { keywords } = recovery('form')
     return {
@@ -64,13 +70,8 @@ export default {
       deep: true,
       handler($v) {
         replace('form', { keywords: this.keywords })
-        ;(!$v.$invalid && this.$emit('ready')) || this.$emit('preventforward')
       }
     }
-  },
-
-  mounted() {
-    ;(!this.$v.$invalid && this.$emit('ready')) || this.$emit('preventforward')
   },
 
   beforeCreate() {
@@ -78,6 +79,31 @@ export default {
       replace('form', {
         keywords: [{ text: '' }]
       })
+  },
+
+  mounted() {
+    this.$refs.keywords[0].focus()
+  },
+
+  methods: {
+    onHover(evt, action) {
+      const btn = evt.target
+      console.log(btn.classList)
+      btn.classList.add('tt-btn-visible')
+    },
+
+    checkNext() {
+      const { keywords } = this.$refs
+      this.$v.$touch()
+      for (const i in keywords) {
+        console.log(i, this.$refs.keywords[i])
+        if (this.$v.keywords.$each[i].$invalid) {
+          this.$refs.keywords[i].focus()
+          return false
+        }
+      }
+      return true
+    }
   },
 
   validations: {
@@ -98,6 +124,7 @@ export default {
 <style>
 .btn-block {
   display: flex;
+  margin-left: 1em;
   justify-content: space-between;
 }
 
@@ -106,4 +133,19 @@ export default {
   margin: 0 0.3em;
   border-radius: 50%;
 }
+/*
+.tooltip.tt-btn,
+.tooltip.tt-btn:hover {
+  visibility: hidden !important;
+  opacity: 0 !important;
+}
+
+.with-tooltip .tooltip::after {
+  left: 30%;
+}
+
+.tt-btn-visible .tooltip {
+  opacity: 1;
+  visibility: visible;
+} */
 </style>

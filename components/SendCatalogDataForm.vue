@@ -1,38 +1,46 @@
 <template>
-  <Card title="Prepare Card">
+  <Card :title="$tr('layout.prepareCard')">
     <div class="columns is-centered">
       <div class="column is-center is-5">
         <form @submit.prevent="onSubmit">
           <b-field>
-            <b-select
-              v-model="catalogFont"
-              placeholder="Font"
-              aria-placeholder="Font"
-              rounded
-              expanded
-            >
-              <option value="times">Times New Roman</option>
-              <option value="arial">Arial</option>
-            </b-select>
+            <WithTooltip :text="$tr('layout.fontFamilyTooltip')">
+              <b-select
+                ref="font"
+                v-model="catalogFont"
+                placeholder="Font"
+                aria-placeholder="Font"
+                rounded
+                expanded
+              >
+                <option value="times">Times New Roman</option>
+                <option value="arial">Arial</option>
+              </b-select>
+            </WithTooltip>
           </b-field>
           <div style="display:flex;margin:.5em">
-            <div style="margin:auto">
-              <recaptcha
-                @success="onSuccess"
-                @error="onSomeError('error')"
-                @expired="onSomeError('exp')"
-              />
-            </div>
+            <WithTooltip :text="$tr('layout.solveCaptcha')">
+              <div style="margin:auto">
+                <recaptcha
+                  @success="onSuccess"
+                  @error="onSomeError('error')"
+                  @expired="onSomeError('exp')"
+                />
+              </div>
+            </WithTooltip>
           </div>
           <b-field>
-            <b-button
-              class="is-success"
-              rounded
-              native-type="submit"
-              :disabled="disabled"
-            >
-              Generate
-            </b-button>
+            <WithTooltip :text="$tr('layout.generateTooltip')">
+              <b-button
+                :disabled="disabled"
+                class="is-success"
+                rounded
+                expanded
+                native-type="submit"
+              >
+                {{ $tr('layout.generate') }}
+              </b-button>
+            </WithTooltip>
           </b-field>
         </form>
       </div>
@@ -42,14 +50,18 @@
 
 <script>
 import Card from '~/components/Card'
+import WithTooltip from '~/components/WithTooltip'
+import helper from '~/mixins/helper'
 import { recovery, replace } from '~/front/persistence'
 import { maybe, romanize } from '~/shared/frontUtils'
 
 export default {
   name: 'SendCatalogDataForm',
   components: {
-    Card
+    Card,
+    WithTooltip
   },
+  mixins: [helper],
 
   data() {
     const { catalogFont } = recovery('form')
@@ -57,7 +69,8 @@ export default {
       catalogFont,
       touchedCaptcha: false,
       captchaHasError: false,
-      captchaHasExpired: false
+      captchaHasExpired: false,
+      initialRef: 'font'
     }
   },
 
