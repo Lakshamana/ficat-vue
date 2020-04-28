@@ -18,7 +18,6 @@ export default ({ store }, inject) => {
 
     // trResult could be a function as well as a string
     const translation = translations[lang][subject][trKey]
-    if (key === 'layout.authorSurname') console.log(translation)
 
     // Maps arguments translations
     // i.e., arguments can be i18n keys or the values itself

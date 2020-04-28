@@ -95,7 +95,6 @@ export default {
     el.async = true
     el.defer = true
     el.src = 'https://connect.facebook.net/en_US/sdk.js'
-    console.log('mounted')
 
     // Init fb messenger customer chat SDK
     const chatSrc = document.createElement('script')
