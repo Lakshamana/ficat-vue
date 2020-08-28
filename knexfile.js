@@ -46,6 +46,13 @@ const obj = {
     useNullAsDefault
   },
 
+  'production.local': {
+    ...db,
+    migrations,
+    seeds,
+    useNullAsDefault
+  },
+
   test: {
     ...db,
     migrations,

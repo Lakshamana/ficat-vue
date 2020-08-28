@@ -8,7 +8,7 @@
     "dev": "cross-env NODE_ENV=dev.local nodemon server/index.js --watch server",
     "debug": "cross-env NODE_ENV=development DEBUG=koa* nodemon --harmony server/index.js --watch server",
     "build": "nuxt build",
-    "start": "cross-env NODE_ENV=production node server/index.js",
+    "start": "cross-env NODE_ENV=production.local node server/index.js",
     "generate": "nuxt generate",
     "seed:devmake": "cross-env NODE_ENV=development knex seed:make",
     "seed:testmake": "cross-env NODE_ENV=test knex seed:make",
@@ -69,6 +69,6 @@
     "jest": "^24.1.0",
     "nodemon": "^1.18.9",
     "prettier": "^1.16.4",
-    "vue-jest": "^4.0.0-0"
+    "vue-jest": "^4.0.0-beta.3"
   }
 }
