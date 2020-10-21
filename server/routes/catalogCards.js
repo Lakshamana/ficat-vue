@@ -1,4 +1,3 @@
-// const PDFDocument = require('pdfkit')
 const htmlPdf = require('html-pdf')
 
 const CatalogCard = require('../models/CatalogCard')
@@ -21,10 +20,6 @@ const globalPdfConfig = require('../models/pdfdocs/globalPdfConfig')
 
 const catalogCardModel = require('../models/pdfdocs/catalogCard')
 const generatePdfReport = require('../models/pdfdocs/report')
-
-// Usado para guardar as operações realizadas por cada usuário no sistema
-// Previne condições de corrida
-const pdfResults = {}
 
 async function create(ctx) {
   // Validação interna do payload
@@ -91,12 +86,13 @@ async function create(ctx) {
       unityId: academicDetails.acdUnityId,
       courseId: academicDetails.courseId
     }
-    const newCatalogCard = await CatalogCard.forge(payload).save()
+
+    await CatalogCard.forge(payload).save()
+
     ctx.set('Content-Type', 'application/pdf')
     ctx.set('Content-Disposition', `filename=ficha.pdf`)
-    ctx.status = HttpCodes.OK
-    const id = newCatalogCard.id
-    pdfResults[id] = {
+
+    const pdfResult = {
       catalogFont,
       cutter,
       authors,
@@ -106,7 +102,33 @@ async function create(ctx) {
       keywords,
       cdd
     }
-    ctx.set('PDF-Location', `/api/catalogCards/get/${id}`)
+
+    // Construir o PDF
+    const htmlTemplate = catalogCardModel(catalogFont, pdfResult)
+    const stream = await new Promise((resolve, reject) => {
+      htmlPdf
+        .create(
+          htmlTemplate,
+          Object.assign(globalPdfConfig, {
+            border: {
+              top: '4.25cm',
+              right: '5cm',
+              bottom: '4.25cm',
+              left: '5cm'
+            }
+          })
+        )
+        .toStream((err, stream) => {
+          if (err) {
+            stream.close()
+            reject(err)
+          }
+          resolve(stream)
+        })
+    })
+
+    ctx.body = stream
+    ctx.status = HttpCodes.OK
   } catch (e) {
     ctx.throw(HttpCodes.BAD_REQUEST, MessageCodes.error.errOnDbSave, {
       error: {
@@ -114,47 +136,6 @@ async function create(ctx) {
       }
     })
   }
-}
-
-async function getPdfResult(ctx) {
-  const { id } = ctx.params
-  const pdfResult = pdfResults[id]
-  const { catalogFont } = pdfResult
-  if (!pdfResult) {
-    ctx.status = HttpCodes.NOT_FOUND
-    ctx.body = 'PDF already downloaded, please close this window.'
-    return
-  }
-  ctx.set('Content-Type', 'application/pdf')
-  ctx.set('Content-Disposition', `filename=ficha.pdf`)
-
-  // Construir o PDF
-  const htmlTemplate = catalogCardModel(catalogFont, pdfResult)
-  const stream = await new Promise((resolve, reject) => {
-    htmlPdf
-      .create(
-        htmlTemplate,
-        Object.assign(globalPdfConfig, {
-          border: {
-            top: '4.25cm',
-            right: '5cm',
-            bottom: '4.25cm',
-            left: '5cm'
-          }
-        })
-      )
-      .toStream((err, stream) => {
-        if (err) {
-          stream.close()
-          reject(err)
-        }
-        resolve(stream)
-      })
-  })
-
-  // delete pdfResults[id]
-  ctx.body = stream
-  ctx.status = HttpCodes.OK
 }
 
 // Usado para guardar as queries realizadas por cada usuário no sistema
@@ -394,7 +375,6 @@ module.exports = {
   create,
   list,
   update,
-  getPdfResult,
   catalogQueries,
   getFirstCatalogCardYear,
   getReportPdf

@@ -67,9 +67,6 @@ api.post(
   catalogRoutes.create
 )
 
-// get result
-api.get('/catalogCards/get/:id', catalogRoutes.getPdfResult)
-
 api.get('/catalogCards/', catalogRoutes.list)
 
 // get oldest card year

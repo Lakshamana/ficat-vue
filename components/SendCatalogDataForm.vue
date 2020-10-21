@@ -115,42 +115,55 @@ export default {
           ? romanize(+work.totalPages)
           : work.totalPages
       this.$axios
-        .post('/api/catalogCards', {
-          keywords: keywords.map(k => k.text),
-          authors: {
-            authorName: authors.authorName,
-            authorSurname: authors.authorSurname,
-            ...maybe('author2Name', authors.author2Name),
-            ...maybe('author2Surname', authors.author2Surname)
+        .post(
+          '/api/catalogCards',
+          {
+            keywords: keywords.map(k => k.text),
+            authors: {
+              authorName: authors.authorName,
+              authorSurname: authors.authorSurname,
+              ...maybe('author2Name', authors.author2Name),
+              ...maybe('author2Surname', authors.author2Surname)
+            },
+            work: {
+              workTitle: work.workTitle,
+              ...maybe('workSubtitle', work.workSubtitle),
+              presentationYear: work.presentationYear,
+              workImagesType: work.workImagesType,
+              totalPages,
+              workType: work.workType
+            },
+            advisors: {
+              advisorName: advisors.advisorName,
+              advisorSurname: advisors.advisorSurname,
+              isFemaleAdvisor: advisors.isFemaleAdvisor,
+              advisorTitle: advisors.advisorTitle,
+              ...maybe('coadvisorName', advisors.coadvisorName),
+              ...maybe('coadvisorSurname', advisors.coadvisorSurname),
+              ...maybe('isFemaleCoadvisor', advisors.isFemaleCoadvisor),
+              ...maybe('coadvisorTitle', advisors.coadvisorTitle)
+            },
+            academicDetails: {
+              acdUnityId: work.selectedAcdUnity.id,
+              knAreaId: work.selectedKnArea.id,
+              courseId: work.course
+            },
+            catalogFont
           },
-          work: {
-            workTitle: work.workTitle,
-            ...maybe('workSubtitle', work.workSubtitle),
-            presentationYear: work.presentationYear,
-            workImagesType: work.workImagesType,
-            totalPages,
-            workType: work.workType
-          },
-          advisors: {
-            advisorName: advisors.advisorName,
-            advisorSurname: advisors.advisorSurname,
-            isFemaleAdvisor: advisors.isFemaleAdvisor,
-            advisorTitle: advisors.advisorTitle,
-            ...maybe('coadvisorName', advisors.coadvisorName),
-            ...maybe('coadvisorSurname', advisors.coadvisorSurname),
-            ...maybe('isFemaleCoadvisor', advisors.isFemaleCoadvisor),
-            ...maybe('coadvisorTitle', advisors.coadvisorTitle)
-          },
-          academicDetails: {
-            acdUnityId: work.selectedAcdUnity.id,
-            knAreaId: work.selectedKnArea.id,
-            courseId: work.course
-          },
-          catalogFont
-        })
-        .then(response => {
-          const location = response.headers['pdf-location']
-          window.open(location, '_blank')
+          {
+            responseType: 'blob'
+          }
+        )
+        .then(({ data }) => {
+          const link = document.createElement('a')
+          link.download = 'ficha.pdf'
+          const file = new File([data], { type: 'application/pdf' })
+          const url = URL.createObjectURL(file)
+          link.href = url
+          document.body.appendChild(link)
+          link.click()
+          document.body.removeChild(link)
+          URL.revokeObjectURL(url)
         })
         .catch()
         .finally(() => (this.loading = false))
