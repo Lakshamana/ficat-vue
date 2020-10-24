@@ -33,7 +33,6 @@ async function auth(ctx) {
         httpOnly: false
       })
     } catch (e) {
-      console.log(e)
       ctx.throw(HttpCodes.BAD_REQUEST, MessageCodes.error.errPasswordMismatch)
     }
   } else {

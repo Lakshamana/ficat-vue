@@ -41,7 +41,7 @@ module.exports = {
     academicDetails: ['acdUnityId', 'knAreaId', 'courseId'],
     fonts: ['times', 'arial']
   },
-  querieFields: {
+  queryFields: {
     monthly: {
       mandatory: ['year', 'month', 'unityId', 'type', 'courseId'],
       optional: ['month', 'unityId', 'type', 'courseId']

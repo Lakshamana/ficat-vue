@@ -80,7 +80,7 @@ api.post(
   catalogRoutes.catalogQueries
 )
 
-api.get('/catalogCards/reportResult', catalogRoutes.getReportPdf)
+// api.get('/catalogCards/reportResult', catalogRoutes.getReportPdf)
 
 /**
  * Users

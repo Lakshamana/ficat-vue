@@ -1,3 +1,4 @@
+const { knex } = require('../server/db')
 /**
  * Seleciona atributos de um dado objeto de entrada,
  * com base em uma lista dos atributos do mesmo.
@@ -61,7 +62,7 @@ function select(data, attrList, defaults = {}) {
 function validatePayload(data, validFields = [], optional = []) {
   const result = { valid: false }
   const dataObj = Object.assign({}, data) // Evitar problemas com hasOwnProperty
-  if (dataObj && typeof dataObj === 'object' && Object.keys(dataObj).length) {
+  if (dataObj && typeof dataObj === 'object') {
     // data precisa ter alguns campos
     for (const f of validFields) {
       if (!Object.keys(dataObj).includes(f) && !optional.includes(f)) {
@@ -80,7 +81,7 @@ function validatePayload(data, validFields = [], optional = []) {
     if (!result.invalidFields && !result.missingFields) result.valid = true
     return result
   }
-  return undefined
+  return result
 }
 
 /**
@@ -96,9 +97,7 @@ function validatePayload(data, validFields = [], optional = []) {
 function chunks(list, chunkSize) {
   const length = Math.ceil(list.length / chunkSize)
 
-  return Array.from({ length }, (_, i) =>
-    list.slice(i * chunkSize, i * chunkSize + chunkSize)
-  )
+  return Array.from({ length }, (_, i) => list.slice(i * chunkSize, i * chunkSize + chunkSize))
 }
 
 /**
@@ -148,8 +147,14 @@ function romanize(n, uppercase = false) {
   return uppercase ? r.toUpperCase() : r
 }
 
+async function castDate(date) {
+  const cast = await knex.raw('select CAST(? as DATETIME) as value', [date])
+  return cast[0][0].value
+}
+
 exports.maybe = maybe
 exports.romanize = romanize
 exports.select = select
 exports.chunks = chunks
 exports.validatePayload = validatePayload
+exports.castDate = castDate

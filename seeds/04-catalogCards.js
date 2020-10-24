@@ -3,8 +3,9 @@ exports.seed = function(knex) {
   // Deletes ALL existing entries
   return knex('catalogCards')
     .del()
-    .then(function() {
+    .then(async function() {
       // Inserts seed entries
-      return knex('catalogCards').insert(seeds)
+      const arr = await Promise.all(seeds)
+      return knex('catalogCards').insert(arr)
     })
 }
