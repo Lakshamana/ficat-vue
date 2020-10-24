@@ -1,18 +1,12 @@
 module.exports = {
   catalogFields: {
     authors: {
-      mandatory: [
-        'authorName',
-        'authorSurname',
-        'author2Name',
-        'author2Surname'
-      ],
+      mandatory: ['authorName', 'authorSurname'],
       optional: ['author2Name', 'author2Surname']
     },
     work: {
       mandatory: [
         'workTitle',
-        'workSubtitle',
         'presentationYear',
         'workImagesType',
         'totalPages',
@@ -25,11 +19,7 @@ module.exports = {
         'advisorName',
         'advisorSurname',
         'isFemaleAdvisor',
-        'advisorTitle',
-        'coadvisorName',
-        'coadvisorSurname',
-        'isFemaleCoadvisor',
-        'coadvisorTitle'
+        'advisorTitle'
       ],
       optional: [
         'coadvisorName',
@@ -42,18 +32,8 @@ module.exports = {
     fonts: ['times', 'arial']
   },
   queryFields: {
-    monthly: {
-      mandatory: ['year', 'month', 'unityId', 'type', 'courseId'],
-      optional: ['month', 'unityId', 'type', 'courseId']
-    },
-    semiannually: {
-      mandatory: ['year', 'semester', 'unityId', 'type', 'courseId'],
-      optional: ['semester', 'unityId', 'type', 'courseId']
-    },
-    annually: {
-      mandatory: ['year', 'unityId', 'type', 'courseId'],
-      optional: ['unityId', 'type', 'courseId']
-    }
+    mandatory: ['searchType', 'year'],
+    optional: ['unityId', 'type', 'courseId']
   },
   users: {
     create: {
@@ -73,7 +53,7 @@ module.exports = {
   },
   courses: {
     create: {
-      mandatory: ['name', 'program', 'type', 'unityId'],
+      mandatory: ['name', 'type', 'unityId'],
       optional: ['program']
     },
     update: {
@@ -85,12 +65,11 @@ module.exports = {
       mandatory: ['name', 'acronym']
     },
     update: {
-      mandatory: ['name', 'acronym'],
       optional: ['name', 'acronym']
     }
   },
   auth: {
-    mandatory: ['username', 'password', 'rememberMe'],
+    mandatory: ['username', 'password'],
     optional: ['rememberMe']
   },
   authz: {

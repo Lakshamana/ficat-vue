@@ -202,7 +202,7 @@ function labelMap(acdUnities) {
     semiannually: ['1º semestre', '2º semestre'],
     annually: acdUnities.length
       ? acdUnities.map(u => [u.name, u.acronym])
-      : ['Total Anual']
+      : ['Total no Ano']
   }
 }
 

@@ -8,14 +8,13 @@ const AcademicUnity = require('../models/AcademicUnity')
 
 const { validatePayload } = require('../../shared/utils')
 const {
-  cutterFetch,
-  payloadErrors
+  cutterFetch
   // labelMap,
 } = require('../util/utils')
 
 const HttpCodes = require('../httpCodes')
 const MessageCodes = require('../../shared/messageCodes')
-const { catalogFields, queryFields } = require('../routeFieldsValidation')
+const { catalogFields } = require('../routeFieldsValidation')
 const globalPdfConfig = require('../models/pdfdocs/globalPdfConfig')
 
 const catalogCardModel = require('../models/pdfdocs/catalogCard')
@@ -61,6 +60,7 @@ async function create(ctx) {
     })
   }
 
+  // Consulta de dados para inserir no PDF
   const kna = await KnowledgeArea.where({
     id: academicDetails.knAreaId
   }).fetch()
@@ -140,23 +140,22 @@ async function create(ctx) {
 
 async function catalogQueries(ctx) {
   try {
-    const searchType = ctx.query.searchType
-    const params = ctx.request.body
-
-    const fields = queryFields[searchType]
-    if (!fields) {
-      ctx.throw(HttpCodes.BAD_REQUEST, 'invalid searchType')
+    // Períodos requisitáveis: (mensal, semestral ou anual)
+    const searchTypeQueries = {
+      monthly: [fetchMonthly, 12],
+      semiannually: [fetchSemiannually, 2],
+      annually: [fetchAnnually, 1]
     }
-    const { mandatory, optional } = fields
-    const validation = validatePayload(params, mandatory, optional)
-    if (!validation.valid) {
-      payloadErrors(ctx, validation)
+
+    const searchType = ctx.query.searchType
+
+    if (!searchTypeQueries[searchType]) {
+      ctx.throw(HttpCodes.BAD_REQUEST, 'invalid searchType')
     }
 
     // ano é obrigatório (ex: 2019 (number))
-    // semester = 1 ou 2 (1º ou 2º semestre, respectivamente)
-    // month = número em [1, ..., 12]
-    const { year, unityId, type, courseId } = params
+    const { unityId, type, courseId } = ctx.query
+    const year = +ctx.query.year
 
     // Primeiro filtrar por tipo, programa ou unidade acadêmica
     const optionalFilters = {
@@ -165,18 +164,50 @@ async function catalogQueries(ctx) {
       ...(courseId && { courseId })
     }
 
-    // Períodos requisitáveis: (mensal, semestral ou anual)
-    const searchTypeQueries = {
-      monthly: fetchMonthly,
-      semiannually: fetchSemiannually,
-      annually: fetchAnnually
+    const [queryFn, expectedResultsNumber] = searchTypeQueries[searchType]
+    let data
+
+    if (searchType === 'annually' && isNaN(+unityId)) {
+      data = await queryGroupByAcdUnity(year, optionalFilters)
+      const academicUnities = await AcademicUnity.fetchAll()
+
+      for (const acd of academicUnities.toJSON()) {
+        if (!data[acd.id]) {
+          data[acd.id] = 0
+        }
+      }
+
+      ctx.body = data
+    } else {
+      data = await queryFn(year, optionalFilters)
+      ctx.body = completeWithZeros(data, expectedResultsNumber)
     }
 
-    ctx.body = await searchTypeQueries[searchType](year, optionalFilters)
     ctx.status = HttpCodes.OK
   } catch (err) {
-    ctx.throw(HttpCodes.BAD_REQUEST, err.message)
+    ctx.throw(HttpCodes.BAD_REQUEST, err)
   }
+}
+
+function completeWithZeros(dataset, n) {
+  const base = {}
+  for (let i = 0; i < n; ++i) {
+    base[i] = dataset[i] || 0
+  }
+  return base
+}
+
+async function queryGroupByAcdUnity(year, optionalFilters) {
+  const group = await knex('catalogCards')
+    .select(knex.raw('unityId, count(*) as count'))
+    .whereRaw(`year(datetime) = ${year}`)
+    .where({ ...optionalFilters })
+    .groupBy('unityId')
+
+  return group.reduce(
+    (acc, item) => ({ ...acc, [item.unityId]: item.count }),
+    {}
+  )
 }
 
 /**
@@ -190,7 +221,6 @@ async function fetchMonthly(year, filters) {
     .whereRaw(`year(datetime) = ${year}`)
     .where({ ...filters })
     .groupBy('month')
-    .orderBy('month')
 
   return group.reduce((acc, item) => ({ ...acc, [item.month]: item.count }), {})
 }
@@ -204,18 +234,20 @@ async function fetchSemiannually(year, filters) {
   const query = await knex('catalogCards')
     .select(
       knex.raw(
-        `count(if(datetime <= '${year}-06-30', 1, NULL)) as '0',
-        count(if(datetime > '${year}-06-30', 1, NULL)) as '1'`
+        `count(if(year(datetime) = ${year} and datetime <= '${year}-06-30', 1, NULL)) as '0',
+        count(if(year(datetime) = ${year} and datetime > '${year}-06-30', 1, NULL)) as '1'`
       )
     )
     .where({ ...filters })
   return query[0]
 }
 
-function fetchAnnually(year, filters) {
-  return knex('catalogCards')
+async function fetchAnnually(year, filters) {
+  const count = await knex('catalogCards')
+    .select(knex.raw('count(*) as "0"'))
     .whereRaw(`year(datetime) = ${year}`)
     .where({ ...filters })
+  return count[0]
 }
 
 async function list(ctx) {
@@ -224,11 +256,7 @@ async function list(ctx) {
       .orderBy('datetime', 'ASC')
       .fetchAll()
   } catch (e) {
-    ctx.throw(HttpCodes.BAD_REQUEST, MessageCodes.error.errOnDbFetch, {
-      error: {
-        rawErrorMessage: e.stack
-      }
-    })
+    ctx.throw(HttpCodes.BAD_REQUEST, MessageCodes.error.errOnDbFetch)
   }
 }
 
@@ -264,11 +292,7 @@ async function getFirstCatalogCardYear(ctx) {
       year: new Date(oldest.get('datetime')).getFullYear()
     }
   } catch (e) {
-    ctx.throw(HttpCodes.BAD_REQUEST, MessageCodes.error.errOnDbFetch, {
-      error: {
-        rawErrorMessage: e.stack
-      }
-    })
+    ctx.throw(HttpCodes.BAD_REQUEST, MessageCodes.error.errOnDbFetch)
   }
 }
 

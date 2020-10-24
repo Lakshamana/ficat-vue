@@ -30,13 +30,12 @@ function validator(validateObj) {
   }
 }
 
-function query(fields) {
+function query(validFields, optionalFields) {
   return (ctx, next) => {
     const query = ctx.query
     // Se existe uma query
     if (Object.keys(query).length) {
-      // Validar o objeto da query - todos os parâmetros são opcionais
-      const validation = validatePayload(query, fields, fields)
+      const validation = validatePayload(query, validFields, optionalFields)
       if (validation.valid) {
         return next()
       } else {
