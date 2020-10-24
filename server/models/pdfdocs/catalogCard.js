@@ -70,7 +70,6 @@ function catalogCard(
     doctor: ['Dr. ', 'Dra. ']
   }
 
-  console.log(advisors)
   const femaleAdvisor = +!!advisors.isFemaleAdvisor
   const femaleCoadvisor = +!!advisors.isFemaleCoadvisor
   const advisorHeader = `Orientador(a): ${
@@ -113,7 +112,7 @@ function catalogCard(
   const templatePath = join(__dirname, 'catalogCard.html')
 
   const fontFamily =
-    catalogFont === 'times' ? "'Nimbus Roman', serif" : "'Arimo', sans-serif"
+    catalogFont === 'times' ? "'Noto Serif TC', serif" : "'Arimo', sans-serif"
 
   // HTML model and script should always have same file name
   const htmlTemplate = readFileSync(templatePath, 'utf8')

@@ -1,30 +1,24 @@
-// const PDFDocument = require('pdfkit')
 const htmlPdf = require('html-pdf')
 
 const CatalogCard = require('../models/CatalogCard')
+const { knex } = require('../db')
 const KnowledgeArea = require('../models/KnowledgeArea')
 const Course = require('../models/Course')
 const AcademicUnity = require('../models/AcademicUnity')
 
-const { validatePayload, chunks } = require('../../shared/utils')
+const { validatePayload } = require('../../shared/utils')
 const {
-  cutterFetch,
-  payloadErrors,
-  labelMap,
-  sha256
+  cutterFetch
+  // labelMap,
 } = require('../util/utils')
 
 const HttpCodes = require('../httpCodes')
 const MessageCodes = require('../../shared/messageCodes')
-const { catalogFields, querieFields } = require('../routeFieldsValidation')
+const { catalogFields } = require('../routeFieldsValidation')
 const globalPdfConfig = require('../models/pdfdocs/globalPdfConfig')
 
 const catalogCardModel = require('../models/pdfdocs/catalogCard')
-const generatePdfReport = require('../models/pdfdocs/report')
-
-// Usado para guardar as operações realizadas por cada usuário no sistema
-// Previne condições de corrida
-const pdfResults = {}
+// const generatePdfReport = require('../models/pdfdocs/report')
 
 async function create(ctx) {
   // Validação interna do payload
@@ -66,6 +60,7 @@ async function create(ctx) {
     })
   }
 
+  // Consulta de dados para inserir no PDF
   const kna = await KnowledgeArea.where({
     id: academicDetails.knAreaId
   }).fetch()
@@ -91,12 +86,13 @@ async function create(ctx) {
       unityId: academicDetails.acdUnityId,
       courseId: academicDetails.courseId
     }
-    const newCatalogCard = await CatalogCard.forge(payload).save()
+
+    await CatalogCard.forge(payload).save()
+
     ctx.set('Content-Type', 'application/pdf')
     ctx.set('Content-Disposition', `filename=ficha.pdf`)
-    ctx.status = HttpCodes.OK
-    const id = newCatalogCard.id
-    pdfResults[id] = {
+
+    const pdfResult = {
       catalogFont,
       cutter,
       authors,
@@ -106,7 +102,33 @@ async function create(ctx) {
       keywords,
       cdd
     }
-    ctx.set('PDF-Location', `/api/catalogCards/get/${id}`)
+
+    // Construir o PDF
+    const htmlTemplate = catalogCardModel(catalogFont, pdfResult)
+    const stream = await new Promise((resolve, reject) => {
+      htmlPdf
+        .create(
+          htmlTemplate,
+          Object.assign(globalPdfConfig, {
+            border: {
+              top: '4.25cm',
+              right: '5cm',
+              bottom: '4.25cm',
+              left: '5cm'
+            }
+          })
+        )
+        .toStream((err, stream) => {
+          if (err) {
+            stream.close()
+            reject(err)
+          }
+          resolve(stream)
+        })
+    })
+
+    ctx.body = stream
+    ctx.status = HttpCodes.OK
   } catch (e) {
     ctx.throw(HttpCodes.BAD_REQUEST, MessageCodes.error.errOnDbSave, {
       error: {
@@ -116,171 +138,116 @@ async function create(ctx) {
   }
 }
 
-async function getPdfResult(ctx) {
-  const { id } = ctx.params
-  const pdfResult = pdfResults[id]
-  const { catalogFont } = pdfResult
-  if (!pdfResult) {
-    ctx.status = HttpCodes.NOT_FOUND
-    ctx.body = 'PDF already downloaded, please close this window.'
-    return
-  }
-  ctx.set('Content-Type', 'application/pdf')
-  ctx.set('Content-Disposition', `filename=ficha.pdf`)
-
-  // Construir o PDF
-  const htmlTemplate = catalogCardModel(catalogFont, pdfResult)
-  const stream = await new Promise((resolve, reject) => {
-    htmlPdf
-      .create(
-        htmlTemplate,
-        Object.assign(globalPdfConfig, {
-          border: {
-            top: '4.25cm',
-            right: '5cm',
-            bottom: '4.25cm',
-            left: '5cm'
-          }
-        })
-      )
-      .toStream((err, stream) => {
-        if (err) {
-          stream.close()
-          reject(err)
-        }
-        resolve(stream)
-      })
-  })
-
-  // delete pdfResults[id]
-  ctx.body = stream
-  ctx.status = HttpCodes.OK
-}
-
-// Usado para guardar as queries realizadas por cada usuário no sistema
-// Previne condições de corrida
-const queryResults = {}
-
 async function catalogQueries(ctx) {
-  const query = CatalogCard
-  const searchType = ctx.query.searchType
-  const params = ctx.request.body
-
-  const { mandatory, optional } = querieFields[searchType]
-  const validation = validatePayload(params, mandatory, optional)
-  if (!validation.valid) {
-    payloadErrors(ctx, validation)
-  }
-
-  // ano é obrigatório (ex: 2019 (number))
-  // semester = 0 ou 1 (1º ou 2º semestre, respectivamente)
-  // month = número em [0, ..., 11]
-  const { year, month, semester, unityId, type, courseId } = params
-
-  // Primeiro filtrar por tipo, programa ou unidade acadêmica
-  const optionalFilters = {
-    ...(unityId && { unityId }),
-    ...(type && { type }),
-    ...(courseId && { courseId })
-  }
-
-  // months = [0, ..., 11]
-  const months = Array.from({ length: 12 }, (_, i) => i)
-  // Períodos requisitáveis: (mensal, semestral ou anual)
-  const chunkSizeConvert = {
-    monthly: 1,
-    semiannually: 6,
-    annually: 12
-  }
-
-  let responseObj = {}
-  // Filtre e conte por mês, semestre ou ano inteiro.
-  if (!isNaN(month)) {
-    responseObj = await fetchMonthCount(query, year, month, optionalFilters)
-  } else if (!isNaN(semester)) {
-    const groupedMonths = chunks(months, chunkSizeConvert[searchType])
-    responseObj = await fetchMonthGroupCount(
-      query,
-      year,
-      groupedMonths[semester],
-      optionalFilters
-    )
-  } else if (!isNaN(unityId)) {
-    const groupedMonths = chunks(months, chunkSizeConvert[searchType])
-    for (const groupIdx in groupedMonths) {
-      const f = await fetchMonthGroupCount(
-        query,
-        year,
-        groupedMonths[groupIdx],
-        optionalFilters
-      )
-      responseObj[groupIdx] = f
+  try {
+    // Períodos requisitáveis: (mensal, semestral ou anual)
+    const searchTypeQueries = {
+      monthly: [fetchMonthly, 12],
+      semiannually: [fetchSemiannually, 2],
+      annually: [fetchAnnually, 1]
     }
-  } else {
-    console.log('yay!')
-    responseObj = await fetchAllGroupByAcdUnity(query, year, optionalFilters)
+
+    const searchType = ctx.query.searchType
+
+    if (!searchTypeQueries[searchType]) {
+      ctx.throw(HttpCodes.BAD_REQUEST, 'invalid searchType')
+    }
+
+    // ano é obrigatório (ex: 2019 (number))
+    const { unityId, type, courseId } = ctx.query
+    const year = +ctx.query.year
+
+    // Primeiro filtrar por tipo, programa ou unidade acadêmica
+    const optionalFilters = {
+      ...(unityId && { unityId }),
+      ...(type && { type }),
+      ...(courseId && { courseId })
+    }
+
+    const [queryFn, expectedResultsNumber] = searchTypeQueries[searchType]
+    let data
+
+    if (searchType === 'annually' && isNaN(+unityId)) {
+      data = await queryGroupByAcdUnity(year, optionalFilters)
+      const academicUnities = await AcademicUnity.fetchAll()
+
+      for (const acd of academicUnities.toJSON()) {
+        if (!data[acd.id]) {
+          data[acd.id] = 0
+        }
+      }
+
+      ctx.body = data
+    } else {
+      data = await queryFn(year, optionalFilters)
+      ctx.body = completeWithZeros(data, expectedResultsNumber)
+    }
+
+    ctx.status = HttpCodes.OK
+  } catch (err) {
+    ctx.throw(HttpCodes.BAD_REQUEST, err)
   }
+}
 
-  const user = ctx.cookies.get('user')
-  const xsrfToken = ctx.headers['x-xsrf-token']
-  const pdfToken = sha256(user + xsrfToken + Date.now())
-  ctx.set('pdfToken', pdfToken)
+function completeWithZeros(dataset, n) {
+  const base = {}
+  for (let i = 0; i < n; ++i) {
+    base[i] = dataset[i] || 0
+  }
+  return base
+}
 
-  ctx.status = HttpCodes.OK
-  queryResults[pdfToken] = { params, searchType }
-  queryResults[pdfToken].data = responseObj
-  ctx.body = responseObj
+async function queryGroupByAcdUnity(year, optionalFilters) {
+  const group = await knex('catalogCards')
+    .select(knex.raw('unityId, count(*) as count'))
+    .whereRaw(`year(datetime) = ${year}`)
+    .where({ ...optionalFilters })
+    .groupBy('unityId')
+
+  return group.reduce(
+    (acc, item) => ({ ...acc, [item.unityId]: item.count }),
+    {}
+  )
 }
 
 /**
  *
- * @param {CatalogCard} query
  * @param {number} year
- * @param {Number[]} monthList
- * @returns {number} contagem de ocorrências de fichas catalográficas
+ * @returns {Object} contagem mensal de ocorrências de fichas catalográficas
  */
-async function fetchMonthGroupCount(query, year, monthList, filters) {
-  let s = 0
-  for (let i = 0; i < monthList.length; i++) {
-    const t = await fetchMonthCount(query, year, monthList[i], filters)
-    s += t
-  }
-  return s
+async function fetchMonthly(year, filters) {
+  const group = await knex('catalogCards')
+    .select(knex.raw('month(datetime) as month, count(*) as count'))
+    .whereRaw(`year(datetime) = ${year}`)
+    .where({ ...filters })
+    .groupBy('month')
+
+  return group.reduce((acc, item) => ({ ...acc, [item.month]: item.count }), {})
 }
 
 /**
  *
- * @param {CatalogCard} query
  * @param {number} year
- * @param {number} month: número entre 0 e 11
- * @returns {Promise<Number>}
+ * @returns {Object} contagem semestral de ocorrências de fichas catalográficas
  */
-function fetchMonthCount(query, year, month, filters) {
-  month = +month
-  const monthInitialDay = new Date(year, month).toISOString()
-  const monthFinalDay = new Date(year, month + 1, 0).toISOString()
-  return query
+async function fetchSemiannually(year, filters) {
+  const query = await knex('catalogCards')
+    .select(
+      knex.raw(
+        `count(if(year(datetime) = ${year} and datetime <= '${year}-06-30', 1, NULL)) as '0',
+        count(if(year(datetime) = ${year} and datetime > '${year}-06-30', 1, NULL)) as '1'`
+      )
+    )
     .where({ ...filters })
-    .where('datetime', '>=', monthInitialDay)
-    .where('datetime', '<=', monthFinalDay)
-    .count()
+  return query[0]
 }
 
-async function fetchAllGroupByAcdUnity(query, year, filters) {
-  const firstDayOfYear = new Date(year, 0).toISOString()
-  const lastDayOfYear = new Date(year, 12, 0).toISOString()
-  const all = await query
+async function fetchAnnually(year, filters) {
+  const count = await knex('catalogCards')
+    .select(knex.raw('count(*) as "0"'))
+    .whereRaw(`year(datetime) = ${year}`)
     .where({ ...filters })
-    .where('datetime', '>=', firstDayOfYear)
-    .where('datetime', '<=', lastDayOfYear)
-    .fetchAll()
-  const group = all.groupBy('unityId')
-  const payload = {}
-  const acdUnities = await AcademicUnity.fetchAll()
-  for (const i in acdUnities.toJSON()) {
-    payload[i] = group[i] ? group[i].length : 0
-  }
-  return payload
+  return count[0]
 }
 
 async function list(ctx) {
@@ -289,11 +256,7 @@ async function list(ctx) {
       .orderBy('datetime', 'ASC')
       .fetchAll()
   } catch (e) {
-    ctx.throw(HttpCodes.BAD_REQUEST, MessageCodes.error.errOnDbFetch, {
-      error: {
-        rawErrorMessage: e.stack
-      }
-    })
+    ctx.throw(HttpCodes.BAD_REQUEST, MessageCodes.error.errOnDbFetch)
   }
 }
 
@@ -309,11 +272,7 @@ async function update(ctx) {
       ctx.body = catalogCard
       ctx.status = HttpCodes.OK
     } catch (e) {
-      ctx.throw(HttpCodes.INT_SRV_ERROR, MessageCodes.error.errOnDbSave, {
-        error: {
-          rawErrorMessage: e.stack
-        }
-      })
+      ctx.throw(HttpCodes.INT_SRV_ERROR, MessageCodes.error.errOnDbSave)
     }
   } else {
     ctx.throw(
@@ -333,69 +292,65 @@ async function getFirstCatalogCardYear(ctx) {
       year: new Date(oldest.get('datetime')).getFullYear()
     }
   } catch (e) {
-    ctx.throw(HttpCodes.BAD_REQUEST, MessageCodes.error.errOnDbFetch, {
-      error: {
-        rawErrorMessage: e.stack
-      }
-    })
+    ctx.throw(HttpCodes.BAD_REQUEST, MessageCodes.error.errOnDbFetch)
   }
 }
 
-async function getReportPdf(ctx) {
-  const { pdfToken } = ctx.query
-
-  if (!queryResults[pdfToken] || !pdfToken) {
-    ctx.body = 'No data to for you to see here, close this window...'
-    ctx.status = HttpCodes.BAD_REQUEST
-    return
-  }
-
-  ctx.set('Content-Type', 'application/pdf')
-  ctx.set('Content-Disposition', 'filename=relatório.pdf')
-
-  const queryResult = queryResults[pdfToken]
-  const acdUnities =
-    !queryResult.params.unityId && (await AcademicUnity.fetchAll()).toJSON()
-  const { searchType, data } = queryResult
-  const table = []
-  const labels = labelMap(acdUnities)[searchType]
-  for (const i in labels) {
-    const row = Array.isArray(labels[i])
-      ? [...labels[i], '' + data[i]]
-      : [labels[i], '' + data[i]]
-    table.push(row)
-  }
-  // Sort descending first
-  const last = table[0].length - 1
-  queryResult.table = table.sort((rowA, rowB) => rowB[last] - rowA[last])
-  if (!(searchType === 'annually') || !queryResult.params.unityId) {
-    const values = Object.values(data)
-    queryResult.total = values.reduce((acc, cur) => acc + cur)
-    if (searchType === 'monthly' || !queryResult.params.unityId) {
-      queryResult.mean = (queryResult.total / values.length).toPrecision(3)
-    }
-  }
-  const htmlTemplate = generatePdfReport(
-    queryResult,
-    !!queryResult.params.unityId
-  )
-  const stream = await new Promise((resolve, reject) => {
-    htmlPdf.create(htmlTemplate, globalPdfConfig).toStream((err, stream) => {
-      if (err) reject(err)
-      resolve(stream)
-    })
-  })
-  ctx.body = stream
-  // delete queryResults[pdfToken]
-  ctx.status = HttpCodes.OK
-}
+/*
+ * async function getReportPdf(ctx) {
+ *   const { pdfToken } = ctx.query
+ *
+ *   if (!queryResults[pdfToken] || !pdfToken) {
+ *     ctx.body = 'No data to for you to see here, close this window...'
+ *     ctx.status = HttpCodes.BAD_REQUEST
+ *     return
+ *   }
+ *
+ *   ctx.set('Content-Type', 'application/pdf')
+ *   ctx.set('Content-Disposition', 'filename=relatório.pdf')
+ *
+ *   const queryResult = queryResults[pdfToken]
+ *   const acdUnities =
+ *     !queryResult.params.unityId && (await AcademicUnity.fetchAll()).toJSON()
+ *   const { searchType, data } = queryResult
+ *   const table = []
+ *   const labels = labelMap(acdUnities)[searchType]
+ *   for (const i in labels) {
+ *     const row = Array.isArray(labels[i])
+ *       ? [...labels[i], '' + data[i]]
+ *       : [labels[i], '' + data[i]]
+ *     table.push(row)
+ *   }
+ *   // Sort descending first
+ *   const last = table[0].length - 1
+ *   queryResult.table = table.sort((rowA, rowB) => rowB[last] - rowA[last])
+ *   if (!(searchType === 'annually') || !queryResult.params.unityId) {
+ *     const values = Object.values(data)
+ *     queryResult.total = values.reduce((acc, cur) => acc + cur)
+ *     if (searchType === 'monthly' || !queryResult.params.unityId) {
+ *       queryResult.mean = (queryResult.total / values.length).toPrecision(3)
+ *     }
+ *   }
+ *   const htmlTemplate = generatePdfReport(
+ *     queryResult,
+ *     !!queryResult.params.unityId
+ *   )
+ *   const stream = await new Promise((resolve, reject) => {
+ *     htmlPdf.create(htmlTemplate, globalPdfConfig).toStream((err, stream) => {
+ *       if (err) reject(err)
+ *       resolve(stream)
+ *     })
+ *   })
+ *   ctx.body = stream
+ *   // delete queryResults[pdfToken]
+ *   ctx.status = HttpCodes.OK
+ * }
+ */
 
 module.exports = {
   create,
   list,
   update,
-  getPdfResult,
   catalogQueries,
-  getFirstCatalogCardYear,
-  getReportPdf
+  getFirstCatalogCardYear
 }

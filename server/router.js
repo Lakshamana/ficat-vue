@@ -7,9 +7,6 @@ const { pageableEntity, query, routeValidate } = require('./util/middlewares')
 const frontend = require('./routes/frontend')
 const HttpCodes = require('./httpCodes')
 
-// Route validation object
-// const fields = require('./routeFieldsValidation')
-
 // Entities routes
 const userRoutes = require('./routes/users')
 const kaRoutes = require('./routes/knowledgeAreas')
@@ -20,6 +17,8 @@ const miscRoutes = require('./routes/miscellaneous')
 
 // Auth* routes
 const { auth, authz } = require('./routes/auth')
+
+const { queryFields } = require('./routeFieldsValidation')
 
 const router = new Router()
 const api = new Router({ prefix: '/api' })
@@ -38,7 +37,6 @@ api.post('/auth', bodyParser, routeValidate('auth'), auth)
  * GET /academicUnities e criação de registro
  * de ficha catalográfica (usuários finais)
  */
-
 authz.unless = unless
 api.use(
   authz.unless({
@@ -47,8 +45,6 @@ api.use(
       (ctx.path.includes('knowledgeAreas') && ctx.method === 'GET') ||
       (ctx.path.includes('academicUnities') && ctx.method === 'GET') ||
       (ctx.path === '/api/catalogCards' && ctx.method === 'POST') ||
-      (/\/api\/catalogCards\/get/.test(ctx.path) && ctx.method === 'GET') ||
-      (ctx.path === '/api/catalogCards/reportResult' && ctx.method === 'GET') ||
       (ctx.path === '/api/courses' && ctx.method === 'GET') ||
       (ctx.path === '/api/send' && ctx.method === 'POST') ||
       (ctx.path === '/api/captcha' && ctx.method === 'GET')
@@ -56,7 +52,7 @@ api.use(
 )
 
 /**
- * Catalog cards
+ * - Catalog cards -
  */
 
 // create
@@ -67,26 +63,21 @@ api.post(
   catalogRoutes.create
 )
 
-// get result
-api.get('/catalogCards/get/:id', catalogRoutes.getPdfResult)
-
 api.get('/catalogCards/', catalogRoutes.list)
 
 // get oldest card year
 api.get('/catalogCards/oldest', catalogRoutes.getFirstCatalogCardYear)
 
 // get catalog queries
-api.post(
+api.get(
   '/catalogCards/q/',
   bodyParser,
-  query(['searchType']),
+  query(queryFields.mandatory, queryFields.optional),
   catalogRoutes.catalogQueries
 )
 
-api.get('/catalogCards/reportResult', catalogRoutes.getReportPdf)
-
 /**
- * Users
+ * - Users -
  */
 
 // create
@@ -109,7 +100,7 @@ api.put(
 )
 
 /**
- * KnowledgeAreas
+ * - KnowledgeAreas -
  */
 
 // create
@@ -123,7 +114,7 @@ api.post(
 // list
 api.get(
   '/knowledgeAreas/',
-  query(['page', 'size', 'description']),
+  query(null, ['page', 'size', 'description']),
   pageableEntity,
   kaRoutes.list
 )
@@ -140,7 +131,7 @@ api.put(
 api.del('/knowledgeAreas/:id', kaRoutes.del)
 
 /**
- * Courses
+ * - Courses -
  */
 
 // create
@@ -152,7 +143,7 @@ api.post(
 )
 
 // list
-api.get('/courses/', query(['acdUnityId']), courseRoutes.list)
+api.get('/courses/', query(null, ['acdUnityId']), courseRoutes.list)
 
 // update
 api.put(
@@ -166,7 +157,7 @@ api.put(
 api.del('/courses/:id', courseRoutes.del)
 
 /**
- * AcademicUnities
+ * - AcademicUnities -
  */
 
 // create
@@ -178,7 +169,7 @@ api.post(
 )
 
 // list
-api.get('/academicUnities/', query(['term']), acdUnitiesRoutes.list)
+api.get('/academicUnities/', query(null, ['term']), acdUnitiesRoutes.list)
 
 // update
 api.put(

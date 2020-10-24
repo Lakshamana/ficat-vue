@@ -1,3 +1,5 @@
+const { knex } = require('../server/db')
+
 /**
  * Seleciona atributos de um dado objeto de entrada,
  * com base em uma lista dos atributos do mesmo.
@@ -39,9 +41,8 @@ function select(data, attrList, defaults = {}) {
  * com base em uma lista dos atributos do mesmo.
  *
  * @param {Object} data: carga útil de entrada (payload).
- * Valores de objeto vazio, não-objeto ou undefined, fazem
- * com que a função retorne undefined. Isto pode ser utilizado
- * para invalidar o payload.
+ * Valores de objeto vazio, não-objeto ou undefined
+ * invalidam o payload.
  *
  * @param {Array} validFields: lista de atributos do objeto
  * válidos e deve conter todos os dados possíveis para o payload,
@@ -58,47 +59,36 @@ function select(data, attrList, defaults = {}) {
  *
  * @see utils.spec.js (/test/shared/ para casos de teste)
  */
-function validatePayload(data, validFields = [], optional = []) {
+function validatePayload(data, mandatories = [], optionals = []) {
   const result = { valid: false }
   const dataObj = Object.assign({}, data) // Evitar problemas com hasOwnProperty
-  if (dataObj && typeof dataObj === 'object' && Object.keys(dataObj).length) {
-    // data precisa ter alguns campos
-    for (const f of validFields) {
-      if (!Object.keys(dataObj).includes(f) && !optional.includes(f)) {
+  if (!dataObj && typeof dataObj !== 'object') {
+    return result
+  }
+
+  // data precisa ter alguns campos
+  if (mandatories.length) {
+    const dataFields = Object.keys(dataObj)
+    for (const f of mandatories) {
+      if (!dataFields.includes(f)) {
         if (!result.missingFields) result.missingFields = []
         result.missingFields.push(f)
       }
     }
-    // dataObj não deve ter alguns campos
-    for (const d in dataObj) {
-      // hasOwnProperty - não deve haver herança de objetos
-      if (!dataObj.hasOwnProperty(d) || !validFields.includes(d)) {
-        if (!result.invalidFields) result.invalidFields = []
-        result.invalidFields.push(d)
-      }
-    }
-    if (!result.invalidFields && !result.missingFields) result.valid = true
-    return result
   }
-  return undefined
-}
 
-/**
- * Separate array in array of arrays (size = chunkSize)
- *
- * @param   {Array} list - Elements
- * @param   {number} chunkSize - Size of nested array
- * @returns {Array}
- *
- * @example const xs = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
- *          chunks(xs, 3) // [[1, 2, 3], [4, 5, 6], [7, 8, 9], [10]]
- */
-function chunks(list, chunkSize) {
-  const length = Math.ceil(list.length / chunkSize)
+  // dataObj não deve ter alguns campos
+  const validFields = [...mandatories, ...optionals]
+  for (const d in dataObj) {
+    // hasOwnProperty - não deve haver herança de objetos
+    if (!dataObj.hasOwnProperty(d) || !validFields.includes(d)) {
+      if (!result.invalidFields) result.invalidFields = []
+      result.invalidFields.push(d)
+    }
+  }
 
-  return Array.from({ length }, (_, i) =>
-    list.slice(i * chunkSize, i * chunkSize + chunkSize)
-  )
+  if (!result.invalidFields && !result.missingFields) result.valid = true
+  return result
 }
 
 /**
@@ -148,8 +138,13 @@ function romanize(n, uppercase = false) {
   return uppercase ? r.toUpperCase() : r
 }
 
+async function castDate(date) {
+  const cast = await knex.raw('select CAST(? as DATETIME) as value', [date])
+  return cast[0][0].value
+}
+
 exports.maybe = maybe
 exports.romanize = romanize
 exports.select = select
-exports.chunks = chunks
 exports.validatePayload = validatePayload
+exports.castDate = castDate

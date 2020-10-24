@@ -90,7 +90,6 @@ export default {
 
   methods: {
     focus() {
-      console.log('called focus')
       this.innerIptRef.focus()
     }
   },
