@@ -127,7 +127,7 @@ export default {
           }}
         >
           <b-field
-            {...(useLabel && { props: { label } })}
+            {...useLabel && { props: { label } }}
             label-position="on-border"
           >
             {this.$slots.addon}

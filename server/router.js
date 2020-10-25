@@ -114,7 +114,7 @@ api.post(
 // list
 api.get(
   '/knowledgeAreas/',
-  query(null, ['page', 'size', 'description']),
+  query(undefined, ['page', 'size', 'description']),
   pageableEntity,
   kaRoutes.list
 )
@@ -143,7 +143,7 @@ api.post(
 )
 
 // list
-api.get('/courses/', query(null, ['acdUnityId']), courseRoutes.list)
+api.get('/courses/', query(undefined, ['acdUnityId']), courseRoutes.list)
 
 // update
 api.put(
@@ -169,7 +169,7 @@ api.post(
 )
 
 // list
-api.get('/academicUnities/', query(null, ['term']), acdUnitiesRoutes.list)
+api.get('/academicUnities/', query(undefined, ['term']), acdUnitiesRoutes.list)
 
 // update
 api.put(

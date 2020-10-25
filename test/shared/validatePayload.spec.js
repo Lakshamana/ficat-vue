@@ -1,4 +1,4 @@
-import { validatePayload } from '@/shared/utils'
+const { validatePayload } = require('../../shared/utils')
 
 describe('validatePayload', () => {
   test('all fields are mandatory', done => {
@@ -19,15 +19,18 @@ describe('validatePayload', () => {
     const data = {}
     const paramList = ['name', 'password', 'active']
     const result = validatePayload(data, paramList)
-    expect(result).toEqual(undefined)
+    expect(result).toEqual({
+      missingFields: ['name', 'password', 'active'],
+      valid: false
+    })
     done()
   })
 
   test('Empty payload with all optional fields', done => {
     const data = {}
     const paramList = ['name', 'password', 'active']
-    const result = validatePayload(data, paramList, paramList)
-    expect(result).toEqual(undefined)
+    const result = validatePayload(data, undefined, paramList)
+    expect(result).toEqual({ valid: true })
     done()
   })
 
@@ -36,11 +39,9 @@ describe('validatePayload', () => {
       name: 'Brian Cohen',
       password: 'romaniitedomus'
     }
-    const paramList = ['name', 'password', 'active']
+    const paramList = ['name', 'password']
     const result = validatePayload(data, paramList, ['active'])
-    expect(result).toEqual({
-      valid: true
-    })
+    expect(result).toEqual({ valid: true })
     done()
   })
 
@@ -50,10 +51,8 @@ describe('validatePayload', () => {
       active: true
     }
     const paramList = ['name', 'password', 'active']
-    const result = validatePayload(data, paramList, paramList)
-    expect(result).toEqual({
-      valid: true
-    })
+    const result = validatePayload(data, undefined, paramList)
+    expect(result).toEqual({ valid: true })
     done()
   })
 

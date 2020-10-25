@@ -1,7 +1,8 @@
 const config = require('./server/config')
 
 module.exports = {
-  mode: 'spa',
+  ssr: false,
+  telemetry: false,
   /*
    ** Headers of the page
    */
@@ -36,7 +37,7 @@ module.exports = {
   /*
    ** Global CSS
    */
-  css: ['hooper/dist/hooper.css'],
+  css: [],
   /*
    ** Plugins to load before mounting the App
    */
@@ -48,7 +49,7 @@ module.exports = {
   /*
    ** Nuxt.js dev-modules
    */
-  devModules: [
+  buildModules: [
     // Doc: https://github.com/nuxt-community/eslint-module
     '@nuxtjs/eslint-module'
   ],

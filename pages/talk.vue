@@ -14,8 +14,8 @@
                       :validations="$options.validations.name"
                       :v="$v"
                       :label="$tr('layout.talkFormName')"
-                      field-name="name"
                       :tooltip-label="$tr('layout.talkFormNameTooltip')"
+                      field-name="name"
                     >
                       <template #required>
                         {{ $tr('layout.required') }}
@@ -30,9 +30,9 @@
                       :validations="$options.validations.email"
                       :v="$v"
                       :label="$tr('layout.talkFormEmail')"
-                      field-name="email"
                       :tooltip-label="$tr('layout.talkFormEmailTooltip')"
                       @blur="$v.email.$touch"
+                      field-name="email"
                     >
                       <template #required>
                         {{ $tr('layout.required') }}
@@ -50,8 +50,8 @@
                       :validations="$options.validations.fone"
                       :v="$v"
                       :label="$tr('layout.talkFormPhone')"
-                      field-name="fone"
                       :tooltip-label="$tr('layout.talkFormPhoneTooltip')"
+                      field-name="fone"
                     >
                       <template #required>
                         {{ $tr('layout.required') }}
@@ -75,9 +75,9 @@
                     :validations="$options.validations.msg"
                     :v="$v"
                     :label="$tr('layout.talkFormMessage')"
+                    :tooltip-label="$tr('layout.talkFormMessageTooltip')"
                     field-name="msg"
                     type="textarea"
-                    :tooltip-label="$tr('layout.talkFormMessageTooltip')"
                   >
                     <template #required>
                       {{ $tr('layout.required') }}
@@ -103,11 +103,11 @@
                       <b-tag
                         v-if="file"
                         :key="i"
+                        @close="files.splice(i, 1)"
                         class="with-margin"
                         attached
                         closable
                         aria-close-label="close tag"
-                        @close="files.splice(i, 1)"
                       >
                         {{ abbreviate(file.name) }}
                       </b-tag>
