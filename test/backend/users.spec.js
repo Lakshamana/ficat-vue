@@ -12,21 +12,15 @@ const HttpCodes = require('../../server/httpCodes')
 
 chai.use(chaiHttp)
 jest.useFakeTimers()
-jest.setTimeout(10000)
+jest.setTimeout(100000)
 
 // Suíte de testes da entidade users
 describe('prefix /api/users', () => {
-  beforeAll(async () => {
-    await knex.migrate.latest()
-  }, 100000)
+  beforeAll(() => knex.migrate.latest(), 100000)
 
-  beforeEach(async () => {
-    await createSeeds('users')
-  }, 100000)
+  beforeEach(() => createSeeds('users'), 100000)
 
-  afterEach(async () => {
-    await wipeTable('users')
-  }, 100000)
+  afterEach(() => wipeTable('users'), 100000)
 
   test('List all users', async done => {
     const { tokens } = await user('admin')
@@ -71,7 +65,7 @@ describe('prefix /api/users', () => {
     const { tokens } = await user('admin')
     const payload = {
       username: 'person',
-      passwd: 'fancy-password', // Should be password
+      passwd: 'fancy-password', // Should be 'password'
       active: false
     }
     const response = await chai

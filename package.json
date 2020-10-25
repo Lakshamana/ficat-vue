@@ -22,8 +22,8 @@
     "makedb:test": "npm run migrate:test && npm run seed:test",
     "makedb:travis": "npm run migrate:travis && npm run seed:travis",
     "lint": "eslint --ext .js,.vue --ignore-path .gitignore . --fix",
-    "test": "jest --maxWorkers=4 --force-exit",
-    "test:travis": "cross-env NODE_ENV=travis jest --maxWorkers=4 --force-exit",
+    "test": "jest --maxWorkers=8 --force-exit --detectOpenHandles",
+    "test:travis": "cross-env NODE_ENV=travis jest --maxWorkers=8 --force-exit --detectOpenHandles",
     "ci": "npm run makedb:travis && npm run test:travis && npm run lint",
     "knex": "knex"
   },
