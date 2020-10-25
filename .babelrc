@@ -12,7 +12,7 @@
         ],
         "@vue/babel-preset-jsx"
       ],
-      "plugins": ["@babel/syntax-dynamic-import", "dynamic-import-webpack"]
+      "plugins": ["@babel/plugin-syntax-dynamic-import", "dynamic-import-webpack"]
     }
   }
 }

@@ -59,7 +59,9 @@ function catalogCard(
 
   const subtitle = work.workSubtitle ? `: ${work.workSubtitle}` : ''
   const authorHeader = `${authors.authorSurname}, ${authors.authorName}`
-  const workTitleHeader = `${work.workTitle} ${subtitle} / ${authors.authorName} ${authors.authorSurname}${author2} — ${work.presentationYear}`
+  const workTitleHeader = `${work.workTitle} ${subtitle} / ${
+    authors.authorName
+  } ${authors.authorSurname}${author2} — ${work.presentationYear}`
   const pagesHeader = `${work.totalPages} f.${color[work.workImagesType]}`
 
   // Títulos em masculino e feminino

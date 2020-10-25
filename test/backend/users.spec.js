@@ -35,6 +35,7 @@ describe('prefix /api/users', () => {
       .get('/api/users')
       .set('x-xsrf-token', tokens.xsrfToken)
       .set('Cookie', `accessToken=${tokens.accessToken}`)
+
     expect(response.status).toBe(HttpCodes.OK)
     expect(response.type).toBe('application/json')
     expect(response.body).toBeDefined()
@@ -48,12 +49,14 @@ describe('prefix /api/users', () => {
       password: 'person',
       active: true
     }
+
     const response = await chai
       .request(server.listen())
       .post('/api/users')
       .send(payload)
       .set('x-xsrf-token', tokens.xsrfToken)
       .set('Cookie', `accessToken=${tokens.accessToken}`)
+
     expect(response.status).toBe(HttpCodes.OK)
     expect(response.type).toBe('application/json')
     expect(response.body).toBeDefined()
@@ -199,7 +202,13 @@ describe('prefix /api/users', () => {
     expect(response.status).toBe(HttpCodes.BAD_REQUEST)
     expect(response.type).toBe('application/json')
     expect(response.body).toStrictEqual({
-      message: 'errEmptyPayload'
+      errors: [
+        {
+          errCode: 'missingFields',
+          fields: 'username, password, active'
+        }
+      ],
+      message: 'errOnPayloadValidation'
     })
     done()
   })
