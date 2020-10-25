@@ -31,28 +31,17 @@ const db = {
   connection
 }
 
+const dbConfig = {
+  ...db,
+  migrations,
+  seeds,
+  useNullAsDefault
+}
+
 const obj = {
-  development: {
-    ...db,
-    migrations,
-    seeds,
-    useNullAsDefault
-  },
-
-  test: {
-    ...db,
-    migrations,
-    seeds,
-    useNullAsDefault,
-    ...(db === sqliteConnection && { connection: ':memory:' })
-  },
-
-  production: {
-    ...db,
-    migrations,
-    seeds,
-    useNullAsDefault
-  }
+  development: dbConfig,
+  test: dbConfig,
+  production: dbConfig
 }
 
 module.exports = obj
