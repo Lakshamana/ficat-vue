@@ -9,7 +9,7 @@ const seeds = {
   directory: './seeds'
 }
 
-const genericConnection = {
+const connection = {
   host: config.DATABASE_HOST,
   user: config.DATABASE_USER,
   password: config.DATABASE_PASS,
@@ -17,14 +17,7 @@ const genericConnection = {
   charset: 'utf8'
 }
 
-const sqliteConnection = {
-  filename: path.join(__dirname, config.DATABASE_FILE)
-}
-
 const useNullAsDefault = true
-
-const connection =
-  config.DATABASE_TYPE === 'sqlite3' ? sqliteConnection : genericConnection
 
 const db = {
   client: config.DATABASE_TYPE,
@@ -41,6 +34,7 @@ const dbConfig = {
 const obj = {
   development: dbConfig,
   test: dbConfig,
+  travis: dbConfig,
   production: dbConfig
 }
 
