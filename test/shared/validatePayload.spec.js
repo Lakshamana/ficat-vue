@@ -1,4 +1,4 @@
-import { validatePayload } from '@/shared/utils'
+const { validatePayload } = require('../../shared/utils')
 
 describe('validatePayload', () => {
   test('all fields are mandatory', done => {

@@ -1,4 +1,4 @@
-import { select } from '@/shared/utils'
+const { select } = require('../../shared/utils')
 
 describe('select', () => {
   test('select takes only few from data', done => {
