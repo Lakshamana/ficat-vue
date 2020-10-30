@@ -47,8 +47,7 @@ function createSeeds(entityName) {
  * @param {String} tableName
  */
 function wipeTable(tableName) {
-  const model = models[tableName]
-  return model.where('id', '!=', '0').destroy()
+  return knex.raw(`delete from ${tableName}`)
 }
 
 module.exports = { createSeeds, wipeTable, user }

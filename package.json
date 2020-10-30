@@ -24,7 +24,7 @@
     "lint": "eslint --ext .js,.vue --ignore-path .gitignore . --fix",
     "test": "jest --maxWorkers=8 --force-exit --detectOpenHandles",
     "test:travis": "cross-env NODE_ENV=travis jest --maxWorkers=8 --force-exit --detectOpenHandles",
-    "ci": "npm run lint",
+    "ci": "npm run test:travis && npm run lint",
     "knex": "knex"
   },
   "dependencies": {
