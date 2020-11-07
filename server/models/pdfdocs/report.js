@@ -50,18 +50,15 @@ function generateReport(queryData, hasChoosenAcdUnity) {
   // HTML model and script should always have same file name
   const htmlTemplate = readFileSync(templatePath, 'utf8')
 
-  // A hospedagem dessas imagens poderia ser melhorada
-  // const hostPreffix = `${process.env.PROTOCOL}://${process.env.HOST}:${process.env.PORT}/`
-  const hostPreffix =
-    'https://raw.githubusercontent.com/Lakshamana/ficat-vue/master/assets/'
-  const img1 = hostPreffix + 'img/bibcentral-logo.png'
-  const img2 = hostPreffix + 'img/ficat-logo.png'
-  const img3 = hostPreffix + 'img/sibi-logo.png'
+  const hostPreffix = process.env.FILE_BUCKET_URL
+  const img1 = hostPreffix + 'bibcentral-logo'
+  const img2 = hostPreffix + 'ficat-logo'
+  const img3 = hostPreffix + 'sibi-logo'
 
   return htmlTemplate
-    .replace('{{bibUfpaLogo}}', img1)
-    .replace('{{ficatLogo}}', img2)
-    .replace('{{sibiLogo}}', img3)
+    .replace(/{{bibUfpaLogo}}/g, img1)
+    .replace(/{{ficatLogo}}/g, img2)
+    .replace(/{{sibiLogo}}/g, img3)
     .replace('{{baseYear}}', params.year)
     .replace('{{withParameters}}', withParameters)
     .replace('{{paramList}}', renderParamList(paramList))

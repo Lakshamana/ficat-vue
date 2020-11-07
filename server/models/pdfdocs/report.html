@@ -77,9 +77,21 @@
   <body>
     <div class="wrapper">
       <div id="pageHeader">
-        <img id="img1" src="{{bibUfpaLogo}}" width="75" height="75">
-        <img id="img2" src="{{ficatLogo}}" width="128" height="75">
-        <img id="img3" src="{{sibiLogo}}" width="77" height="75">
+        <picture>
+          <source srcset="{{bibUfpaLogo}}.webp" type="image/webp">
+          <source srcset="{{bibUfpaLogo}}.gif" type="image/gif">
+          <img id="img1" src="{{bibUfpaLogo}}.gif" width="75" height="75">
+        </picture>
+        <picture>
+          <source srcset="{{ficatLogo}}.webp" type="image/webp">
+          <source srcset="{{ficatLogo}}.gif" type="image/gif">
+          <img id="img2" src="{{ficatLogo}}.gif" width="128" height="75">
+        </picture>
+        <picture>
+          <source srcset="{{sibiLogo}}.webp" type="image/webp">
+          <source srcset="{{sibiLogo}}.gif" type="image/gif">
+          <img id="img3" src="{{sibiLogo}}.gif" width="77" height="75">
+        </picture>
       </div>
         <div style="float:right">
           <p>Registros de uso do FICAT em {{baseYear}}{{withParameters}}</p>

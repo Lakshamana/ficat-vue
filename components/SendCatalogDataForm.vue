@@ -116,7 +116,7 @@ export default {
           : work.totalPages
       this.$axios
         .post(
-          '/api/catalogCards',
+          '/api/catalog-cards',
           {
             keywords: keywords.map(k => k.text),
             authors: {

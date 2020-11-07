@@ -57,7 +57,7 @@ api.use(
 
 // create
 api.post(
-  'catalog-cards',
+  '/catalog-cards',
   bodyParser,
   routeValidate('catalogCard'),
   catalogRoutes.create

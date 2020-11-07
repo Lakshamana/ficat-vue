@@ -150,6 +150,7 @@
           <div class="d-cell">
             <chart
               ref="chart"
+              :payload="payload"
               :search-id="searchId"
               :search-type="searchPeriod"
               :acd-unities="academicUnities"
@@ -190,7 +191,8 @@ export default {
       semester: '',
       selectedAcdUnity: undefined,
       selectedCourse: undefined,
-      searchId: '',
+      searchId: 0,
+      payload: undefined,
       tooltip: ''
     }
   },
@@ -202,7 +204,7 @@ export default {
 
   methods: {
     getYears() {
-      this.$axios.get('/api/catalogCards/oldest').then(({ data }) => {
+      this.$axios.get('/api/catalog-cards/oldest').then(({ data }) => {
         const length = this.searchYear - data.year + 1
         this.years = Array.from({ length }, (v, i) => this.searchYear - i)
       })
@@ -220,7 +222,7 @@ export default {
         this.loading = true
         this.acdUnityPreviousSearch = term
         this.$axios
-          .get('/api/academicUnities', {
+          .get('/api/academic-unities', {
             params: {
               term
             }
@@ -254,30 +256,20 @@ export default {
     },
 
     onSubmit() {
-      this.$axios
-        .post(
-          '/api/catalogCards/q',
-          {
-            year: +this.searchYear,
-            ...maybe('month', this.month),
-            ...maybe('semester', this.semester),
-            ...maybe(
-              'unityId',
-              this.selectedAcdUnity && this.selectedAcdUnity.id
-            ),
-            // ...maybe('courseId', this.selectedCourse.id),
-            ...maybe('type', this.searchCourseType)
-          },
-          {
-            params: {
-              searchType: this.searchPeriod
-            }
-          }
-        )
-        .then(res => {
-          this.searchId = res.headers.pdftoken
-          this.$refs.chart.createChart(res.data)
-        })
+      const params = {
+        searchType: this.searchPeriod,
+        year: +this.searchYear,
+        ...maybe('unityId', this.selectedAcdUnity && this.selectedAcdUnity.id),
+        // ...maybe('courseId', this.selectedCourse.id),
+        ...maybe('type', this.searchCourseType)
+      }
+
+      this.payload = params
+      this.$axios.get('/api/catalog-cards/q', { params }).then(res => {
+        this.searchId++
+        console.log(res.data)
+        this.$refs.chart.createChart(res.data)
+      })
     }
   }
 }
