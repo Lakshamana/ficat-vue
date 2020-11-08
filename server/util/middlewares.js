@@ -64,6 +64,9 @@ function pageableEntity(ctx, next) {
 
 function errorHandler(ctx, next) {
   return next().catch(err => {
+    if (process.env.NODE_ENV === 'development') {
+      console.log(err)
+    }
     ctx.status = err.status || HttpCodes.INT_SRV_ERROR
     ctx.body = err
   })

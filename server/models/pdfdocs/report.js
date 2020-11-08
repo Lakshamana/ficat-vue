@@ -7,8 +7,6 @@ const { readFileSync } = require('fs')
     searchType: (String) ['monthly' || 'semiannualy' || 'annually'],
     params: (Object) {
       year,
-      month,
-      semester,
       unityId,
       type,
       courseId
@@ -28,8 +26,6 @@ function generateReport(queryData, hasChoosenAcdUnity) {
   }
 
   const paramsPrettyNames = {
-    // month: 'Mês',withTableFooter
-    // semester: 'Semestre',
     unityId: 'Unidade acadêmica',
     type: 'Tipo de curso',
     courseId: 'Curso'
@@ -54,22 +50,15 @@ function generateReport(queryData, hasChoosenAcdUnity) {
   // HTML model and script should always have same file name
   const htmlTemplate = readFileSync(templatePath, 'utf8')
 
-  // A hospedagem dessas imagens poderia ser melhorada
-  // const hostPreffix = `${process.env.PROTOCOL}://${process.env.HOST}:${process.env.PORT}/`
-  const hostPreffix =
-    'https://raw.githubusercontent.com/Lakshamana/ficat-vue/master/assets/'
-  const img1 = hostPreffix + 'img/bibcentral-logo.png'
-  const img2 = hostPreffix + 'img/ficat-logo.png'
-  const img3 = hostPreffix + 'img/sibi-logo.png'
-  const regularFontUrl = hostPreffix + 'fonts/arimo.regular.ttf'
-  const boldFontUrl = hostPreffix + 'fonts/arimo.bold.ttf'
+  const hostPreffix = process.env.FILE_BUCKET_URL
+  const img1 = hostPreffix + 'bibcentral-logo'
+  const img2 = hostPreffix + 'ficat-logo'
+  const img3 = hostPreffix + 'sibi-logo'
 
   return htmlTemplate
-    .replace('{{regularFontUrl}}', regularFontUrl)
-    .replace('{{boldFontUrl}}', boldFontUrl)
-    .replace('{{bibUfpaLogo}}', img1)
-    .replace('{{ficatLogo}}', img2)
-    .replace('{{sibiLogo}}', img3)
+    .replace(/{{bibUfpaLogo}}/g, img1)
+    .replace(/{{ficatLogo}}/g, img2)
+    .replace(/{{sibiLogo}}/g, img3)
     .replace('{{baseYear}}', params.year)
     .replace('{{withParameters}}', withParameters)
     .replace('{{paramList}}', renderParamList(paramList))
@@ -100,9 +89,9 @@ function renderTableHeader(headers) {
  */
 function renderTableBody(table) {
   let s = ''
-  for (let i = 0; i < table.length; i++) {
+  for (let i = 0; i < table.length; ++i) {
     s += '<tr>'
-    for (let j = 0; j < table[0].length; j++) {
+    for (let j = 0; j < table[0].length; ++j) {
       s += '<td>' + table[i][j] + '</td>'
     }
     s += '</tr>'
@@ -121,9 +110,9 @@ function renderTableBody(table) {
 function renderTableFooter(stats, headers) {
   const offset = headers.length - stats[0].length
   let s = '<tfoot>'
-  for (let i = 0; i < stats.length; i++) {
+  for (let i = 0; i < stats.length; ++i) {
     s += '<tr>'
-    for (let j = 0; j < stats[0].length; j++) {
+    for (let j = 0; j < stats[0].length; ++j) {
       if (i === 0 && j === 0 && offset > 0) {
         s += `<td rowspan="${offset + 1}"></td>`
       }

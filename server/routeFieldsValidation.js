@@ -33,7 +33,7 @@ module.exports = {
   },
   queryFields: {
     mandatory: ['searchType', 'year'],
-    optional: ['unityId', 'type', 'courseId']
+    optional: ['unityId', 'type', 'courseId', 'pdf']
   },
   users: {
     create: {

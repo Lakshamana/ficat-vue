@@ -3,23 +3,13 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;700&display=swap" rel="stylesheet">
     <title>Relatório</title>
   </head>
   <style>
-
-    @font-face {
-      font-family: "Arial-Regular";
-      src: url("{{regularFontUrl}}");
-    }
-
-    @font-face {
-      font-family: "Arial-Bold";
-      src: url("{{boldFontUrl}}");
-    }
-
     body {
       background-color: white;
-      font-family: "Arial-Regular" Arial, Helvetica, sans-serif;
+      font-family:  Arial, 'Noto Sans', Helvetica, sans-serif;
       font-size: 70%;
     }
 
@@ -41,13 +31,13 @@
     }
 
     table th {
-      font-family: "Arial-Bold" Arial, Helvetica, sans-serif;
+      font-family: Arial, 'Noto Sans', Helvetica, sans-serif;
       font-weight: bold;
       background-color: #e1dfdf;
     }
 
     tfoot td {
-      font-family: "Arial-Bold" Arial, Helvetica, sans-serif;
+      font-family: Arial, 'Noto Sans', Helvetica, sans-serif;
       font-weight: bold;
     }
 
@@ -87,9 +77,21 @@
   <body>
     <div class="wrapper">
       <div id="pageHeader">
-        <img id="img1" src="{{bibUfpaLogo}}" width="75" height="75">
-        <img id="img2" src="{{ficatLogo}}" width="128" height="75">
-        <img id="img3" src="{{sibiLogo}}" width="77" height="75">
+        <picture>
+          <source srcset="{{bibUfpaLogo}}.webp" type="image/webp">
+          <source srcset="{{bibUfpaLogo}}.gif" type="image/gif">
+          <img id="img1" src="{{bibUfpaLogo}}.gif" width="75" height="75">
+        </picture>
+        <picture>
+          <source srcset="{{ficatLogo}}.webp" type="image/webp">
+          <source srcset="{{ficatLogo}}.gif" type="image/gif">
+          <img id="img2" src="{{ficatLogo}}.gif" width="128" height="75">
+        </picture>
+        <picture>
+          <source srcset="{{sibiLogo}}.webp" type="image/webp">
+          <source srcset="{{sibiLogo}}.gif" type="image/gif">
+          <img id="img3" src="{{sibiLogo}}.gif" width="77" height="75">
+        </picture>
       </div>
         <div style="float:right">
           <p>Registros de uso do FICAT em {{baseYear}}{{withParameters}}</p>

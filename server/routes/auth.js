@@ -54,6 +54,7 @@ function authz(ctx, next) {
     tokenVerify(token, xsrfToken)
     return next()
   } catch (e) {
+    console.log(e)
     ctx.throw(HttpCodes.BAD_REQUEST, MessageCodes.error.errOnAuthz)
   }
 }

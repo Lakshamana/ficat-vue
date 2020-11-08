@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div v-show="searchId.length">
+    <div v-show="searchId">
       <canvas id="canvas" ref="canvas"></canvas>
       <br />
       <div class="level">
@@ -52,8 +52,13 @@ export default {
     },
 
     searchId: {
-      type: String,
-      default: ''
+      type: Number,
+      default: 0
+    },
+
+    payload: {
+      type: Object,
+      default: undefined
     }
   },
 
@@ -105,7 +110,7 @@ export default {
       this.chart && this.chart.destroy()
       const length = Object.keys(dataset).length
       this.chart = new Chart(this.ctx, {
-        type: 'bar', // !this.acdUnitySelected ? 'polarArea' : 'bar',
+        type: 'bar',
         data: {
           labels: this.getLabels,
           datasets: [
@@ -145,10 +150,7 @@ export default {
       const ctx = this.$refs.canvas.getContext('2d')
       ctx.save()
       ctx.globalCompositeOperation = 'destination-over'
-      ctx.fillStyle = 'white'
-      ctx.fillRect(0, 0, this.$refs.canvas.width, this.$refs.canvas.height)
       ctx.restore()
-
       const link = document.createElement('a')
       link.setAttribute('download', 'gráfico.png')
       link.setAttribute('href', this.chart.toBase64Image())
@@ -157,15 +159,31 @@ export default {
       document.body.removeChild(link)
     },
 
-    getReport(id) {
-      window.open(
-        '/api/catalogCards/reportResult?pdfToken=' + this.searchId,
-        '_blank'
-      )
+    getReport() {
+      if (!this.payload) return
+      this.$axios
+        .get('/api/catalog-cards/q', {
+          responseType: 'blob',
+          params: {
+            ...this.payload,
+            pdf: true
+          }
+        })
+        .then(({ data }) => {
+          const link = document.createElement('a')
+          link.download = `relatorio-${this.payload.year}.pdf`
+          const file = new File([data], { type: 'application/pdf' })
+          const url = URL.createObjectURL(file)
+          link.href = url
+          document.body.appendChild(link)
+          link.click()
+          document.body.removeChild(link)
+          URL.revokeObjectURL(url)
+        })
     },
 
     getAcdUnities() {
-      this.$axios.get('/api/academicUnities').then(({ data }) => {
+      this.$axios.get('/api/academic-unities').then(({ data }) => {
         this.acdUnities = data.map(({ id, name }) => ({ id, name }))
       })
     }

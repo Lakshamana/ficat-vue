@@ -2,7 +2,7 @@ const Router = require('koa-router')
 const BodyParser = require('koa-body')
 const unless = require('koa-unless')
 
-const { MessageCodes } = require('../shared/messageCodes')
+const MessageCodes = require('../shared/messageCodes')
 const { pageableEntity, query, routeValidate } = require('./util/middlewares')
 const frontend = require('./routes/frontend')
 const HttpCodes = require('./httpCodes')
@@ -33,7 +33,7 @@ api.post('/auth', bodyParser, routeValidate('auth'), auth)
 
 /**
  * Use middleware de autorização (authz) em todas as
- * rotas, exceto autenticação (funcionários), e GET /knowledgeAreas,
+ * rotas, exceto autenticação (funcionários), e GET /knowledge-areas,
  * GET /academicUnities e criação de registro
  * de ficha catalográfica (usuários finais)
  */
@@ -42,9 +42,9 @@ api.use(
   authz.unless({
     custom: ctx =>
       ctx.path === '/api/auth' ||
-      (ctx.path.includes('knowledgeAreas') && ctx.method === 'GET') ||
-      (ctx.path.includes('academicUnities') && ctx.method === 'GET') ||
-      (ctx.path === '/api/catalogCards' && ctx.method === 'POST') ||
+      (ctx.path.includes('knowledge-areas') && ctx.method === 'GET') ||
+      (ctx.path.includes('academic-unities') && ctx.method === 'GET') ||
+      (ctx.path === '/api/catalog-cards' && ctx.method === 'POST') ||
       (ctx.path === '/api/courses' && ctx.method === 'GET') ||
       (ctx.path === '/api/send' && ctx.method === 'POST') ||
       (ctx.path === '/api/captcha' && ctx.method === 'GET')
@@ -57,20 +57,20 @@ api.use(
 
 // create
 api.post(
-  '/catalogCards/',
+  '/catalog-cards',
   bodyParser,
   routeValidate('catalogCard'),
   catalogRoutes.create
 )
 
-api.get('/catalogCards/', catalogRoutes.list)
+api.get('/catalog-cards/', catalogRoutes.list)
 
 // get oldest card year
-api.get('/catalogCards/oldest', catalogRoutes.getFirstCatalogCardYear)
+api.get('/catalog-cards/oldest', catalogRoutes.getFirstCatalogCardYear)
 
 // get catalog queries
 api.get(
-  '/catalogCards/q/',
+  '/catalog-cards/q/',
   bodyParser,
   query(queryFields.mandatory, queryFields.optional),
   catalogRoutes.catalogQueries
@@ -105,7 +105,7 @@ api.put(
 
 // create
 api.post(
-  '/knowledgeAreas/',
+  '/knowledge-areas/',
   bodyParser,
   routeValidate('knowledgeAreas', 'create'),
   kaRoutes.create
@@ -113,7 +113,7 @@ api.post(
 
 // list
 api.get(
-  '/knowledgeAreas/',
+  '/knowledge-areas/',
   query(undefined, ['page', 'size', 'description']),
   pageableEntity,
   kaRoutes.list
@@ -121,14 +121,14 @@ api.get(
 
 // update
 api.put(
-  '/knowledgeAreas/:id',
+  '/knowledge-areas/:id',
   bodyParser,
   routeValidate('knowledgeAreas', 'update'),
   kaRoutes.update
 )
 
 // delete
-api.del('/knowledgeAreas/:id', kaRoutes.del)
+api.del('/knowledge-areas/:id', kaRoutes.del)
 
 /**
  * - Courses -
@@ -162,25 +162,25 @@ api.del('/courses/:id', courseRoutes.del)
 
 // create
 api.post(
-  '/academicUnities/',
+  '/academic-unities/',
   bodyParser,
   routeValidate('academicUnities', 'create'),
   acdUnitiesRoutes.create
 )
 
 // list
-api.get('/academicUnities/', query(undefined, ['term']), acdUnitiesRoutes.list)
+api.get('/academic-unities/', query(undefined, ['term']), acdUnitiesRoutes.list)
 
 // update
 api.put(
-  '/academicUnities/:id',
+  '/academic-unities/:id',
   bodyParser,
   routeValidate('academicUnities', 'update'),
   acdUnitiesRoutes.update
 )
 
 // delete
-api.del('/academicUnities/:id', acdUnitiesRoutes.del)
+api.del('/academic-unities/:id', acdUnitiesRoutes.del)
 
 api.post(
   '/send',

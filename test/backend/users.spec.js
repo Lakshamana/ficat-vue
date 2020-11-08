@@ -16,7 +16,10 @@ jest.setTimeout(100000)
 
 // Suíte de testes da entidade users
 describe('prefix /api/users', () => {
-  beforeAll(() => knex.migrate.latest(), 100000)
+  beforeAll(async () => {
+    await knex.migrate.latest()
+    return wipeTable('users')
+  }, 100000)
 
   beforeEach(() => createSeeds('users'), 100000)
 

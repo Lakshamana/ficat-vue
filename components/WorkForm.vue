@@ -299,7 +299,7 @@ export default {
       if (term !== this.knAreaPreviousSearch) {
         this.knAreaPreviousSearch = term
         this.$axios
-          .get('/api/knowledgeAreas', {
+          .get('/api/knowledge-areas', {
             params: {
               description: term
             }
@@ -322,7 +322,7 @@ export default {
         this.loading = true
         this.acdUnityPreviousSearch = term
         this.$axios
-          .get('/api/academicUnities', {
+          .get('/api/academic-unities', {
             params: {
               term
             }
