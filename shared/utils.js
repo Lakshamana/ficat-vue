@@ -139,7 +139,10 @@ function romanize(n, uppercase = false) {
 }
 
 async function castDate(date) {
-  const cast = await knex.raw('select CAST(? as DATETIME) as value', [date])
+  date.setHours(date.getHours() - 6)
+  const cast = await knex.raw('select CAST(? as DATETIME) as value', [
+    date.toISOString()
+  ])
   return cast[0][0].value
 }
 
@@ -147,4 +150,5 @@ exports.maybe = maybe
 exports.romanize = romanize
 exports.select = select
 exports.validatePayload = validatePayload
+exports.castDate = castDate
 exports.castDate = castDate

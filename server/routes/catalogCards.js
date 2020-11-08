@@ -84,7 +84,8 @@ async function create(ctx) {
       courseId: academicDetails.courseId
     }
 
-    await knex('catalogCards').insert(payload)
+    // await knex('catalogCards').insert(payload)
+    await CatalogCard.forge(payload).save()
 
     ctx.set('Content-Type', 'application/pdf')
     ctx.set('Content-Disposition', 'filename=ficha.pdf')
