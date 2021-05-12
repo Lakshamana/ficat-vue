@@ -40,7 +40,7 @@
     "bcrypt": "~3.0.6",
     "bookshelf": "~0.15.1",
     "bookshelf-secure-password": "~4.0.0",
-    "chart.js": "~2.8.0",
+    "chart.js": "~2.9.4",
     "cross-env": "~5.2.0",
     "dotenv": "~8.0.0",
     "html-pdf": "~2.2.0",
