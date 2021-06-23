@@ -11,9 +11,10 @@ async function send(ctx) {
   const { uploads } = files
 
   // uploads pode ser um File[] ou File
+  console.log(process.env.EMAIL_FROM)
   try {
     await mailer.sendMail({
-      from: process.env.EMAIL_USER,
+      from: process.env.EMAIL_FROM,
       to: process.env.EMAIL_RCV_ADDRESS,
       subject: `Chamado FICAT ${body.name} - ${formatDate()}`,
       html: makeEmailContent(body),

@@ -32,7 +32,6 @@
           <b-field>
             <WithTooltip :text="$tr('layout.generateTooltip')">
               <b-button
-                :disabled="disabled"
                 class="is-success"
                 rounded
                 expanded
