@@ -44,7 +44,7 @@
     "cross-env": "~5.2.0",
     "dotenv": "~8.0.0",
     "html-pdf": "~2.2.0",
-    "jsonwebtoken": "~8.5.1",
+    "jsonwebtoken": "~9.0.0",
     "knex": "~0.19.3",
     "koa": "~2.6.2",
     "koa-body": "~4.1.1",
